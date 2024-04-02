@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Microblogging app</title>
+        <link rel="stylesheet" href="public/microblog.css">
+    </head>
+    <body>
+        <header>
+            <h1>Microblogging</h1>
+            <a href="/">Home</a>
+        </header>
+        <section class="content">
+            <form th:action="@{/post}" method="post">
+                <textarea name="text" placeholder="Type a new post here"></textarea>
+                <input type="submit" value="Post!">
+            </form>
+            <h2>Latest posts from the people you follow</h2>
+            <div class="messages">
+                <div class="message" th:each="message : ${messages}">
+                    <div class="text" th:text="${message.getText()}">
+                        Text of the post
+                    </div>
+                    <div class="metadata">
+                        <span class="author" th:text="${message.getUser().getName()}">Author's name</span>
+                        <span class="date" th:text="${message.getTimestamp()}">Timestamp</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </body>
+</html>
