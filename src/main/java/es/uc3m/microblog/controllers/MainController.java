@@ -9,7 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import es.uc3m.microblog.model.Message;
+import es.uc3m.microblog.model.Listing;
 import es.uc3m.microblog.model.User;
 
 @Controller
@@ -18,24 +18,29 @@ public class MainController {
 
     @GetMapping(path = "/")
     public String mainView(Model model) {
-        List<Message> messages = new ArrayList<Message>();
+
+        List<Listing> listings = new ArrayList<Listing>();
+
         User user = new User();
         user.setId(1);
         user.setEmail("mary@example.com");
         user.setName("mary");
-        Message message = new Message();
-        message.setId(1);
-        message.setUser(user);
-        message.setText("Test post");
-        message.setTimestamp(new Date());
-        messages.add(message);
-        message = new Message();
-        message.setId(2);
-        message.setUser(user);
-        message.setText("Another post");
-        message.setTimestamp(new Date());
-        messages.add(message);
-        model.addAttribute("messages", messages);
+
+        Listing listing = new Listing();
+        listing.setId(1);
+        listing.setUser(user);
+        listing.setText("Test post");
+        listing.setTimestamp(new Date());
+        listings.add(listing);
+
+        listing = new Listing();
+        listing.setId(2);
+        listing.setUser(user);
+        listing.setText("Another post");
+        listing.setTimestamp(new Date());
+        listings.add(listing);
+
+        model.addAttribute("listings", listings);
         return "main_view";
     }
 }

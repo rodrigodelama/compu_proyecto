@@ -2,14 +2,14 @@ package es.uc3m.microblog.model;
 
 import java.util.Date;
 
-public class Message {
+public class Listing {
     private Integer id;
 
     private String text;
 
     private User user;
 
-    private Message responseTo;
+    private Listing responseTo;
 
     private Date timestamp;
 
@@ -37,11 +37,11 @@ public class Message {
         this.user = user;
     }
 
-    public Message getResponseTo() {
+    public Listing getResponseTo() {
         return responseTo;
     }
 
-    public void setResponseTo(Message responseTo) {
+    public void setResponseTo(Listing responseTo) {
         this.responseTo = responseTo;
     }
 
