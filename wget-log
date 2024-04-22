@@ -1,0 +1,11 @@
+--2024-04-22 11:06:35--  https://gradle.org/next-steps/?version=8.7
+Resolving gradle.org (gradle.org)... 104.16.73.101, 104.16.72.101, 2606:4700::6810:4965, ...
+Connecting to gradle.org (gradle.org)|104.16.73.101|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [text/html]
+Saving to: ‘index.html?version=8.7’
+
+index.html?version=8.7            [<=>                                               ]       0  --.-KB/s               index.html?version=8.7            [ <=>                                              ]  27.92K  --.-KB/s    in 0.003s  
+
+2024-04-22 11:06:35 (9.31 MB/s) - ‘index.html?version=8.7’ saved [28593]
+
