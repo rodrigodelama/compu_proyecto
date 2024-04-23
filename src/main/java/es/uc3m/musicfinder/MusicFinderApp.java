@@ -1,12 +1,12 @@
-package es.uc3m.microblog;
+package es.uc3m.musicfinder;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MicroblogApplication {
+public class MusicFinderApp {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MicroblogApplication.class, args);
+		SpringApplication.run(MusicFinderApp.class, args);
 	}
 }

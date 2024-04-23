@@ -1,4 +1,4 @@
-package es.uc3m.microblog;
+package es.uc3m.musicfinder;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

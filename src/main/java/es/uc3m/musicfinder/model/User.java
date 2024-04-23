@@ -1,4 +1,4 @@
-package es.uc3m.microblog.model;
+package es.uc3m.musicfinder.model;
 
 public class User {
     private Integer id;

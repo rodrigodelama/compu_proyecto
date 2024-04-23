@@ -1,15 +1,15 @@
-package es.uc3m.microblog.model;
+package es.uc3m.musicfinder.model;
 
 import java.util.Date;
 
-public class Listing {
+public class Post {
     private Integer id;
 
     private String text;
 
     private User user;
 
-    private Listing responseTo;
+    private Post responseTo;
 
     private Date timestamp;
 
@@ -37,11 +37,11 @@ public class Listing {
         this.user = user;
     }
 
-    public Listing getResponseTo() {
+    public Post getResponseTo() {
         return responseTo;
     }
 
-    public void setResponseTo(Listing responseTo) {
+    public void setResponseTo(Post responseTo) {
         this.responseTo = responseTo;
     }
 
