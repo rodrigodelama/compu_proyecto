@@ -1,33 +1,45 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org">
     <head>
-        <!-- for our font -->
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>MusicFinder</title>
-        <link rel="stylesheet" href="public/musicfinder.css">
+        <link rel="stylesheet" href="resources/public/musicfinder.css">
     </head>
     <body>
-        <div class="container">
-            <div class="header">
-                <h1>MusicFinder</h1>
+        <!-- Top section with logo and navigation -->
+        <div class="header">
+            <div class="logo" style="float: left;">
+                <img src="resources/public/logo.jpg" alt="Platform Logo" style="height: 50px;"/>
             </div>
-            <div class="search-bar">
-                <form th:action="@{/listing}" method="listing">
-                    <input type="text" name="text" placeholder="Search for concerts">
-                    <button type="submit">Search</button>
-                </form>
+
+            <div class="nav" style="text-align: center;">
+                <a href="/">Home</a>
+                <a href="/favorite-posts">Favorite Posts</a>
+                <a href="/friend-recommendations">Friend Recommendations</a>
+                <a href="/my-recommendations">My Recommendations</a>
+                <a href="/my-event">My Event</a>
+                <a href="/create-event">Create Event</a>
+                <a href="/admin-panel">Admin Panel</a>
             </div>
-            <h2>Here are the latest concerts nearby</h2>
-            <div class="concert-list">
-                <div class="concert-card" th:each="listing : ${listings}">
-                    <div class="text" th:text="${listing.getText()}">
-                        Text of the listing
-                    </div>
-                    <div class="metadata">
-                        <span class="author" th:text="${listing.getUser().getName()}">Author's name</span>
-                        <span class="date" th:text="${listing.getTimestamp()}">Timestamp</span>
+
+            <div class="auth-links" style="float: right;">
+                <a href="/login">Log-In</a>
+                <a href="/signup">Sign-Up</a>
+            </div>
+
+            <div style="clear: both;"></div>
+        </div>
+
+        <!-- Main content section with a grid of posts -->
+        <div class="content">
+            <h2>Latest Posts</h2>
+            <div class="post-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                <div class="post-card" th:each="Post : ${Posts}">
+                    <div class="post-text" th:text="${Post.getText()}">Text of the Post</div>
+                    <div class="post-metadata">
+                        <span class="author" th:text="${Post.getUser().getName()}">Author's name</span>
+                        <span class="date" th:text="${Post.getTimestamp()}">Timestamp</span>
                     </div>
                 </div>
             </div>
