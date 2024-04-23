@@ -1,0 +1,36 @@
+<!--
+    Ejercicio 5
+    Plantilla de la vista de mensaje
+
+    A continuación, debes crear una nueva plantilla Thymeleaf que muestre dichos
+    objetos, con un diseño que sea consistente con las otras dos vistas que ya tienes.
+-->
+
+<html xmlns:th="https://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>MusicFinder - post</title>
+        <link rel="stylesheet" href="public/musicfinder.css">
+    </head>
+
+    <body>
+        <header>
+            <h1>MusicFinder</h1>
+            <p><span th:text="${user.getName()}"></span>'s Post</p>
+            <a href="/">Home</a>
+        </header>
+        <section class="content">
+            <h2><span th:text="${user.getName()}"></span>'s post</h2>
+            <div class="messages">
+                <div class="message" th:each="message : ${messages}">
+                    <div class="text" th:text="${message.getText()}">
+                        Text of the post
+                    </div>
+                    <div class="metadata">
+                        <span class="author" th:text="${user.getName()}">Author's name</span>
+                        <span class="date" th:text="${message.getTimestamp()}">Timestamp</span>
+                    </div>
+                </div>
+            </div>
+    </body>
+</html>

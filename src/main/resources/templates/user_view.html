@@ -1,0 +1,42 @@
+<!--
+    Ejercicio 4:
+    Vista del perfil publico de un usuario
+
+    A continuación, debes crear una nueva plantilla Thymeleaf que reciba el objeto usuario
+    y los mensajes, y los muestre, reutilizando el diseño de esta vista que creaste en el
+    laboratorio de HTML y CSS. Recuerda que el método del controlador debe devolver el
+    nombre de esta nueva plantilla para que esta se aplique.
+-->
+
+<html xmlns:th="https://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>MusicFinder - user page</title>
+        <link rel="stylesheet" href="public/musicfinder.css">
+    </head>
+
+    <body>
+        <header>
+            <h1>MusicFinder</h1>
+            <p><span th:text="${user.getName()}"></span>'s profile page</p>
+            <a href="/">Home</a>
+        </header>
+        <section class="content">
+            <form th:action="@{/post}" method="post">
+                <textarea name="text" placeholder="Type a new post here"></textarea>
+                <input type="submit" value="Post!">
+            </form>
+            <h2><span th:text="${user.getName()}"></span>'s posts</h2>
+            <div class="messages">
+                <div class="message" th:each="message : ${messages}">
+                    <div class="text" th:text="${message.getText()}">
+                        Text of the post
+                    </div>
+                    <div class="metadata">
+                        <span class="author" th:text="${user.getName()}">Author's name</span>
+                        <span class="date" th:text="${message.getTimestamp()}">Timestamp</span>
+                    </div>
+                </div>
+            </div>
+    </body>
+</html>
