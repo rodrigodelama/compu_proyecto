@@ -1,10 +1,10 @@
 package es.uc3m.musicfinder.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Lob;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -19,12 +19,22 @@ public class User {
 
     @Column(nullable = false, length = 64)
     @NotBlank
+    @Size(max = 64)
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false, length = 64)
+    @Email
+    @NotBlank
+    @Size(max = 64)
     private String email;
 
-    
+    @Lob
+    private String description;
+
+    @Column(nullable = false)
+    @NotBlank
+    private String password;
+
     public Integer getId() {
         return id;
     }
@@ -47,6 +57,22 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
