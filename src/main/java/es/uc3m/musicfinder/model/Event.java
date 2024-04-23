@@ -2,14 +2,15 @@ package es.uc3m.musicfinder.model;
 
 import java.util.Date;
 
-public class Post {
+
+public class Event {
     private Integer id;
 
     private String text;
 
     private User user;
 
-    private Post responseTo;
+    private Event responseTo;
 
     private Date timestamp;
 
@@ -37,11 +38,11 @@ public class Post {
         this.user = user;
     }
 
-    public Post getResponseTo() {
+    public Event getResponseTo() {
         return responseTo;
     }
 
-    public void setResponseTo(Post responseTo) {
+    public void setResponseTo(Event responseTo) {
         this.responseTo = responseTo;
     }
 

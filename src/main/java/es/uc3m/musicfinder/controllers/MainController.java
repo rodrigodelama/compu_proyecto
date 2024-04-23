@@ -9,7 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import es.uc3m.musicfinder.model.Post;
+import es.uc3m.musicfinder.model.Event;
 import es.uc3m.musicfinder.model.User;
 
 @Controller
@@ -19,28 +19,28 @@ public class MainController {
     @GetMapping(path = "/")
     public String mainView(Model model) {
 
-        List<Post> Posts = new ArrayList<Post>();
+        List<Event> Events = new ArrayList<Event>();
 
         User user = new User();
         user.setId(1);
         user.setEmail("mary@example.com");
         user.setName("mary");
 
-        Post Post = new Post();
-        Post.setId(1);
-        Post.setUser(user);
-        Post.setText("Test post");
-        Post.setTimestamp(new Date());
-        Posts.add(Post);
+        Event Event = new Event();
+        Event.setId(1);
+        Event.setUser(user);
+        Event.setText("Test Event");
+        Event.setTimestamp(new Date());
+        Events.add(Event);
 
-        Post = new Post();
-        Post.setId(2);
-        Post.setUser(user);
-        Post.setText("Another post");
-        Post.setTimestamp(new Date());
-        Posts.add(Post);
+        Event = new Event();
+        Event.setId(2);
+        Event.setUser(user);
+        Event.setText("Another Event");
+        Event.setTimestamp(new Date());
+        Events.add(Event);
 
-        model.addAttribute("Posts", Posts);
+        model.addAttribute("Events", Events);
         return "main_view";
     }
 }
