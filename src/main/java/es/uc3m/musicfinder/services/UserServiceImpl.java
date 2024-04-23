@@ -10,24 +10,15 @@ import es.uc3m.musicfinder.model.UserRepository;
 @Service
 public class UserServiceImpl implements UserService {
 
-    /*
-     * De hecho, obtener objetos del sistema de inyección de dependencias es tan
-     * sencillo como añadir la anotación @Autowired. En el código anterior, el método
-     * register tiene acceso a las instancias del repositorio de usuarios y del
-     * codificador de contraseñas gracias a este mecanismo.
-     */
+    // Autowired is used to inject the UserRepository bean
     @Autowired
+    // UserRepository is an interface that extends CrudRepository
     private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    /*
-     * Además, puedes ver que el método register simplemente reemplaza la contraseña del
-     * usuario por su versión cifrada (usando el bean del codificador de contraseñas) y,
-     * finalmente, almacena el objeto en la base de datos con el método save de
-     * UserRepository, que heredan todas las interfaces de repositorio de CrudRepository.
-     */
+    // Register method used to save a users password to the database after encrypting it
     @Override
     public void register(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));

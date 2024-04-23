@@ -13,20 +13,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import es.uc3m.musicfinder.services.UserDetailsServiceImpl;
 
 /*
- * YOU NEED A TABLE:
-    CREATE TABLE `user` (
-        `id` INT AUTO_INCREMENT PRIMARY KEY,
-        `description` TEXT,
-        `email` VARCHAR(255),
-        `name` VARCHAR(100),
-        `password` VARCHAR(100)
-        );
-
  * Table should autogenerate when filling it in
 
  * TO CHECK TABLE IS FILLING CORRECTLY:
     SELECT * FROM `user`;
- */
+*/
 
 @Configuration
 @EnableWebSecurity
