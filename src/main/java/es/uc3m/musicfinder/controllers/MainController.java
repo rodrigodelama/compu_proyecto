@@ -111,19 +111,21 @@ public class MainController {
         return "message_view";
     }
 
-    @GetMapping(path = "/signup")
-    public String signUpForm() {
-        return "signup";
-    }
-    
-
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private UserService userService;
 
-    // Código alternativo para el método "signup" con mensaje POST:
+
+    // SIGNUP
+    // signup form
+    @GetMapping(path = "/signup")
+    public String signUpForm() {
+        return "signup";
+    }
+
+    // signup submission
     @PostMapping(path = "/signup")
     public String signUp(@Valid @ModelAttribute("user") User user,
                         BindingResult bindingResult,
@@ -140,9 +142,13 @@ public class MainController {
         userService.register(user);
         return "redirect:login?registered";
     }
+    //
 
+
+    // LOGIN
     @GetMapping(path = "/login")
     public String loginForm() {
         return "login";
     }
+    //
 }

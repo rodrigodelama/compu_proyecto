@@ -10,7 +10,7 @@
         <!-- Top section with logo and navigation -->
         <div class="header">
             <div class="logo" style="float: left;">
-                <img src="public/logo.jpg" alt="Platform Logo" style="height: 50px;"/>
+                <img src="public/logo.jpg" alt="MusicFinder Logo" style="height: 50px;"/>
             </div>
 
             <div class="nav" style="text-align: center;">
@@ -26,7 +26,43 @@
             <div class="auth-links" style="float: right;">
                 <a href="/login">Log-In</a>
                 <a href="/signup">Sign-Up</a>
+                
+                <form th:action="@{/logout}" method="post">
+                    <input type="submit" value="Sign Out"/>
+                </form>
             </div>
+            <!-- <div th:text="${#authentication.principal.username}">
+                User name here
+            </div> -->
+
+    <!--
+            <div style="float: right;">
+                Show Login & Signup if user is not authenticated
+                <div th:if="${#authentication.authenticated == false}">
+                    <a th:href="@{/login}">Log-In</a>
+                    <a th:href="@{/signup}">Sign-Up</a>
+                </div>
+        
+                Show Username & Logout if user is authenticated
+                <div th:if="${#authentication.authenticated}">
+                    <span th:text="${#authentication.principal.username}">User name here</span>
+                    <form th:action="@{/logout}" method="post" style="display:inline;">
+                        <input type="submit" value="Sign Out"/>
+                    </form>
+                </div>
+            </div>
+    -->
+
+        <!-- Main content section with a grid of posts -->
+        <div class="content">
+            <h2>Latest Posts</h2>
+            <div class="post-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                <div class="post-card" th:each="Post : ${Posts}">
+                    <div class="post-text" th:text="${Post.getText()}">Text of the Post</div>
+                    <div class="post-metadata">
+                        <span class="author" th:text="${Post.getUser().getName()}">Author's name</span>
+                        <span class="date" th:text="${Post.getTimestamp()}">Timestamp</span>
+                    </div>
 
             <div style="clear: both;"></div>
         </div>
