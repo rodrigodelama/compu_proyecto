@@ -1,3 +1,7 @@
+# Ignore the .gradle and build folders
+.gradle/
+build/
+
 # Compiled class file
 *.class
 

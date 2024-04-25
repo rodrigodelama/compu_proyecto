@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org">
     <head>
-        <title>Sign Up</title>
-        <link rel="stylesheet" href="public/musicfinder.css">
+        <title>Sign-up</title>
+        <link rel="stylesheet" th:href="@{../public/musicfinder.css}">
     </head>
     <body>
-        <h1>Sign Up Here:</h1>
-        <!-- THIS THING below ERRORS OUT AND WONT LOAD THE PAGE -->
-        
+        <h1>Sign Up!!!</h1>
         <form th:action="@{/signup}" th:object="${user}" method="post">
             <div>
                 <label>User name: <input type="text" th:field="*{name}" required></label>
@@ -21,21 +19,6 @@
                 <label>Password: <input type="password" th:field="*{password}" required></label>
                 <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</span>
             </div>
-            <div><label>Repeat password: <input type="password" name="passwordRepeat" required></label></div>
-            <div><input type="submit" value="Sign Up"></div>
-        </form>
-        
-        <!--
-        <form th:action="@{/signup}" method="post">
-            <div>
-                <label>User name: <input type="text" name="name" required></label>
-            </div>
-            <div>
-                <label>Email: <input type="email" name="email" required></label>
-            </div>
-            <div>
-                <label>Password: <input type="password" name="password" required></label>
-            </div>
             <div>
                 <label>
                     Repeat password:
@@ -46,6 +29,5 @@
                 <input type="submit" value="Sign Up">
             </div>
         </form>
-        -->
     </body>
 </html>

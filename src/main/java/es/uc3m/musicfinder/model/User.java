@@ -10,8 +10,31 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinTable;
+
 @Entity
 public class User {
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name="following",
+        joinColumns=@JoinColumn(name="follower_id"),
+        inverseJoinColumns=@JoinColumn(name="followed_id"))
+    private List<User> following;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name="following",
+        joinColumns=@JoinColumn(name="followed_id"),
+        inverseJoinColumns=@JoinColumn(name="follower_id"))
+    private List<User> followers;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private List<Message> messages;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -35,10 +58,13 @@ public class User {
     @NotBlank
     private String password;
 
+    @Column(nullable = false)
+    @NotBlank
+    private String role;
+
     public Integer getId() {
         return id;
     }
-
     public void setId(Integer id) {
         this.id = id;
     }
@@ -46,7 +72,6 @@ public class User {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -54,7 +79,6 @@ public class User {
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -62,14 +86,35 @@ public class User {
     public String getDescription() {
         return description;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
 
+
     public String getPassword() {
         return password;
     }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
+
+    public List<User> getFollowing() {
+        return this.following;
+    }
+    public void setFollowing(List<User> following) {
+        this.following = following;
+    }
+
+    public List<User> getFollowers() {
+        return this.followers;
+    }
+    public void setFollowers(List<User> followers) {
+        this.followers = followers;
+    } 
 
     public void setPassword(String password) {
         this.password = password;
