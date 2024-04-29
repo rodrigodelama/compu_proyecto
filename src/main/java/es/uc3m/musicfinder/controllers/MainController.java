@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,8 +31,12 @@ import es.uc3m.musicfinder.model.User;
 import es.uc3m.musicfinder.model.UserRepository;
 import es.uc3m.musicfinder.services.UserService;
 import es.uc3m.musicfinder.services.UserServiceException;
+
 import es.uc3m.musicfinder.model.Message;
 import es.uc3m.musicfinder.model.MessageRepository;
+
+
+
 
 @Controller
 @RequestMapping(path = "/")
@@ -60,6 +66,7 @@ public class MainController {
     public String signUpForm(User user) {
         return "signup";
     }
+
     @PostMapping(path = "/signup")
     public String signUp(@Valid @ModelAttribute("user") User user, BindingResult result,
                         @RequestParam(name = "passwordRepeat") String passwordRepeat) {
@@ -90,8 +97,8 @@ public class MainController {
         //Ejercicio 2: añadir otro mensaje nuevo.
         user = new User();
         user.setId(2);
-        user.setEmail("matiasscarpaglez@gmail.com");
-        user.setName("Matias");
+        user.setEmail("luciabarranco2002@gmail.com");
+        user.setName("Lucía");
         message = new Message();
         message.setId(2);
         message.setUser(user);

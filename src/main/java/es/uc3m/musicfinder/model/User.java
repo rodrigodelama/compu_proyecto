@@ -24,13 +24,13 @@ public class User {
     @JoinTable(name="following",
         joinColumns=@JoinColumn(name="follower_id"),
         inverseJoinColumns=@JoinColumn(name="followed_id"))
-    private List<User> following;
+    private List<User> following; //lista de usuarios que sigue
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="following",
         joinColumns=@JoinColumn(name="followed_id"),
         inverseJoinColumns=@JoinColumn(name="follower_id"))
-    private List<User> followers;
+    private List<User> followers; //lista usuarios que le siguien 
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
