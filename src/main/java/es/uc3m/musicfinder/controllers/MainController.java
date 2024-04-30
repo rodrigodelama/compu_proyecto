@@ -36,8 +36,6 @@ import es.uc3m.musicfinder.model.Message;
 import es.uc3m.musicfinder.model.MessageRepository;
 
 
-
-
 @Controller
 @RequestMapping(path = "/")
 public class MainController {
@@ -53,13 +51,18 @@ public class MainController {
 
     @GetMapping(path = "/")
     public String mainView(Model model, Principal principal) {
-        User current_user = userRepository.findByEmail(principal.getName());
+        // User current_user = userRepository.findByEmail(principal.getName());
         
-        List<Message> messages = messageRepository.messagesFromFollowedUsers(current_user, PageRequest.of(0, 10));
+        // List<Message> messages = messageRepository.messagesFromFollowedUsers(current_user, PageRequest.of(0, 10));
 
-        model.addAttribute("messages", messages);
+        // model.addAttribute("messages", messages);
 
-        return "main_view";
+        return "index";
+    }
+
+    @GetMapping(path = "/error")
+    public String errorView() {
+        return "404";
     }
 
     @GetMapping(path = "/signup")
