@@ -40,8 +40,8 @@
             <div style="float: right;">
                 Show Login & Signup if user is not authenticated
                 <div th:if="${#authentication.authenticated == false}">
-                    <a th:href="@{/login}">Log-In</a>
-                    <a th:href="@{/signup}">Sign-Up</a>
+                    <a th:href="@{/login}">Sign in</a>
+                    <a th:href="@{/signup}">Sign up</a>
                 </div>
         
                 Show Username & Logout if user is authenticated

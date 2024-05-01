@@ -1,5 +1,4 @@
 package es.uc3m.musicfinder.controllers;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -83,12 +82,12 @@ public class MainController {
             return "redirect:signup?passwords";
         }
         userService.register(user);
-        return "redirect:login?succesfully_registered";
+        return "redirect:signin?succesfully_registered";
     }
 
-    @GetMapping(path = "/login")
+    @GetMapping(path = "/signin")
     public String loginForm() {
-        return "login";
+        return "signin";
     }
 
     @GetMapping(path = "/user")

@@ -29,11 +29,11 @@ public class WebSecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests((authorize) -> authorize
-            .requestMatchers("/**", "/index", "/login", "/signup", "/public/**", "/images/**", "/error", "/event/**").permitAll()
+            .requestMatchers("/**", "/index", "/signin", "/signup", "/public/**", "/images/**", "/error", "/event/**").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(formLogin -> formLogin
-                .loginPage("/login")
+                .loginPage("/signin")
                 .permitAll());
         return http.build();
     }

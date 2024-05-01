@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org">
-    <head>
-        <title>Sign-up</title>
-        <link rel="stylesheet" th:href="@{../public/musicfinder.css}">
-    </head>
-    <body>
-        <h1>Sign Up!!!</h1>
+<head>
+    <title>MusicFinder - Sign up</title>
+    <link rel="stylesheet" th:href="@{../public/css/signin_signup.css}">
+</head>
+<body>
+    <div class="form-container">
+        <h1>Sign up</h1>
         <form th:action="@{/signup}" th:object="${user}" method="post">
             <div>
                 <label>User name: <input type="text" th:field="*{name}" required></label>
@@ -29,5 +30,6 @@
                 <input type="submit" value="Sign Up">
             </div>
         </form>
-    </body>
+    </div>
+</body>
 </html>
