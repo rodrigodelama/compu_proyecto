@@ -76,13 +76,13 @@ public class MainController {
             return "signup";
         }
         if (userRepository.findByEmail(user.getEmail()) != null) {
-            return "redirect:signup?duplicate_email";
+            return "redirect:signup?email_already_registered";
         }
         if (!user.getPassword().equals(passwordRepeat)) {
-            return "redirect:signup?passwords";
+            return "redirect:signup?password_mismatch";
         }
         userService.register(user);
-        return "redirect:login?succesfully_registered";
+        return "redirect:login?registered";
     }
 
     @GetMapping(path = "/login")
@@ -104,7 +104,7 @@ public class MainController {
         message = new Message();
         message.setId(2);
         message.setUser(user);
-        message.setText("hellow, World!!");
+        message.setText("hello world!!");
         message.setTimestamp(new Date());
         messages.add(message);
 
