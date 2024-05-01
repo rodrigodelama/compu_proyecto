@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org">
-<head>
-    <title>MusicFinder - Sign in</title>
-    <link rel="stylesheet" th:href="@{../public/css/signin_signup.css}">
-</head>
-<body>
-    <div class="form-container">
-        <header>
-            <h1><strong>Sign in</strong></h1>
-            <div th:if="${param.error}">Invalid username or password.</div>
-        </header>
-        <div th:if="${param.logout}">You have been signed out.</div>
-        <div th:if="${param.registered}">Your new user has been registered.</div>
-        <form th:action="@{/login}" method="post">
-            <div><label>Email: <input type="email" name="username" required /></label></div>
-            <div><label>Password: <input type="password" name="password" required /></label></div>
-            <div><input type="submit" value="Sign In" /></div>
-        </form>
-        <p>
-            <a th:href="@{/signup}">Sign up</a> if you don't have an account yet.
-        </p>
-    </div>
-</body>
+    <head>
+        <title>MusicFinder - Sign in</title>
+        <link rel="stylesheet" th:href="@{../public/css/login_signup.css}">
+    </head>
+    <body>
+        <div class="form-container">
+            <header>
+                <h1><strong>Sign in</strong></h1>
+                <div th:if="${param.error}">Invalid username or password.</div>
+            </header>
+            <div th:if="${param.logout}">You have been signed out.</div>
+            <div th:if="${param.registered}">Your new user has been registered.</div>
+            <form th:action="@{/login}" method="post">
+                <div><label>Email: <input type="email" name="username" required /></label></div>
+                <div><label>Password: <input type="password" name="password" required /></label></div>
+                <div><input type="submit" value="Sign In" /></div>
+            </form>
+            <p>
+                <a th:href="@{/signup}">Sign up</a> if you don't have an account yet.
+            </p>
+        </div>
+    </body>
 </html>

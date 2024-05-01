@@ -61,7 +61,7 @@ public class MainController {
 
     @GetMapping(path = "/error")
     public String errorView() {
-        return "404";
+        return "error";
     }
 
     @GetMapping(path = "/signup")
@@ -82,12 +82,12 @@ public class MainController {
             return "redirect:signup?passwords";
         }
         userService.register(user);
-        return "redirect:signin?succesfully_registered";
+        return "redirect:login?succesfully_registered";
     }
 
-    @GetMapping(path = "/signin")
+    @GetMapping(path = "/login")
     public String loginForm() {
-        return "signin";
+        return "login";
     }
 
     @GetMapping(path = "/user")

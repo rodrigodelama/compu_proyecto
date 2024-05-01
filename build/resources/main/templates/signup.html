@@ -1,35 +1,35 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org">
-<head>
-    <title>MusicFinder - Sign up</title>
-    <link rel="stylesheet" th:href="@{../public/css/signin_signup.css}">
-</head>
-<body>
-    <div class="form-container">
-        <h1>Sign up</h1>
-        <form th:action="@{/signup}" th:object="${user}" method="post">
-            <div>
-                <label>User name: <input type="text" th:field="*{name}" required></label>
-                <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</span>
-            </div>
-            <div>
-                <label>Email: <input type="email" th:field="*{email}" required></label>
-                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</span>
-            </div>
-            <div>
-                <label>Password: <input type="password" th:field="*{password}" required></label>
-                <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</span>
-            </div>
-            <div>
-                <label>
-                    Repeat password:
-                    <input type="password" name="passwordRepeat" required>
-                </label>
-            </div>
-            <div>
-                <input type="submit" value="Sign Up">
-            </div>
-        </form>
-    </div>
-</body>
+    <head>
+        <title>MusicFinder - Sign up</title>
+        <link rel="stylesheet" th:href="@{../public/css/login_signup.css}">
+    </head>
+    <body>
+        <div class="form-container">
+            <h1>Sign up</h1>
+            <form th:action="@{/signup}" th:object="${user}" method="post">
+                <div>
+                    <label>User name: <input type="text" th:field="*{name}" required></label>
+                    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</span>
+                </div>
+                <div>
+                    <label>Email: <input type="email" th:field="*{email}" required></label>
+                    <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</span>
+                </div>
+                <div>
+                    <label>Password: <input type="password" th:field="*{password}" required></label>
+                    <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</span>
+                </div>
+                <div>
+                    <label>
+                        Repeat password:
+                        <input type="password" name="passwordRepeat" required>
+                    </label>
+                </div>
+                <div>
+                    <input type="submit" value="Sign Up">
+                </div>
+            </form>
+        </div>
+    </body>
 </html>
