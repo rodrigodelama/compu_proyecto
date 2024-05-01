@@ -56,7 +56,7 @@ public class MainController {
 
         // model.addAttribute("messages", messages);
 
-        return "index";
+        return "home";
     }
 
     @GetMapping(path = "/error")
