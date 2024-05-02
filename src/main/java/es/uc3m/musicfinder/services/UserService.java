@@ -7,5 +7,4 @@ public interface UserService {
     boolean follows(User follower, User followed); 
     void follow(User follower, User followed) throws UserServiceException;
     void unfollow(User follower, User followed) throws UserServiceException;
-
 }

@@ -2,9 +2,6 @@ package es.uc3m.musicfinder.model;
 
 import java.util.Date;
 
-//Nuevos imports:
-import java.util.Date;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,12 +31,15 @@ public class Message {
     @Column(nullable = false)
     private Date timestamp;
 
+    // Getters & Setters --------------------------------------
+
     public Integer getId() {
         return id;
     }
     public void setId(Integer id) {
         this.id = id;
     }
+
 
     public String getText() {
         return text;
@@ -48,6 +48,7 @@ public class Message {
         this.text = text;
     }
 
+
     public User getUser() {
         return user;
     }
@@ -55,12 +56,14 @@ public class Message {
         this.user = user;
     }
 
+
     public Message getResponseTo() {
         return responseTo;
     }
     public void setResponseTo(Message responseTo) {
         this.responseTo = responseTo;
     }
+
 
     public Date getTimestamp() {
         return timestamp;

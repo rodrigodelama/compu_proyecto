@@ -36,12 +36,15 @@ public class Event {
     @NotBlank
     private String description;
 
+    // Getters & Setters --------------------------------------
+
     public Integer getId() {
         return id;
     }
     public void setId(Integer id) {
         this.id = id;
     }
+
 
     public String getName() {
         return name;
@@ -50,12 +53,14 @@ public class Event {
         this.name = name;
     }
 
+
     public Date getDate() {
         return date;
     }
     public void setDate(Date date) {
         this.date = date;
     }
+
 
     public String getLocation() {
         return location;
@@ -64,6 +69,7 @@ public class Event {
         this.location = location;
     }
 
+
     public String getDescription() {
         return description;
     }
@@ -71,6 +77,7 @@ public class Event {
         this.description = description;
     }
 
+    
     // @Override
     // public String toString() {
     //     return "User: " + name + " <" + email + ">";

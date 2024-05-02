@@ -11,9 +11,7 @@ import es.uc3m.musicfinder.model.UserRepository;
 @Service
 public class UserServiceImpl implements UserService {
 
-    // Autowired is used to inject the UserRepository bean
     @Autowired
-    // UserRepository is an interface that extends CrudRepository
     private UserRepository userRepository;
 
     @Autowired
@@ -26,44 +24,43 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-        // Ej 5 p8: seguir y dejar de seguir a usuarios:
+    // Ej 5 p8: seguir y dejar de seguir a usuarios:
     /*
      * devuelve true si el usuario seguido está contenido en la lista de usuarios que sigue el usuario seguidor.
      * false en caso contrario.
      */
-    public boolean follows(User follower, User followed){ // para ver si un usuario sigue a otro.
+    public boolean follows(User follower, User followed) { // para ver si un usuario sigue a otro.
         /*
          * devuelve true si el usuario seguido está contenido en la lista de usuarios 
          * que sigue el usuario seguidor
          *-----------------------------------
          * false en caso contrario. 
          */
-        if(follower.getFollowing().contains(followed)){
+        if(follower.getFollowing().contains(followed)) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
-    public void follow(User follower, User followed) throws UserServiceException{
+    public void follow(User follower, User followed) throws UserServiceException {
         //follower: el que quiere ser seguidor.
         //followed: el que quiere ser seguido.
         //verifica primero que el usuario seguidor no esté intentando seguirse a sí mismo.
         //verifica que el usuario seguidor no esté siguiendo ya al usuario seguido.
-        if((!follows(follower, followed)) && (!follower.equals(followed))){
+        if((!follows(follower, followed)) && (!follower.equals(followed))) {
             follower.getFollowing().add(followed);
             userRepository.save(follower);
-        }else{
+        } else {
             throw new UserServiceException("El usuario no se puede seguir a sí mismo");
         }
     }
-    public void unfollow(User follower, User followed) throws UserServiceException{
+    public void unfollow(User follower, User followed) throws UserServiceException {
         //verifica que el usuario seguidor esté siguiendo al usuario seguido.
-        if(!follows(follower, followed)){
+        if(!follows(follower, followed)) {
             throw new UserServiceException("El seguidor no está siguiendo al usuario seguido");
-        }else{
+        } else {
             follower.getFollowing().remove(followed);
             userRepository.save(follower);
         }
     }
-    
 }

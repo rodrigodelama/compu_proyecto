@@ -15,24 +15,19 @@ import es.uc3m.musicfinder.model.User;
 import es.uc3m.musicfinder.model.UserRepository;
 
 public class UserDetailsServiceImpl implements UserDetailsService {
-
-    // Autowired is used to inject the UserRepository bean
     @Autowired
     private UserRepository userRepository;
 
-    // LoadUserByUsername method used to find a user by their email
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         User user = userRepository.findByEmail(username);
-
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-
         grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), grantedAuthorities);
+        return new org.springframework.security.core.userdetails.User(
+            user.getEmail(), user.getPassword(), grantedAuthorities);
     }
 }

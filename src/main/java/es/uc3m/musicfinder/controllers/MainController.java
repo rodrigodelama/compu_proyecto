@@ -1,4 +1,5 @@
 package es.uc3m.musicfinder.controllers;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,18 +18,19 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.data.domain.PageRequest;
 
-
+// p6
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import es.uc3m.musicfinder.model.UserRepository;
+import es.uc3m.musicfinder.services.UserService;
 
+// p6 signup
 import org.springframework.validation.BindingResult;
 import jakarta.validation.Valid;
 
 import es.uc3m.musicfinder.model.User;
-import es.uc3m.musicfinder.model.UserRepository;
-import es.uc3m.musicfinder.services.UserService;
 import es.uc3m.musicfinder.services.UserServiceException;
 
 import es.uc3m.musicfinder.model.Message;
@@ -68,7 +70,6 @@ public class MainController {
     public String signUpForm(User user) {
         return "signup";
     }
-
     @PostMapping(path = "/signup")
     public String signUp(@Valid @ModelAttribute("user") User user, BindingResult result,
                         @RequestParam(name = "passwordRepeat") String passwordRepeat) {
@@ -200,7 +201,7 @@ public class MainController {
     //Nuevo metodo ej 6 p8: Controladores para seguir y dejar de seguir a usuarios.
     //Hará que el usuario asociado a la sesión actual siga a otro usuario. Este último se recibirá como un parámetro en la URL:
     @PostMapping(path = "/follow/{userId}")
-    public String follow(@PathVariable("userId") int followedUserId, Principal principal){
+    public String follow(@PathVariable("userId") int followedUserId, Principal principal) {
         Optional<User> followed = userRepository.findById(followedUserId);
         User current_user = userRepository.findByEmail(principal.getName());
         if (!followed.isPresent()) {
@@ -225,5 +226,4 @@ public class MainController {
         }
         return "redirect:/user/" + unfollowedUserId;
     }
-
 }

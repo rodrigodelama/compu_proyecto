@@ -21,11 +21,7 @@
                     <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</span>
                 </div>
                 <div>
-                    <label>
-                        Repeat password:
-                        <input type="password" name="passwordRepeat" required>
-                    </label>
-                </div>
+                    <label>Repeat password: <input type="password" name="passwordRepeat" required></label></div>
                 <div>
                     <input type="submit" value="Sign Up">
                 </div>
