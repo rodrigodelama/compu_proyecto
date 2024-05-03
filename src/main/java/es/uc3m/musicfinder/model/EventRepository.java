@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
+import es.uc3m.musicfinder.model.Event;
+
 public interface EventRepository extends CrudRepository<Event, Integer> {
     // List<Event> findFirst10ByOrderByTimestampDesc();
     // List<Event> findByUserOrderByTimestampDesc(User user);

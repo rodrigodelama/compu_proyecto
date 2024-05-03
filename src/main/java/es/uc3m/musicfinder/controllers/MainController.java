@@ -31,8 +31,9 @@ import org.springframework.validation.BindingResult;
 import jakarta.validation.Valid;
 
 import es.uc3m.musicfinder.model.User;
+import es.uc3m.musicfinder.model.Event;
 import es.uc3m.musicfinder.services.UserServiceException;
-
+import es.uc3m.musicfinder.model.EventRepository;
 import es.uc3m.musicfinder.model.Message;
 import es.uc3m.musicfinder.model.MessageRepository;
 
@@ -226,4 +227,44 @@ public class MainController {
         }
         return "redirect:/user/" + unfollowedUserId;
     }
+
+    @Autowired
+    private EventRepository eventRepository;
+
+    @PostMapping("/markFavorite")
+    public String markFavorite(@RequestParam Integer eventId) {
+        Event event = eventRepository.findById(eventId).orElse(null);
+        if (event != null) {
+            event.setFavorite(true);
+            eventRepository.save(event);
+        }
+        return "redirect:/events";
+    }
+
+    @PostMapping("/recommend")
+    public String recommendEvent(@RequestParam Integer eventId, Principal principal) {  
+        String username = principal.getName();
+        User user = userRepository.findByUsername(username);
+        Event event = eventRepository.findById(eventId).orElse(null);
+        if (event != null && user != null) {
+            user.addRecommendedEvent(event);
+            userRepository.save(user);
+        }
+        return "redirect:/user/" + username;
+    }
+    //agregar validaciones para asegurarte de que el evento existe y el usuario este autenticado antes de recomendar evento ? 
+
+    @PostMapping("/recommendToFriend")
+    public String recommendEventToFriend(@RequestParam Integer eventId, @RequestParam String friendUsername, Principal principal) {
+        String username = principal.getName();
+        User user = userRepository.findByUsername(username);
+        User friend = userRepository.findByUsername(friendUsername);
+        Event event = eventRepository.findById(eventId).orElse(null);
+        if (event != null && user != null && friend != null) {
+            user.addRecommendedEventToFriend(event, friend);
+            userRepository.save(user);
+        }
+        return "redirect:/user/" + username;
+    }
+    
 }

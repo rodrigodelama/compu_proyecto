@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>MusicFinder - Mis eventos favoritos</title>
+        <link rel="stylesheet" href="public/css/musicfinder.css">
+    </head>
+    <body>
+        <header>
+            <h1>Mis eventos favoritos</h1>
+        </header>
+        <ul>
+            <li th:each="event : ${favoriteEvents}">
+            <span th:text="${event.name}"></span>
+        </li>
+        </ul>
+    </body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>MusicFinder - Mis recomendaciones</title>
+        <link rel="stylesheet" href="public/css/musicfinder.css">
+    </head>
+    <body>
+        <header>
+            <h1>Mis recomendaciones</h1>
+        </header>
+        <h2>Eventos recomendados por mis amigos:</h2>
+        <ul>
+            <li th:each="recommendedEvent : ${recommendedEventsFromOthers}">
+                <span th:text="${recommendedEvent.event.name}"></span>
+                <span th:text="'Recomendado por: ' + ${recommendedEvent.recommender.username}"></span>
+            </li>
+        </ul>
+    </body>
+</html>

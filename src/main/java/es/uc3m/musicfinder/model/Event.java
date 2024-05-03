@@ -76,6 +76,10 @@ public class Event {
     public void setDescription(String description) {
         this.description = description;
     }
+    public void setFavorite(boolean b) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setFavorite'");
+    }
 
     
     // @Override

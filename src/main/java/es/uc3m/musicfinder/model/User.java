@@ -137,4 +137,13 @@ public class User {
     public String toString() {
         return "User: " + name + " <" + email + ">";
     }
+
+    public void addRecommendedEvent(Event event) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'addRecommendedEvent'");
+    }
+    public void addRecommendedEventToFriend(Event event, User friend) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'addRecommendedEventToFriend'");
+    }
 }

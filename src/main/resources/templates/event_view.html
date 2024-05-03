@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalles del Evento</title>
+</head>
+<body>
+    <h1>Detalles del Evento</h1>
+    <ul>
+        <li><strong>Nombre:</strong> <span th:text="${event.name}"></span></li>
+        <li><strong>Fecha:</strong> <span th:text="${#dates.format(event.date, 'dd-MM-yyyy')}"></span></li>
+        <li><strong>Ubicación:</strong> <span th:text="${event.location}"></span></li>
+        <li><strong>Descripción:</strong> <span th:text="${event.description}"></span></li>
+        <!--idea de poner una foto del grupo/artista por evento-->
+        <li><strong>Foto:</strong> <img th:src="@{'/images/' + ${event.imageFileName}}" alt="Foto del Evento"></li>
+    </ul>
+</body>
+</html>
