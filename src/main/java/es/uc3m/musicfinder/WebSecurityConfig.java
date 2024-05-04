@@ -47,4 +47,5 @@ public class WebSecurityConfig {
     UserDetailsService userDetailsService() {
         return new UserDetailsServiceImpl();
     }
+
 }

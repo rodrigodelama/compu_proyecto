@@ -1,14 +1,15 @@
 package es.uc3m.musicfinder.model;
 
+import java.util.Date;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Column;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-
-import java.util.Date;
 
 @Entity
 public class Event {
@@ -22,19 +23,24 @@ public class Event {
     @Size(max = 64)
     private String name;
 
-    @Column(nullable = false, length = 64)
+    @Column(nullable = false)
     @NotBlank
-    @Size(max = 64)
-    private Date date;
+    private Date date; //and time?
+
+    @Column(nullable = false)
+    @NotBlank
+    private int duration;
 
     @Column(nullable = false, length = 64)
     @NotBlank
     @Size(max = 64)
     private String location;
 
-    @Column(nullable = false, length = 64)
+    @Column(nullable = false)
     @NotBlank
+    @Size(max = 512)
     private String description;
+
 
     // Getters & Setters --------------------------------------
 
@@ -62,6 +68,14 @@ public class Event {
     }
 
 
+    public int getDuration() {
+        return duration;
+    }
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+
     public String getLocation() {
         return location;
     }
@@ -77,9 +91,4 @@ public class Event {
         this.description = description;
     }
 
-    
-    // @Override
-    // public String toString() {
-    //     return "User: " + name + " <" + email + ">";
-    // }
 }

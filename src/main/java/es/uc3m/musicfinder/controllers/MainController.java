@@ -35,7 +35,9 @@ import es.uc3m.musicfinder.services.UserServiceException;
 
 import es.uc3m.musicfinder.model.Message;
 import es.uc3m.musicfinder.model.MessageRepository;
-
+import es.uc3m.musicfinder.model.Recommendation;
+import es.uc3m.musicfinder.model.Event;
+import es.uc3m.musicfinder.model.EventRepository;
 
 @Controller
 @RequestMapping(path = "/")
@@ -50,13 +52,27 @@ public class MainController {
     @Autowired
     private MessageRepository messageRepository;
 
+    @Autowired
+    private EventRepository eventRepository;
+
+    @Autowired
+    private RecommendationRepository recommendationRepository;
+
     @GetMapping(path = "/")
     public String mainView(Model model, Principal principal) {
         // User current_user = userRepository.findByEmail(principal.getName());
-        
         // List<Message> messages = messageRepository.messagesFromFollowedUsers(current_user, PageRequest.of(0, 10));
-
         // model.addAttribute("messages", messages);
+
+        // check if authenticated
+        User current_user = userRepository.findByEmail(principal.getName()); // for the user 
+
+        // if authenticated:
+        List<Recommendation> recommendations = recommendationRepository.findAllEventsRecommendedToUserOrderByTimestampDesc(); // for the user
+        model.addAttribute("recommendations", recommendations); // which are "events"
+
+        List<Event> events = eventRepository.findAllEventsOrderByTimestampDesc(); // no need to order by current user
+        model.addAttribute("events", events);
 
         return "home";
     }
@@ -101,7 +117,7 @@ public class MainController {
         user = new User();
         user.setId(2);
         user.setEmail("luciabarranco2002@gmail.com");
-        user.setName("Lucía");
+        user.setUsername("Lucía");
         message = new Message();
         message.setId(2);
         message.setUser(user);
