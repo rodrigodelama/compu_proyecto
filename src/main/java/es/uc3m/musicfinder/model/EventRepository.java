@@ -8,11 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface EventRepository extends CrudRepository<Event, Integer> {
 
-    List<Event> findAllEventsOrderByTimestampDesc();
-    List<Event> findAllEventsByUserOrderByTimestampDesc(User user);
-    List<Event> findAllEventsRecommendedByUserOrderByTimestampDesc(User user);
-    List<Event> findAllEventsRecommendedToUserOrderByTimestampDesc(User user);
+    // List<Event> findAllEventsOrderByTimestampDesc();
+    // List<Event> findAllEventsByUserOrderByTimestampDesc(User user);
+    // List<Event> findAllEventsRecommendedByUserOrderByTimestampDesc(User user);
+    // List<Event> findAllEventsRecommendedToUserOrderByTimestampDesc(User user);
 
-    List<Event> eventRecomendationsFromFollowedUsers(User user, Pageable pageable);
+    // List<Event> eventRecomendationsFromFollowedUsers(User user, Pageable pageable);
 
 }

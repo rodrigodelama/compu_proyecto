@@ -114,23 +114,23 @@ public class MainController {
 
     @GetMapping(path = "/user")
     public String userView(Model model) {
-        List<Message> messages = new ArrayList<Message>();
-        User user = new User();
-        Message message = new Message();
+        // List<Message> messages = new ArrayList<Message>();
+        // User user = new User();
+        // Message message = new Message();
     
-        //Ejercicio 2: añadir otro mensaje nuevo.
-        user = new User();
-        user.setId(2);
-        user.setEmail("luciabarranco2002@gmail.com");
-        user.setUsername("Lucía");
-        message = new Message();
-        message.setId(2);
-        message.setUser(user);
-        message.setText("hello world!!");
-        message.setTimestamp(new Date());
-        messages.add(message);
+        // //Ejercicio 2: añadir otro mensaje nuevo.
+        // user = new User();
+        // user.setId(2);
+        // user.setEmail("luciabarranco2002@gmail.com");
+        // user.setUsername("Lucía");
+        // message = new Message();
+        // message.setId(2);
+        // message.setUser(user);
+        // message.setText("hello world!!");
+        // message.setTimestamp(new Date());
+        // messages.add(message);
 
-        model.addAttribute("messages", messages);
+        // model.addAttribute("messages", messages);
         return "user";
     }
     @GetMapping(path = "/user/{userId}")
@@ -144,9 +144,9 @@ public class MainController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found");
         }
         //Ej 3 p8: ocultación de mensajes de respuesta en vista de perfil de usuario.
-        List<Message> messages = messageRepository.findByUserAndResponseToIsNullOrderByTimestampDesc(userOpt.get());
-        model.addAttribute("user", userOpt.get());
-        model.addAttribute("messages", messages);
+        // List<Message> messages = messageRepository.findByUserAndResponseToIsNullOrderByTimestampDesc(userOpt.get());
+        // model.addAttribute("user", userOpt.get());
+        // model.addAttribute("messages", messages);
 
         // Ej 7 p8 (valor de la cadena "followButton")----------------------
         if(current_user.equals(userOpt.get())) {
@@ -166,6 +166,8 @@ public class MainController {
         return "user";
     }
     
+
+    /*
     // Ej 3 P7: New code for the controller method of the message view:
     @GetMapping(path = "/message/{messageId}")
     public String messageView(@PathVariable int messageId, Model model) {
@@ -191,11 +193,11 @@ public class MainController {
              * if(current_user.equals(messageOpt.get().getUser())){
              * is_owner = 'mine';
              * Y luego haríamos como el if en el html para que no se muestre el botón de responder ni tampoco el formulario de respuesta.
-             */
+             *
         model.addAttribute("message", messageOpt.get());
         return "message_view";
     }
-
+    
     //Nuevo metodo para ruta /post
     @PostMapping(path = "/post")
     public String postMessage(@ModelAttribute Message message, Principal principal) {
@@ -208,7 +210,7 @@ public class MainController {
          * El código del controlador que programaste en el laboratorio anterior ya es capaz de recoger 
          *  automáticamente estos datos al coincidir el nombre del control (responseTo)
          *  con la propiedad de la clase Message que tiene el mismo nombre.
-         */
+         *
         if (message.getResponseTo() != null) {
             return "redirect:message/" + message.getResponseTo().getId();
             //redirigimos a la vista del mensaje al que se responde.
@@ -218,7 +220,8 @@ public class MainController {
         }
         return "redirect:message/" + message.getId(); //por si acaso, vamos a la vista del mensaje que hemos publicado.
     }
-
+    */
+    
     //Nuevo metodo ej 6 p8: Controladores para seguir y dejar de seguir a usuarios.
     //Hará que el usuario asociado a la sesión actual siga a otro usuario. Este último se recibirá como un parámetro en la URL:
     @PostMapping(path = "/follow/{userId}")
@@ -247,4 +250,5 @@ public class MainController {
         }
         return "redirect:/user/" + unfollowedUserId;
     }
+
 }
