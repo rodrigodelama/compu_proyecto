@@ -38,6 +38,8 @@ import es.uc3m.musicfinder.model.MessageRepository;
 import es.uc3m.musicfinder.model.Recommendation;
 import es.uc3m.musicfinder.model.Event;
 import es.uc3m.musicfinder.model.EventRepository;
+import es.uc3m.musicfinder.model.Recommendation;
+import es.uc3m.musicfinder.model.RecommendationRepository;
 
 @Controller
 @RequestMapping(path = "/")
@@ -64,15 +66,15 @@ public class MainController {
         // List<Message> messages = messageRepository.messagesFromFollowedUsers(current_user, PageRequest.of(0, 10));
         // model.addAttribute("messages", messages);
 
-        // check if authenticated
-        User current_user = userRepository.findByEmail(principal.getName()); // for the user 
+        // // check if authenticated
+        // User current_user = userRepository.findByEmail(principal.getName()); // for the user 
 
-        // if authenticated:
-        List<Recommendation> recommendations = recommendationRepository.findAllEventsRecommendedToUserOrderByTimestampDesc(); // for the user
-        model.addAttribute("recommendations", recommendations); // which are "events"
+        // // if authenticated:
+        // List<Recommendation> recommendations = recommendationRepository.findAllEventsRecommendedToUserOrderByTimestampDesc(); // for the user
+        // model.addAttribute("recommendations", recommendations); // which are "events"
 
-        List<Event> events = eventRepository.findAllEventsOrderByTimestampDesc(); // no need to order by current user
-        model.addAttribute("events", events);
+        // List<Event> events = eventRepository.findAllEventsOrderByTimestampDesc(); // no need to order by current user
+        // model.addAttribute("events", events);
 
         return "home";
     }

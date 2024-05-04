@@ -24,11 +24,9 @@ public class Event {
     private String name;
 
     @Column(nullable = false)
-    @NotBlank
     private Date date; //and time?
 
     @Column(nullable = false)
-    @NotBlank
     private int duration;
 
     @Column(nullable = false, length = 64)
@@ -36,7 +34,7 @@ public class Event {
     @Size(max = 64)
     private String location;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 512)
     @NotBlank
     @Size(max = 512)
     private String description;

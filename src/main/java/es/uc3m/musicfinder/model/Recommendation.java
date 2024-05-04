@@ -7,9 +7,12 @@ import es.uc3m.musicfinder.model.Event;
 import es.uc3m.musicfinder.model.User;
 
 import jakarta.persistence.Entity;
-// import jakarta.persistence.Id;
-// import jakarta.persistence.GenerationType;
-// import jakarta.persistence.GeneratedValue;
+
+//revisar para que usar ID
+import jakarta.persistence.Id;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.GeneratedValue;
+
 import jakarta.persistence.Column;
 
 import jakarta.validation.constraints.NotBlank;
@@ -17,6 +20,10 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 public class Recommendation {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Column(nullable = false)
     @NotBlank
@@ -37,10 +44,10 @@ public class Recommendation {
 
     // Getters & Setters --------------------------------------
 
-    public Event getEvent() {
+    public List<Event> getEvent() {
         return event;
     }
-    public void setEvent(Event event) {
+    public void setEvent(List<Event> event) {
         this.event = event;
     }
 

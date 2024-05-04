@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface RecomendationRepository extends CrudRepository<Event, Integer> {
+public interface RecommendationRepository extends CrudRepository<Event, Integer> {
 
     List<Event> findAllEventsByUserOrderByTimestampDesc(User user);
     // List<Recommendation> findAllEventsRecommendedByUserOrderByTimestampDesc(User user);
