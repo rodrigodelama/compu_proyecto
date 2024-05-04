@@ -1,5 +1,6 @@
 package es.uc3m.musicfinder.model;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import es.uc3m.musicfinder.model.User;
@@ -10,6 +11,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.FetchType;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -21,11 +24,29 @@ public class Block {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(nullable = false)
-    private User blockerUser;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "blocker_id", nullable = false)
+    private User blocker; // The user who initiates the block
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "blocked_id", nullable = false)
+    private User blocked; // The user being blocked
 
     @Column(nullable = false)
-    private User blockedUser;
+    private LocalDateTime blockedAt; // The time when the block is made
+
+
+    // Constructors ------------------------------------------
+
+    public Block() {
+        this.blockedAt = LocalDateTime.now(); // Set to the current time by default
+    }
+
+    public Block(User blocker, User blocked) {
+        this.blocker = blocker;
+        this.blocked = blocked;
+        this.blockedAt = LocalDateTime.now(); // Record when the block is created
+    }
 
 
     // Getters & Setters --------------------------------------
@@ -38,19 +59,28 @@ public class Block {
     }
 
 
-    public User getBlockerUser() {
-        return blockerUser;
+    public User getBlocker() {
+        return blocker;
     }
-    public void setBlockerUser(User blockerUser) {
-        this.blockerUser = blockerUser;
+    public void setBlocker(User blocker) {
+        this.blocker = blocker;
     }
 
 
-    public User getBlockedUser() {
-        return blockedUser;
+    public User getBlocked() {
+        return blocked;
     }
-    public void setBlockedUser(User blockedUser) {
-        this.blockedUser = blockedUser;
+    public void setBlocked(User blocked) {
+        this.blocked = blocked;
+    }
+
+
+    public LocalDateTime getBlockedAt() {
+        return blockedAt;
+    }
+
+    public void setBlockedAt(LocalDateTime blockedAt) {
+        this.blockedAt = blockedAt;
     }
 
 }

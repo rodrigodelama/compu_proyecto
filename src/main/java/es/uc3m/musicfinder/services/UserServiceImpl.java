@@ -1,19 +1,24 @@
 package es.uc3m.musicfinder.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
 import es.uc3m.musicfinder.model.User;
 import es.uc3m.musicfinder.model.UserRepository;
+import es.uc3m.musicfinder.model.Event;
+import es.uc3m.musicfinder.model.EventRepository;
+import es.uc3m.musicfinder.model.Recommendation;
+import es.uc3m.musicfinder.model.RecommendationRepository;
+import es.uc3m.musicfinder.model.Block;
+import es.uc3m.musicfinder.model.BlockRepository;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-
+    // Spring Security PasswordEncoder
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -24,6 +29,16 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+
+    // Backend repositories
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RecommendationRepository recommendationRepository;
+
+    @Autowired
+    private BlockRepository blockRepository;
 
     // Follow and unfollow users:
 
@@ -73,23 +88,23 @@ public class UserServiceImpl implements UserService {
     // Marcar y desmarcar eventos como favoritos:
 
     @Override
-    public boolean favoritedEvent(User user, Integer eventId) {
-        return user.getFavoriteEvents().contains(eventId);
+    public boolean favoritedEvent(User user, Event event) {
+        return user.getFavoriteEvents().contains(event);
     }
     @Override
-    public void favoriteEvent(User user, Integer eventId) throws UserServiceException {
-        if (favoritedEvent(user, eventId)) {
+    public void favoriteEvent(User user, Event event) throws UserServiceException {
+        if (favoritedEvent(user, event)) {
             throw new UserServiceException("El evento ya está en favoritos");
         }
-        user.getFavoritedEvents().add(eventId);
+        user.getFavoriteEvents().add(event);
         userRepository.save(user);
     }
     @Override
-    public void unfavoriteEvent(User user, Integer eventId) throws UserServiceException {
-        if (!favoritedEvent(user, eventId)) {
+    public void unfavoriteEvent(User user, Event event) throws UserServiceException {
+        if (!favoritedEvent(user, event)) {
             throw new UserServiceException("El evento no está en favoritos");
         }
-        user.getFavoriteEvents().remove(eventId);
+        user.getFavoriteEvents().remove(event);
         userRepository.save(user);
     }
 
@@ -97,40 +112,56 @@ public class UserServiceImpl implements UserService {
     // Recomendar eventos a usuarios:
 
     @Override
-    public boolean recommended(User user, Event event) {
-        return user.getRecommendedEvents().contains(event);
+    public void recommend(User recommender, User recommendTo, Event event) throws UserServiceException {
+        if (recommender.equals(recommendTo)) {
+            throw new UserServiceException("Cannot recommend an event to oneself.");
+        }
+
+        if (recommendationRepository.existsByRecommenderAndRecommendToAndEvent(recommender, recommendTo, event)) {
+            throw new UserServiceException("Recommendation already exists.");
+        }
+        Recommendation recommendation = new Recommendation(recommender, recommendTo, event);
+        recommendationRepository.save(recommendation); // Save the new recommendation
     }
     @Override
-    public void recommend(User user, Event event) throws UserServiceException {
-        if (recommended(user, event)) {
-            throw new UserServiceException("El evento ya fue recomendado");
-        }
-        user.getRecommendedEvents().add(event);
-        userRepository.save(user);
+    public List<Recommendation> getRecommendationsForUser(User recommendTo) {
+        return recommendationRepository.findByRecommendTo(recommendTo); // Get all recommendations for a user
     }
 
 
     // Bloquear y desbloquear usuarios:
 
     @Override
-    public boolean blocked(User user, User blocked) {
-        return user.getBlockedUsers().contains(blocked);
+    public boolean blocked(User blocker, User blocked) {
+        return blockRepository.existsByBlockerAndBlocked(blocker, blocked); // Check if a block exists
     }
     @Override
-    public void block(User user, User blocked) throws UserServiceException {
-        if (blocked(user, blocked)) {
-            throw new UserServiceException("El usuario ya está bloqueado");
+    public void block(User blocker, User blocked) throws UserServiceException {
+        if (blocker.equals(blocked)) {
+            throw new UserServiceException("Cannot block oneself.");
         }
-        user.getBlockedUsers().add(blocked);
-        userRepository.save(user);
+
+        if (blocked(blocker, blocked)) {
+            throw new UserServiceException("This user is already blocked.");
+        }
+
+        Block block = new Block(blocker, blocked);
+        blockRepository.save(block); // Save the new block
     }
     @Override
-    public void unblock(User user, User blocked) throws UserServiceException {
-        if (!blocked(user, blocked)) {
-            throw new UserServiceException("El usuario no está bloqueado");
+    public void unblock(User blocker, User blocked) throws UserServiceException {
+        if (!blocked(blocker, blocked)) {
+            throw new UserServiceException("This user is not blocked.");
         }
-        user.getBlockedUsers().remove(blocked);
-        userRepository.save(user);
+
+        // Find the block and remove it
+        List<Block> blocks = blockRepository.findByBlocker(blocker);
+        for (Block block : blocks) {
+            if (block.getBlocked().equals(blocked)) {
+                blockRepository.delete(block);
+                break;
+            }
+        }
     }
 
 }

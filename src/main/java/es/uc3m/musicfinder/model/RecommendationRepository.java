@@ -9,13 +9,14 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface RecommendationRepository extends CrudRepository<Event, Integer> {
+public interface RecommendationRepository extends CrudRepository<Recommendation, Integer> {
 
-    List<Event> findAllEventsByUserOrderByTimestampDesc(User user);
+    // List<Event> findAllEventsByUserOrderByTimestampDesc(User user);
     // List<Recommendation> findAllEventsRecommendedByUserOrderByTimestampDesc(User user);
+    // List<Recommendation> findAllEventsRecommendedToUserOrderByTimestampDesc(User user);
+    // List<Event> eventRecomendationsFromFollowedUsers(User user, Pageable pageable);
 
-    List<Recommendation> findAllEventsRecommendedToUserOrderByTimestampDesc(User user);
-
-    List<Event> eventRecomendationsFromFollowedUsers(User user, Pageable pageable);
+    boolean existsByRecommenderAndRecommendToAndEvent(User recommender, User recommendTo, Event event);
+    List<Recommendation> findByRecommendTo(User recommendTo); // To get all recommendations for a user
 
 }

@@ -1,7 +1,7 @@
 package es.uc3m.musicfinder.model;
 
 import java.util.List;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import es.uc3m.musicfinder.model.Event;
 import es.uc3m.musicfinder.model.User;
@@ -12,8 +12,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.GeneratedValue;
-
 import jakarta.persistence.Column;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.FetchType;
+
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -25,42 +28,78 @@ public class Recommendation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
-    private List<Event> event;
+    // User who recommends the event
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recommender_id", nullable = false)
+    private User recommender;
 
-    @Column(nullable = false)
-    private User recomender;
+    // User to whom the event is recommended
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recommend_to_id", nullable = false)
+    private User recommendTo;
 
-    @Column(nullable = false)
-    private User recomendee;
+    // The recommended event
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_id", nullable = false)
+    private Event event;
 
+    // Timestamp of when the recommendation was sent
     @Column(nullable = false)
-    private Date date; // fecha de la recomendación hora ???
+    private LocalDateTime recommendedAt;
+
+
+    // Constructors ------------------------------------------
+
+    public Recommendation() {
+        this.recommendedAt = LocalDateTime.now();
+    }
+
+    public Recommendation(User recommender, User recommendTo, Event event) {
+        this.recommender = recommender;
+        this.recommendTo = recommendTo;
+        this.event = event;
+        this.recommendedAt = LocalDateTime.now();
+    }
 
 
     // Getters & Setters --------------------------------------
 
-    public List<Event> getEvent() {
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+
+    public User getRecommender() {
+        return recommender;
+    }
+    public void setRecommender(User recommender) {
+        this.recommender = recommender;
+    }
+
+
+    public User getRecommendTo() {
+        return recommendTo;
+    }
+    public void setRecommendTo(User recommendTo) {
+        this.recommendTo = recommendTo;
+    }
+
+
+    public Event getEvent() {
         return event;
     }
-    public void setEvent(List<Event> event) {
+    public void setEvent(Event event) {
         this.event = event;
     }
 
-
-    public User getRecomender() {
-        return recomender;
+    public LocalDateTime getRecommendedAt() {
+        return recommendedAt;
     }
-    public void setRecomender(User recomender) {
-        this.recomender = recomender;
-    }
-
-
-    public User getRecomendee() {
-        return recomendee;
-    }
-    public void setRecomendee(User recomendee) {
-        this.recomendee = recomendee;
+    public void setRecommendedAt(LocalDateTime recommendedAt) {
+        this.recommendedAt = recommendedAt;
     }
 
 }
