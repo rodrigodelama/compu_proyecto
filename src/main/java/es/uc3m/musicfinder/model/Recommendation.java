@@ -26,19 +26,15 @@ public class Recommendation {
     private Integer id;
 
     @Column(nullable = false)
-    @NotBlank
     private List<Event> event;
 
     @Column(nullable = false)
-    @NotBlank
     private User recomender;
 
     @Column(nullable = false)
-    @NotBlank
     private User recomendee;
 
     @Column(nullable = false)
-    @NotBlank
     private Date date; // fecha de la recomendación hora ???
 
 

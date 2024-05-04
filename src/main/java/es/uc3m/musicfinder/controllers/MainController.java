@@ -66,15 +66,18 @@ public class MainController {
         // List<Message> messages = messageRepository.messagesFromFollowedUsers(current_user, PageRequest.of(0, 10));
         // model.addAttribute("messages", messages);
 
-        // // check if authenticated
-        // User current_user = userRepository.findByEmail(principal.getName()); // for the user 
+        /*
 
-        // // if authenticated:
-        // List<Recommendation> recommendations = recommendationRepository.findAllEventsRecommendedToUserOrderByTimestampDesc(); // for the user
-        // model.addAttribute("recommendations", recommendations); // which are "events"
-
-        // List<Event> events = eventRepository.findAllEventsOrderByTimestampDesc(); // no need to order by current user
-        // model.addAttribute("events", events);
+        // check if authenticated
+        User current_user = userRepository.findByEmail(principal.getName()); // for the user 
+        
+        // if authenticated:
+        List<Recommendation> recommendations = recommendationRepository.findAllEventsRecommendedToUserOrderByTimestampDesc(current_user); // for the user
+        model.addAttribute("recommendations", recommendations); // which are "events"
+        
+        List<Event> events = eventRepository.findAllEventsOrderByTimestampDesc(); // no need to order by current user
+        model.addAttribute("events", events);
+        */
 
         return "home";
     }

@@ -2,21 +2,25 @@ package es.uc3m.musicfinder.model;
 
 import java.util.List;
 
+// bean creation
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Column;
 import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.JoinTable;
 
+// constraints
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+// sql
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinTable;
 
 @Entity
 public class User {
@@ -62,7 +66,7 @@ public class User {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private List<Message> messages;
+    private List<Event> favoriteEvents;
 
 
     // Getters & setters -----------------------------------------
@@ -116,11 +120,11 @@ public class User {
     }
 
 
-    public List<Message> getMessages() {
-        return messages;
+    public List<Event> getFavoriteEvents() {
+        return favoriteEvents;
     }
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
+    public void setFavoriteEvents(List<Event> favoriteEvents) {
+        this.favoriteEvents = favoriteEvents;
     }
 
 
