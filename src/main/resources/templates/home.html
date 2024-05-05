@@ -40,7 +40,7 @@
                 <div class="d-flex justify-content-between">
                     <div class="top-info ps-2">
                         <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="mailto:100451775@alumnos.uc3m.es" class="text-white">100451775@alumnos.uc3m.es</a></small>
-                        <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="mailto:10045xxxx@alumnos.uc3m.es" class="text-white">10045xxxx@alumnos.uc3m.es</a></small>
+                        <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="mailto:100451962@alumnos.uc3m.es" class="text-white">100451962@alumnos.uc3m.es</a></small>
                     </div>
                     <div class="top-link pe-2">
                         <a href="https://www.it.uc3m.es/jaf/cw/" class="text-white"><small class="text-white ms-2">uc3m - Computación Web</small></a>
@@ -76,27 +76,39 @@
                             <a th:href="@{/my_events}" class="nav-item nav-link">My Events</a>
                             <a th:href="@{/data_dashboard}" class="nav-item nav-link">Data Dashboard</a>
                         </div>
-                        <div class="d-flex m-3 me-0">
-                            <!-- think about moving the create event, and data dashboards here ?? -->
-                            
-                            <!-- we need a vertical div -->
-                            <!-- USER RELATED BUTTONS -->
-                            <!-- sign in and sign up buttons here if not logged in -->
-                            <a href="/login" class="my-auto">
+                        <!-- sign in and sign up buttons here if not logged in -->
+                        <div sec:authorize="isAnonymous()" class="d-flex m-3 me-0">
+                            <!-- <form th:action="@{/login}" method="post" >
+                                <input type="submit" value="Log In" class="btn border border-secondary rounded-pill px-3 text-primary"/>
+                            </form> -->
+                            <a th:href="@{/login}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa text-primary"></i>Log In</a>
+                            <!-- <form th:action="@{/signup}" method="post" >
+                                <input type="submit" value="Sign Up" class="btn border border-secondary rounded-pill px-3 text-primary"/>
+                            </form> -->
+                            <a th:href="@{/signup}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa text-primary"></i>Sign Up</a>
+                        </div>
+                        <!-- user icon and signout only if logged in -->
+                        <div sec:authorize="isAuthenticated()" class="d-flex m-3 me-0">
+                            <!-- <form th:action="@{/user}" method="post" >
+                                <input type="submit" class="fas fa-user fa-2x"/>
+                            </form> -->
+                            <a th:href="@{/user/{username}(username=${ username.findByMail(principal.getName()) })}" class="my-auto">
                                 <i class="fas fa-user fa-2x"></i>
                             </a>
+                            <!-- signout only if logged in -->
+                            <form th:action="@{/logout}" method="post" >
+                                <input type="submit" value="Sign Out" class="btn border border-secondary rounded-pill px-3 text-primary"/>
+                            </form>
 
+                            <!-- think about moving the create event, and data dashboards here ?? -->
+                            <!-- we need a vertical div -->
+                            <!-- USER RELATED BUTTONS -->
                             <!-- user name below user icon if logged in -->
                             <!--
                             <div th:text="${#authentication.principal.username}">
                                 User name here
                             </div>
                             -->
-
-                            <!-- signout only if logged in -->
-                            <form th:action="@{/logout}" method="post">
-                                <input type="submit" value="Sign Out"/>
-                            </form>
                         </div>
                     </div>
                 </nav>
@@ -132,7 +144,7 @@
                 <div class="tab-class text-center">
                     <div class="row g-4">
                         <div class="col-lg-4 text-start">
-                            <h1>Here are your friends recommendations</h1>
+                            <h1>Your friends recommendations</h1>
                         </div>
                     </div>
                     <div class="tab-content">

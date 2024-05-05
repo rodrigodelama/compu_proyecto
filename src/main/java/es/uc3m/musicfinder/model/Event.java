@@ -39,6 +39,9 @@ public class Event {
     @Size(max = 512)
     private String description;
 
+    @Column(nullable = false)
+    private Date postedDate;
+
 
     // Getters & Setters --------------------------------------
 
@@ -87,6 +90,14 @@ public class Event {
     }
     public void setDescription(String description) {
         this.description = description;
+    }
+
+
+    public Date getPostedDate() {
+        return postedDate;
+    }
+    public void setPostedDate(Date postedDate) {
+        this.postedDate = postedDate;
     }
 
 }
