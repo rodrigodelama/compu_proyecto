@@ -2,17 +2,19 @@ package es.uc3m.musicfinder.model;
 
 import java.util.Date;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
 public class Message {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -30,6 +32,7 @@ public class Message {
 
     @Column(nullable = false)
     private Date timestamp;
+
 
     // Getters & Setters --------------------------------------
 
@@ -71,4 +74,5 @@ public class Message {
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
+
 }

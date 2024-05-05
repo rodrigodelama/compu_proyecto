@@ -9,27 +9,29 @@ import java.security.Principal;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping; // p6
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam; // p6
+
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute; // p6
+
+import org.springframework.web.server.ResponseStatusException;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.data.domain.PageRequest;
 
-// p6
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import es.uc3m.musicfinder.model.UserRepository;
-import es.uc3m.musicfinder.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired; // p6
 
 // p6 signup
 import org.springframework.validation.BindingResult;
 import jakarta.validation.Valid;
 
+<<<<<<< HEAD
 import es.uc3m.musicfinder.model.User;
 import es.uc3m.musicfinder.model.Event;
 import es.uc3m.musicfinder.services.UserServiceException;
@@ -37,6 +39,11 @@ import es.uc3m.musicfinder.model.EventRepository;
 import es.uc3m.musicfinder.model.Message;
 import es.uc3m.musicfinder.model.MessageRepository;
 
+=======
+// Model & Services
+import es.uc3m.musicfinder.model.*;
+import es.uc3m.musicfinder.services.*;
+>>>>>>> c017b125dacfcf5a31e52555c9b28e2c969faafb
 
 @Controller
 @RequestMapping(path = "/")
@@ -51,15 +58,31 @@ public class MainController {
     @Autowired
     private MessageRepository messageRepository;
 
+    @Autowired
+    private EventRepository eventRepository;
+
+    @Autowired
+    private RecommendationRepository recommendationRepository;
+
     @GetMapping(path = "/")
     public String mainView(Model model, Principal principal) {
-        // User current_user = userRepository.findByEmail(principal.getName());
-        
-        // List<Message> messages = messageRepository.messagesFromFollowedUsers(current_user, PageRequest.of(0, 10));
+        // Check login status
+        if (principal != null) {
+            // If logged in, retrieve the current user and load recommendations
+            String userEmail = principal.getName(); // Get the email from Principal
+            User currentUser = userRepository.findByEmail(userEmail);
+            
+            if (currentUser != null) {
+                List<Recommendation> recommendations = recommendationRepository.findByRecommendTo(currentUser);
+                model.addAttribute("recommendations", recommendations); // Add recommendations to model
+            }
+        }
 
-        // model.addAttribute("messages", messages);
+        // Regardless, always load all events
+        List<Event> events = eventRepository.findAll();
+        model.addAttribute("events", events);
 
-        return "home";
+        return "home"; // Return the home view
     }
 
     @GetMapping(path = "/error")
@@ -84,7 +107,7 @@ public class MainController {
             return "redirect:signup?password_mismatch";
         }
         userService.register(user);
-        return "redirect:login?registered";
+        return "redirect:login?registered_succesfully";
     }
 
     @GetMapping(path = "/login")
@@ -94,29 +117,29 @@ public class MainController {
 
     @GetMapping(path = "/user")
     public String userView(Model model) {
-        List<Message> messages = new ArrayList<Message>();
-        User user = new User();
-        Message message = new Message();
+        // List<Message> messages = new ArrayList<Message>();
+        // User user = new User();
+        // Message message = new Message();
     
-        //Ejercicio 2: añadir otro mensaje nuevo.
-        user = new User();
-        user.setId(2);
-        user.setEmail("luciabarranco2002@gmail.com");
-        user.setName("Lucía");
-        message = new Message();
-        message.setId(2);
-        message.setUser(user);
-        message.setText("hello world!!");
-        message.setTimestamp(new Date());
-        messages.add(message);
+        // //Ejercicio 2: añadir otro mensaje nuevo.
+        // user = new User();
+        // user.setId(2);
+        // user.setEmail("luciabarranco2002@gmail.com");
+        // user.setUsername("Lucía");
+        // message = new Message();
+        // message.setId(2);
+        // message.setUser(user);
+        // message.setText("hello world!!");
+        // message.setTimestamp(new Date());
+        // messages.add(message);
 
-        model.addAttribute("messages", messages);
+        // model.addAttribute("messages", messages);
         return "user";
     }
-    @GetMapping(path = "/user/{userId}")
+    @GetMapping(path = "/user/{username}")
     public String userView(@PathVariable int userId, Model model, Principal principal) {
         String followButton = "";
-        User current_user = userRepository.findByEmail(principal.getName());
+        User currentUser = userRepository.findByEmail(principal.getName());
         Optional<User> userOpt = userRepository.findById(userId);
 
         // para que nadie tenga info sobre el server que corre la app.
@@ -124,15 +147,15 @@ public class MainController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found");
         }
         //Ej 3 p8: ocultación de mensajes de respuesta en vista de perfil de usuario.
-        List<Message> messages = messageRepository.findByUserAndResponseToIsNullOrderByTimestampDesc(userOpt.get());
-        model.addAttribute("user", userOpt.get());
-        model.addAttribute("messages", messages);
+        // List<Message> messages = messageRepository.findByUserAndResponseToIsNullOrderByTimestampDesc(userOpt.get());
+        // model.addAttribute("user", userOpt.get());
+        // model.addAttribute("messages", messages);
 
         // Ej 7 p8 (valor de la cadena "followButton")----------------------
-        if(current_user.equals(userOpt.get())) {
+        if(currentUser.equals(userOpt.get())) {
             followButton = "none";
         }
-        if(userService.follows(current_user, userOpt.get())) {
+        if(userService.follows(currentUser, userOpt.get())) {
             followButton = "unfollow";
         } else {
             followButton = "follow";
@@ -146,6 +169,8 @@ public class MainController {
         return "user";
     }
     
+
+    /*
     // Ej 3 P7: New code for the controller method of the message view:
     @GetMapping(path = "/message/{messageId}")
     public String messageView(@PathVariable int messageId, Model model) {
@@ -167,15 +192,15 @@ public class MainController {
             //Posible mejora: no poder responder a mensajes que son tuyos (sería teniendo "principal" en el método y viendo si el mensaje que 
             //se está viendo es del usuario loggeado).
             /*
-             * current_user = userRepository.findByEmail(principal.getName());
-             * if(current_user.equals(messageOpt.get().getUser())){
+             * currentUser = userRepository.findByEmail(principal.getName());
+             * if(currentUser.equals(messageOpt.get().getUser())){
              * is_owner = 'mine';
              * Y luego haríamos como el if en el html para que no se muestre el botón de responder ni tampoco el formulario de respuesta.
-             */
+             *
         model.addAttribute("message", messageOpt.get());
         return "message_view";
     }
-
+    
     //Nuevo metodo para ruta /post
     @PostMapping(path = "/post")
     public String postMessage(@ModelAttribute Message message, Principal principal) {
@@ -188,7 +213,7 @@ public class MainController {
          * El código del controlador que programaste en el laboratorio anterior ya es capaz de recoger 
          *  automáticamente estos datos al coincidir el nombre del control (responseTo)
          *  con la propiedad de la clase Message que tiene el mismo nombre.
-         */
+         *
         if (message.getResponseTo() != null) {
             return "redirect:message/" + message.getResponseTo().getId();
             //redirigimos a la vista del mensaje al que se responde.
@@ -198,17 +223,18 @@ public class MainController {
         }
         return "redirect:message/" + message.getId(); //por si acaso, vamos a la vista del mensaje que hemos publicado.
     }
-
+    */
+    
     //Nuevo metodo ej 6 p8: Controladores para seguir y dejar de seguir a usuarios.
     //Hará que el usuario asociado a la sesión actual siga a otro usuario. Este último se recibirá como un parámetro en la URL:
     @PostMapping(path = "/follow/{userId}")
     public String follow(@PathVariable("userId") int followedUserId, Principal principal) {
         Optional<User> followed = userRepository.findById(followedUserId);
-        User current_user = userRepository.findByEmail(principal.getName());
+        User currentUser = userRepository.findByEmail(principal.getName());
         if (!followed.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Follower not found");
         }try{
-            userService.follow(current_user, followed.get());
+            userService.follow(currentUser, followed.get());
             return "redirect:/user/" + followedUserId;
         }catch(UserServiceException ex){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Seguidor ya sigue al usuario loggeado");
@@ -217,17 +243,18 @@ public class MainController {
     @PostMapping(path = "/unfollow/{userId}")
     public String unfollow(@PathVariable("userId") int unfollowedUserId, Principal principal) {
         Optional<User> unfollower = userRepository.findById(unfollowedUserId);
-        User current_user = userRepository.findByEmail(principal.getName());
+        User currentUser = userRepository.findByEmail(principal.getName());
         if (!unfollower.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Follower not found");
         } try {
-            userService.unfollow(current_user, unfollower.get());
+            userService.unfollow(currentUser, unfollower.get());
         } catch(UserServiceException ex) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Seguidor no sigue ya al usuario loggeado");
         }
         return "redirect:/user/" + unfollowedUserId;
     }
 
+<<<<<<< HEAD
     @Autowired
     private EventRepository eventRepository;
 
@@ -267,4 +294,6 @@ public class MainController {
         return "redirect:/user/" + username;
     }
     
+=======
+>>>>>>> c017b125dacfcf5a31e52555c9b28e2c969faafb
 }

@@ -1,25 +1,30 @@
 package es.uc3m.musicfinder.model;
 
+import java.util.List;
+
+// bean creation
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Column;
 import jakarta.persistence.Lob;
+
+// constraints
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-import java.util.List;
+// sql
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.JoinTable;
 
 @Entity
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -27,7 +32,7 @@ public class User {
     @Column(nullable = false, length = 64)
     @NotBlank
     @Size(max = 64)
-    private String name;
+    private String username;
 
     @Column(unique = true, nullable = false, length = 64)
     @Email
@@ -35,6 +40,7 @@ public class User {
     @Size(max = 64)
     private String email;
 
+    // do we really need this?
     @Lob
     private String description;
 
@@ -50,17 +56,18 @@ public class User {
     @JoinTable(name="following",
         joinColumns=@JoinColumn(name="follower_id"),
         inverseJoinColumns=@JoinColumn(name="followed_id"))
-    private List<User> following; //lista de usuarios que sigue
+    private List<User> following; // usuarios seguidos
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="following",
         joinColumns=@JoinColumn(name="followed_id"),
         inverseJoinColumns=@JoinColumn(name="follower_id"))
-    private List<User> followers; //lista usuarios que le siguien 
+    private List<User> followers; // usuarios que le siguen
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private List<Message> messages;
+    private List<Event> favoriteEvents;
+
 
     // Getters & setters -----------------------------------------
 
@@ -72,11 +79,11 @@ public class User {
     }
 
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 
@@ -87,13 +94,8 @@ public class User {
         this.email = email;
     }
 
-    public String getRole() {
-        return role;
-    }
-    public void setRole(String role) {
-        this.role = role;
-    }
 
+    // do we really need this?
     public String getDescription() {
         return description;
     }
@@ -110,18 +112,30 @@ public class User {
     }
 
 
-    public List<Message> getMessages() {
-        return messages;
+    public String getRole() {
+        return role;
     }
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
+    public void setRole(String role) {
+        this.role = role;
     }
+
+
+    public List<Event> getFavoriteEvents() {
+        return favoriteEvents;
+    }
+    public void setFavoriteEvents(List<Event> favoriteEvents) {
+        this.favoriteEvents = favoriteEvents;
+    }
+
+
     public List<User> getFollowing() {
         return this.following;
     }
     public void setFollowing(List<User> following) {
         this.following = following;
     }
+
+
     public List<User> getFollowers() {
         return this.followers;
     }
@@ -129,15 +143,14 @@ public class User {
         this.followers = followers;
     }
 
-
-
     // ------------------------------------------------------------
 
     @Override
     public String toString() {
-        return "User: " + name + " <" + email + ">";
+        return "User: " + username + " <" + email + ">";
     }
 
+<<<<<<< HEAD
     public void addRecommendedEvent(Event event) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'addRecommendedEvent'");
@@ -146,4 +159,6 @@ public class User {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'addRecommendedEventToFriend'");
     }
+=======
+>>>>>>> c017b125dacfcf5a31e52555c9b28e2c969faafb
 }
