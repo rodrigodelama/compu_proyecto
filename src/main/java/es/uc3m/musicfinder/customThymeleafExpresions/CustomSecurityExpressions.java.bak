@@ -1,0 +1,21 @@
+package es.uc3m.musicfinder;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+
+@Component
+public class CustomSecurityExpressions {
+
+    // Custom method to check if a user has created an event
+    public boolean hasCreatedAnEvent() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            // Replace with your user details retrieval logic
+            String username = authentication.getName(); // Assuming the username is stored in the principal
+            // Check if the user has created an event
+            // Example: return eventService.userHasCreatedEvent(username);
+        }
+        return false; // Default to false
+    }
+}

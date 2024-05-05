@@ -97,7 +97,7 @@ public class MainController {
             return "redirect:signup?password_mismatch";
         }
         userService.register(user);
-        return "redirect:login?registered";
+        return "redirect:login?registered_succesfully";
     }
 
     @GetMapping(path = "/login")

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
     <head>
         <title>MusicFinder - Sign up</title>
         <link rel="stylesheet" th:href="@{../public/css/login_signup.css}">
@@ -9,8 +9,8 @@
             <h1>Sign up</h1>
             <form th:action="@{/signup}" th:object="${user}" method="post">
                 <div>
-                    <label>User name: <input type="text" th:field="*{name}" required></label>
-                    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</span>
+                    <label>Username: <input type="text" th:field="*{username}" required></label>
+                    <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username Error</span>
                 </div>
                 <div>
                     <label>Email: <input type="email" th:field="*{email}" required></label>
@@ -21,7 +21,8 @@
                     <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</span>
                 </div>
                 <div>
-                    <label>Repeat password: <input type="password" name="passwordRepeat" required></label></div>
+                    <label>Repeat password: <input type="password" name="passwordRepeat" required></label>
+                </div>
                 <div>
                     <input type="submit" value="Sign Up">
                 </div>
