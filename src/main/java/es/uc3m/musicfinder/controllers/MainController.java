@@ -27,9 +27,9 @@ import org.springframework.data.domain.PageRequest;
 
 import org.springframework.beans.factory.annotation.Autowired; // p6
 
-import org.springframework.validation.BindingResult; // p6 signup
-
-import jakarta.validation.Valid; // p6 signup
+// p6 signup
+import org.springframework.validation.BindingResult;
+import jakarta.validation.Valid;
 
 // Model & Services
 import es.uc3m.musicfinder.model.*;

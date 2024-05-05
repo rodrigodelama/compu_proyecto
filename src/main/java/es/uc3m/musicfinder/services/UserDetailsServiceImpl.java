@@ -29,6 +29,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         // Set of granted authorities with a single role
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+        // Add the role to the set of granted authorities
+        // USER, ORGANIZER, ADMIN
         grantedAuthorities.add(new SimpleGrantedAuthority(user.getRole()));
 
         return new org.springframework.security.core.userdetails.User(
