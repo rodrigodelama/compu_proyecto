@@ -51,17 +51,19 @@ public class MainController {
     @Autowired
     private RecommendationRepository recommendationRepository;
 
+    // MAIN VIEW -----------------------------------------------------------------------
     @GetMapping(path = "/")
     public String mainView(Model model, Principal principal) {
-        // Check login status
+        // Check login status for navbar
         if (principal != null) {
             // If logged in, retrieve the current user and load recommendations
             String username = principal.getName(); // Get the username from Principal
             User currentUser = userRepository.findByUsername(username);
             String role = currentUser.getRole();
             model.addAttribute("role", role);
-            List<Event> userEvents = currentUser.getFavoriteEvents();
-            model.addAttribute("userEvents", userEvents); // check in thyemleaf if userEvents is empty
+
+            // List<Event> userEvents = currentUser.getFavoriteEvents();
+            // model.addAttribute("userEvents", userEvents); // check in thyemleaf if userEvents is empty
 
             if (currentUser != null) {
                 List<Recommendation> recommendations = recommendationRepository.findByRecommendTo(currentUser);
@@ -76,11 +78,40 @@ public class MainController {
         return "home"; // Return the home view
     }
 
+    // ERROR & FORBIDDEN ----------------------------------------------------------------
     @GetMapping(path = "/error")
-    public String errorView() {
+    public String errorView(Model model, Principal principal) {
+        // Check login status to mainatain a consistent navbar
+        if (principal != null) {
+            String username = principal.getName();
+            User currentUser = userRepository.findByUsername(username);
+            String role = currentUser.getRole();
+            model.addAttribute("role", role);
+        }
         return "error";
     }
+    @GetMapping(path = "/forbidden")
+    public String forbiddenView(Model model, Principal principal) {
+        if (principal == null) {
+            model.addAttribute("error", "not_logged_in");
+        }
+        // Check login status to mainatain a consistent navbar
+        if (principal != null) {
+            String username = principal.getName();
+            User currentUser = userRepository.findByUsername(username);
+            String role = currentUser.getRole();
+            model.addAttribute("role", role);
+            model.addAttribute("error", "not_authorized");
+        }
 
+        return "forbidden";
+    }
+
+    // LOGIN & SIGNUP ------------------------------------------------------------------
+    @GetMapping(path = "/login")
+    public String loginForm() {
+        return "login";
+    }
     @GetMapping(path = "/signup")
     public String signUpForm(User user) {
         return "signup";
@@ -102,22 +133,140 @@ public class MainController {
         return "redirect:login?registered_succesfully";
     }
 
-    @GetMapping(path = "/login")
-    public String loginForm() {
-        return "login";
-    }
-
+    // EVENT ---------------------------------------------------------------------------
     @GetMapping(path = "/event")
     public String eventView(Model model) {
         return "event";
     }
 
     @GetMapping(path = "/event/{eventID}")
-    public String eventView(@PathVariable int userId, Model model, Principal principal) {
-
+    public String eventView(@PathVariable int eventId, Model model, Principal principal) {
+        // Check login status for navbar
+        if (principal != null) {
+            String username = principal.getName();
+            User currentUser = userRepository.findByUsername(username);
+            String role = currentUser.getRole();
+            model.addAttribute("role", role);
+        }
+        // Optional<Event> eventOpt = eventRepository.findById(eventId);
+        // if (!eventOpt.isPresent()) {
+        //     throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
+        // }
         return "event";
     }
 
+    // // Ej 3 P7: New code for the controller method of the message view:
+    // @GetMapping(path = "/message/{messageId}")
+    // public String messageView(@PathVariable int messageId, Model model, Principal principal) {
+
+    //     Optional<Message> messageOpt = messageRepository.findById(messageId);
+
+    //     if (!messageOpt.isPresent()) {
+    //         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found");
+    //     }
+    //     //Ej 3 p8: ocultación de mensajes de respuesta en vista de mensaje.
+    //     if(messageOpt.get().getResponseTo() != null) {
+    //         //Si el mensaje es una respuesta, no lo mostramos y devolvemos prohibido.
+    //         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Message is a response");
+    //     }
+
+    //     List<Message> messages = messageRepository.findByResponseToOrderByTimestampAsc(messageOpt.get());
+    //     //! Duda: porqué no hacemos lo de optional con esto también?
+    //     // if(messages !=null){//Si no hay respuestas, no las añadimos (por si acaso).
+    //     //     model.addAttribute("respuestas", messages);
+    //     // }
+    //     model.addAttribute("respuestas", messages);//Aunque no haya respuestas, se añade la lista vacía.
+    //     //Posible mejora: no poder responder a mensajes que son tuyos (sería teniendo "principal" en el método y viendo si el mensaje que 
+    //     //se está viendo es del usuario loggeado).
+    //     /*
+    //     * currentUser = userRepository.findByEmail(principal.getName());
+    //     * if(currentUser.equals(messageOpt.get().getUser())){
+    //     * is_owner = 'mine';
+    //     * Y luego haríamos como el if en el html para que no se muestre el botón de responder ni tampoco el formulario de respuesta.
+    //     */
+    //     model.addAttribute("message", messageOpt.get());
+    //     return "message_view";
+    // }
+
+    @GetMapping(path = "/event/create_event")
+    public String createEventView(Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/forbidden?not_logged_in";
+        }
+        if (principal != null) {
+            User user = userRepository.findByUsername(principal.getName());
+            String role = user.getRole();
+            if (!(role.equals("ORGANIZER") || role.equals("ADMIN"))) {
+                return "redirect:/forbidden?not_authorized";
+            }
+        }
+        // model.addAttribute("event", new Event());
+        return "create_event";
+    }
+    @PostMapping(path = "/event/create_event")
+    public String createEvent(@ModelAttribute Event event, Principal principal) {
+        // Check login status
+        if (principal == null) {
+            return "redirect:/forbidden?not_logged_in";
+        }
+        if (principal != null) {
+            User user = userRepository.findByUsername(principal.getName());
+            String role = user.getRole();
+            if (!(role.equals("ORGANIZER") || role.equals("ADMIN"))) {
+                return "redirect:/forbidden?not_authorized_to_create_events";
+            }
+        }
+
+        // event.setUser(user);
+        // event.setTimestamp(new Date());
+        // eventRepository.save(event);
+
+        return "redirect:/event/" + event.getId() + "?succesfully_created";
+    }
+
+    @GetMapping(path = "/recommended")
+    public String recommendedView(Model model, Principal principal) {
+        // Check login status
+        if (principal == null) {
+            return "redirect:/forbidden?not_logged_in";
+        }
+        // If logged in, retrieve the current user 
+        String username = principal.getName();
+        User currentUser = userRepository.findByUsername(username);
+        String role = currentUser.getRole();
+        model.addAttribute("role", role);
+
+        // Load recommendations
+        List<Recommendation> recommendations = recommendationRepository.findByRecommendTo(user);
+        model.addAttribute("recommendations", recommendations);
+        return "recommended";
+    }
+
+    // //Nuevo metodo para ruta /post
+    // @PostMapping(path = "/post")
+    // public String postMessage(@ModelAttribute Message message, Principal principal) {
+    //     User user = userRepository.findByEmail(principal.getName());
+    //     message.setUser(user);
+    //     message.setTimestamp(new Date());
+    //     messageRepository.save(message);
+    //     //Lo de las respuestas se hace cuando tenemos el modelo, que es en el "Get".
+    //     /*
+    //     * El código del controlador que programaste en el laboratorio anterior ya es capaz de recoger 
+    //     *  automáticamente estos datos al coincidir el nombre del control (responseTo)
+    //     *  con la propiedad de la clase Message que tiene el mismo nombre.
+    //     */
+    //     if (message.getResponseTo() != null) {
+    //         return "redirect:message/" + message.getResponseTo().getId();
+    //         //redirigimos a la vista del mensaje al que se responde.
+    //     }else if (message.getResponseTo() == null){
+    //         return "redirect:message/" + message.getId();
+    //         //redirigimos a la vista del mensaje que se acaba de publicar.
+    //     }
+    //     return "redirect:message/" + message.getId(); //por si acaso, vamos a la vista del mensaje que hemos publicado.
+    // }
+
+
+    // USER ---------------------------------------------------------------------------- ?????????????
     @GetMapping(path = "/user")
     public String userView(Model model) {
         // List<Message> messages = new ArrayList<Message>();
@@ -159,64 +308,7 @@ public class MainController {
          */
         return "user";
     }
-    
 
-
-    /*
-    // Ej 3 P7: New code for the controller method of the message view:
-    @GetMapping(path = "/message/{messageId}")
-    public String messageView(@PathVariable int messageId, Model model) {
-        Optional<Message> messageOpt = messageRepository.findById(messageId);
-        if (!messageOpt.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found");
-        }
-        //Ej 3 p8: ocultación de mensajes de respuesta en vista de mensaje.
-        if(messageOpt.get().getResponseTo() != null){
-            //Si el mensaje es una respuesta, no lo mostramos y devolvemos prohibido.
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Message is a response");
-        }
-        List<Message> messages = messageRepository.findByResponseToOrderByTimestampAsc(messageOpt.get());
-        //! Duda: porqué no hacemos lo de optional con esto también?
-        // if(messages !=null){//Si no hay respuestas, no las añadimos (por si acaso).
-        //     model.addAttribute("respuestas", messages);
-        // }
-        model.addAttribute("respuestas", messages);//Aunque no haya respuestas, se añade la lista vacía.
-            //Posible mejora: no poder responder a mensajes que son tuyos (sería teniendo "principal" en el método y viendo si el mensaje que 
-            //se está viendo es del usuario loggeado).
-            /*
-             * currentUser = userRepository.findByEmail(principal.getName());
-             * if(currentUser.equals(messageOpt.get().getUser())){
-             * is_owner = 'mine';
-             * Y luego haríamos como el if en el html para que no se muestre el botón de responder ni tampoco el formulario de respuesta.
-             *
-        model.addAttribute("message", messageOpt.get());
-        return "message_view";
-    }
-    
-    //Nuevo metodo para ruta /post
-    @PostMapping(path = "/post")
-    public String postMessage(@ModelAttribute Message message, Principal principal) {
-        User user = userRepository.findByEmail(principal.getName());
-        message.setUser(user);
-        message.setTimestamp(new Date());
-        messageRepository.save(message);
-        //Lo de las respuestas se hace cuando tenemos el modelo, que es en el "Get".
-        /*
-         * El código del controlador que programaste en el laboratorio anterior ya es capaz de recoger 
-         *  automáticamente estos datos al coincidir el nombre del control (responseTo)
-         *  con la propiedad de la clase Message que tiene el mismo nombre.
-         *
-        if (message.getResponseTo() != null) {
-            return "redirect:message/" + message.getResponseTo().getId();
-            //redirigimos a la vista del mensaje al que se responde.
-        }else if (message.getResponseTo() == null){
-            return "redirect:message/" + message.getId();
-            //redirigimos a la vista del mensaje que se acaba de publicar.
-        }
-        return "redirect:message/" + message.getId(); //por si acaso, vamos a la vista del mensaje que hemos publicado.
-    }
-    */
-    
     //Nuevo metodo ej 6 p8: Controladores para seguir y dejar de seguir a usuarios.
     //Hará que el usuario asociado a la sesión actual siga a otro usuario. Este último se recibirá como un parámetro en la URL:
     @PostMapping(path = "/follow/{userId}")

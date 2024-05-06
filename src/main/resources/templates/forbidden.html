@@ -109,7 +109,7 @@
 
         <!-- Single Page Header start -->
         <div class="container-fluid page-header py-5">
-            <h1 class="text-center text-white display-6">It seems you got lost...</h1>
+            <h1 class="text-center text-white display-6">Oh no... What are you up to!?</h1>
         </div>
         <!-- Single Page Header End -->
 
@@ -119,9 +119,10 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-6">
                         <i class="bi bi-exclamation-triangle display-1 text-secondary"></i>
-                        <h1 class="display-1">404</h1>
-                        <h1 class="mb-4">Page Not Found</h1>
-                        <p class="mb-4">We’re sorry, the page you have looked for does not exist in our website!</p>
+                        <h1 class="display-1">403</h1>
+                        <h1 class="mb-4">Forbidden</h1>
+                        <p th:if="${error == 'not_authorized'}" class="mb-4">Your account does not have the necessary permissions to access this page.</p>
+                        <p th:if="${error == 'not_logged_in'}" class="mb-4">Please log in to access this page.</p>
                         <a class="btn border-secondary rounded-pill py-3 px-5" href="/">Click here to go home</a>
                     </div>
                 </div>

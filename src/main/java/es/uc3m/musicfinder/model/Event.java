@@ -40,7 +40,7 @@ public class Event {
     private String description;
 
     @Column(nullable = false)
-    private Date postedDate;
+    private Date timestamp;
 
 
     // Getters & Setters --------------------------------------
@@ -93,11 +93,11 @@ public class Event {
     }
 
 
-    public Date getPostedDate() {
-        return postedDate;
+    public Date getTimestamp() {
+        return timestamp;
     }
-    public void setPostedDate(Date postedDate) {
-        this.postedDate = postedDate;
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 
 }

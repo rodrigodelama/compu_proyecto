@@ -8,12 +8,18 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface EventRepository extends CrudRepository<Event, Integer> {
 
+    Event findById(int id);
+
+    //
     List<Event> findAll();
+
+    // which one for chronological order?
+    List<Event> findAllByOrderByTimestampAsc();
+    List<Event> findAllByOrderByTimestampDesc();
+
     // future method for pagination
     // Page<Event> findAll(Pageable pageable);
 
-
-    // List<Event> findAllEventsOrderByTimestampDesc();
     // List<Event> findAllEventsByUserOrderByTimestampDesc(User user);
     // List<Event> findAllEventsRecommendedByUserOrderByTimestampDesc(User user);
     // List<Event> findAllEventsRecommendedToUserOrderByTimestampDesc(User user);
