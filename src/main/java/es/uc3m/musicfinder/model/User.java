@@ -29,29 +29,31 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(unique= true, nullable = false, length = 64)
+    @Column(unique = true, nullable = false, length = 64)
     @NotBlank
     @Size(max = 64)
     private String username;
 
-    @Column(unique = true, nullable = false, length = 64)
+    @Column(unique = false, nullable = false, length = 64)
     @Email
     @NotBlank
     @Size(max = 64)
     private String email;
 
-    // do we really need this?
-    @Lob
-    private String description;
-
     @Column(nullable = false)
     @NotBlank
     private String password;
-
-    @Column(nullable = false)
-    @NotBlank
+    
+    // this is initialized in the controller
+    @Column(nullable = true) 
+    // @NotBlank
     private String role;
+    
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private List<Event> favoriteEvents;
 
+    //TODO: deprecate below
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="following",
         joinColumns=@JoinColumn(name="follower_id"),
@@ -63,10 +65,6 @@ public class User {
         joinColumns=@JoinColumn(name="followed_id"),
         inverseJoinColumns=@JoinColumn(name="follower_id"))
     private List<User> followers; // usuarios que le siguen
-
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private List<Event> favoriteEvents;
 
 
     // Getters & setters -----------------------------------------
@@ -92,15 +90,6 @@ public class User {
     }
     public void setEmail(String email) {
         this.email = email;
-    }
-
-
-    // do we really need this?
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
     }
 
 

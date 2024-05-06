@@ -40,7 +40,7 @@
                 <div class="d-flex justify-content-between">
                     <div class="top-info ps-2">
                         <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="mailto:100451775@alumnos.uc3m.es" class="text-white">100451775@alumnos.uc3m.es</a></small>
-                        <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="mailto:10045xxxx@alumnos.uc3m.es" class="text-white">10045xxxx@alumnos.uc3m.es</a></small>
+                        <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="mailto:100451962@alumnos.uc3m.es" class="text-white">100451962@alumnos.uc3m.es</a></small>
                     </div>
                     <div class="top-link pe-2">
                         <a href="https://www.it.uc3m.es/jaf/cw/" class="text-white"><small class="text-white ms-2">uc3m - Computación Web</small></a>
@@ -50,35 +50,62 @@
             <div class="container px-0">
                 <nav class="navbar navbar-light bg-white navbar-expand-xl">
                     <a th:href="@{/}" class="navbar-brand"><h1 class="text-primary display-6">MusicFinder</h1></a>
+                    <!-- In case the screen is too narrow, the navbar will collapse to the hamburger icon on the top right -->
                     <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                         <span class="fa fa-bars text-primary"></span>
                     </button>
                     <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                         <div class="navbar-nav mx-auto">
-                            <a th:href="@{/my_favorite_events}" class="nav-item nav-link">My Favorites</a>
-                            <a th:href="@{/recommended}" class="nav-item nav-link">Recommended</a>
-                            <a th:href="@{/my_recommendations}" class="nav-item nav-link">My Recommendations</a>
-                            <a th:href="@{/create_event}" class="nav-item nav-link">Create Event</a>
-                            <a th:href="@{/my_events}" class="nav-item nav-link">My Events</a>
-                            <a th:href="@{/data_dashboard}" class="nav-item nav-link">Data Dashboard</a>
+                            <!--
+                                my_favorite_events (the ones the user has marked as favorite) (ANY USER)
+                                recommended (recieved from other users) (ANY USER)
+                                my_recommendations (the ones the user has recommended to others) (ANY USER)
+                                create_event page (only shown if organizer) (ORGANIZER)
+                                my_events page (the ones the user has created) (ORGANIZER & USERs that have created events)
+                                data dashboard (only shown if admin) (ADMIN)
+                            -->
+                            <!-- Menu navigation links ONLY SHOWN if logged in, and of your type -->
+                            <a th:if="${role == 'USER'}" th:href="@{/my_favorite_events}" class="nav-item nav-link">My Favorites</a>
+                            <a th:if="${role == 'USER'}" th:href="@{/recommended}" class="nav-item nav-link">Recommended</a>
+                            <a th:if="${role == 'USER'}" th:href="@{/my_recommendations}" class="nav-item nav-link">My Recommendations</a>
+                            <a th:if="${role == 'ORGANIZER'}" th:href="@{/my_events}" class="nav-item nav-link">My Events</a> 
+                            <a th:if="${role == 'ORGANIZER'}" th:href="@{/create_event}" class="nav-item nav-link">Create Event</a>
+                            <!-- OR sec:authorize="hasRole('USER')" that previously made an event -->
+                            <!-- TODO Custom Thymeleaf Expression below -->
+                            <!-- <a sec:authorize="hasRole('ORGANIZER') or @customSecurityExpressions.hasCreatedAnEvent()"
+                                th:href="@{/my_events}" class="nav-item nav-link">My Events</a> -->
+                            <a th:if="${role == 'ADMIN'}" th:href="@{/data_dashboard}" class="nav-item nav-link">Data Dashboard</a>
                         </div>
                         <div class="d-flex m-3 me-0">
-                            <!-- USER RELATED BUTTONS -->
-                            <!-- think about moving the create event, and data dashboards here ?? -->
-                            <!-- sign in and sign up buttons here is not logged in -->
-                            <a href="/signup" class="position-relative me-4 my-auto">
-                                <i class="fa fa-shopping-bag fa-2x"></i>
-                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">3</span>
-                            </a>
-                            <a href="/login" class="my-auto">
+                            <!-- sign in and sign up buttons here if not logged in -->
+                            <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa text-primary"></i>Log In</a>
+                            <a sec:authorize="isAnonymous()" th:href="@{/signup}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa text-primary"></i>Sign Up</a>
+                            
+                            <!-- User icon and signout button ONLY SHOWN if logged in -->
+                            <!-- <a sec:authorize="isAuthenticated()" th:href="@{/user/{username}(username=${ username.findByUsername(principal.getName()) })}" class="my-auto">
                                 <i class="fas fa-user fa-2x"></i>
-                            </a>
+                            </a> -->
+                            <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" >
+                                <input type="submit" value="Sign Out" class="btn border border-secondary rounded-pill px-3 text-primary"/>
+                            </form>
+                            
+                            <!-- OLD USER BUTTON -->
+                            <!-- <form th:action="@{/user}" method="post" >
+                                <input type="submit" class="fas fa-user fa-2x"/>
+                            </form> -->
+                            <!-- user name below user icon if logged in ??????????? -->
+                            <!--
+                            <div th:text="${#authentication.principal.username}">
+                                User name here
+                            </div>
+                            -->
                         </div>
                     </div>
                 </nav>
             </div>
         </div>
         <!-- Navbar End -->
+
 
         <!-- Single Page Header start -->
         <div class="container-fluid page-header py-5">

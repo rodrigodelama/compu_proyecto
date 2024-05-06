@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="utf-8">
-        <title>Fruitables - Vegetable Website Template</title>
+        <title>MusicFinder - EVENT NAME PLACEHODER</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
@@ -36,7 +36,6 @@
         </div>
         <!-- Spinner End -->
 
-
         <!-- Navbar start -->
         <div class="container-fluid fixed-top">
             <div class="container topbar bg-primary d-none d-lg-block">
@@ -68,16 +67,16 @@
                                 data dashboard (only shown if admin) (ADMIN)
                             -->
                             <!-- Menu navigation links ONLY SHOWN if logged in, and of your type -->
-                            <a sec:authorize="hasRole('USER')" th:href="@{/my_favorite_events}" class="nav-item nav-link">My Favorites</a>
-                            <a sec:authorize="hasRole('USER')" th:href="@{/recommended}" class="nav-item nav-link">Recommended</a>
-                            <a sec:authorize="hasRole('USER')" th:href="@{/my_recommendations}" class="nav-item nav-link">My Recommendations</a>
-                            <a sec:authorize="hasRole('ORGANIZER')" th:href="@{/create_event}" class="nav-item nav-link">Create Event</a>
-                            <a sec:authorize="hasRole('ORGANIZER')" th:href="@{/my_events}" class="nav-item nav-link">My Events</a> 
+                            <a th:if="${role == 'USER'}" th:href="@{/my_favorite_events}" class="nav-item nav-link">My Favorites</a>
+                            <a th:if="${role == 'USER'}" th:href="@{/recommended}" class="nav-item nav-link">Recommended</a>
+                            <a th:if="${role == 'USER'}" th:href="@{/my_recommendations}" class="nav-item nav-link">My Recommendations</a>
+                            <a th:if="${role == 'ORGANIZER'}" th:href="@{/my_events}" class="nav-item nav-link">My Events</a> 
+                            <a th:if="${role == 'ORGANIZER'}" th:href="@{/create_event}" class="nav-item nav-link">Create Event</a>
                             <!-- OR sec:authorize="hasRole('USER')" that previously made an event -->
                             <!-- TODO Custom Thymeleaf Expression below -->
                             <!-- <a sec:authorize="hasRole('ORGANIZER') or @customSecurityExpressions.hasCreatedAnEvent()"
                                 th:href="@{/my_events}" class="nav-item nav-link">My Events</a> -->
-                            <a sec:authorize="hasRole('ADMIN')" th:href="@{/data_dashboard}" class="nav-item nav-link">Data Dashboard</a>
+                            <a th:if="${role == 'ADMIN'}" th:href="@{/data_dashboard}" class="nav-item nav-link">Data Dashboard</a>
                         </div>
                         <div class="d-flex m-3 me-0">
                             <!-- sign in and sign up buttons here if not logged in -->
@@ -85,9 +84,9 @@
                             <a sec:authorize="isAnonymous()" th:href="@{/signup}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa text-primary"></i>Sign Up</a>
                             
                             <!-- User icon and signout button ONLY SHOWN if logged in -->
-                            <a sec:authorize="isAuthenticated()" th:href="@{/user/{username}(username=${ username.findByMail(principal.getName()) })}" class="my-auto">
+                            <!-- <a sec:authorize="isAuthenticated()" th:href="@{/user/{username}(username=${ username.findByUsername(principal.getName()) })}" class="my-auto">
                                 <i class="fas fa-user fa-2x"></i>
-                            </a>
+                            </a> -->
                             <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" >
                                 <input type="submit" value="Sign Out" class="btn border border-secondary rounded-pill px-3 text-primary"/>
                             </form>
@@ -109,23 +108,13 @@
         </div>
         <!-- Navbar End -->
 
-        <!-- Single Page Header start -->
-        <div class="container-fluid page-header py-5">
-            <h1 class="text-center text-white display-6">EVENt</h1>
-            <ol class="breadcrumb justify-content-center mb-0">
-                <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Events</a></li>
-                <li class="breadcrumb-item active text-white">EVENT</li>
-            </ol>
-        </div>
-        <!-- Single Page Header End -->
 
         <!-- Event Start -->
         <div class="container-fluid py-5 mt-5">
             <div class="container py-5">
-                <h2 class="fw-bold mb-3">EVENT NAME</h2>
                 <div class="row g-4 mb-5">
                     <div class="row g-4">
+                        <h2 class="fw-bold mb-3">EVENT NAME</h2>
                         <!-- LA FOTO del evento -->
                         <div class="col-lg-6">
                             <div class="border rounded">
@@ -147,7 +136,7 @@
                                 <i class="fa fa-star"></i>
                             </div> -->
                             <!-- EVENT DESCRIPTION -->
-                            <a href="#" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                            <a href="#" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> ADD TO FAVORITE DYNAMIC</a>
                             <p class="mb-4">The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic words etc.</p>
                             <p class="mb-4">Susp endisse ultricies nisi vel quam suscipit. Sabertooth peacock flounder; chain pickerel hatchetfish, pencilfish snailfish</p>
                         <!-- </div> -->

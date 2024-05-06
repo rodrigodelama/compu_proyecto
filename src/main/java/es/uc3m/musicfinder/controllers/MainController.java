@@ -46,9 +46,6 @@ public class MainController {
     private UserService userService;
 
     @Autowired
-    private MessageRepository messageRepository;
-
-    @Autowired
     private EventRepository eventRepository;
 
     @Autowired
@@ -59,10 +56,13 @@ public class MainController {
         // Check login status
         if (principal != null) {
             // If logged in, retrieve the current user and load recommendations
-            String userEmail = principal.getName(); // Get the email from Principal
-            User currentUser = userRepository.findByEmail(userEmail);
+            String username = principal.getName(); // Get the username from Principal
+            User currentUser = userRepository.findByUsername(username);
             String role = currentUser.getRole();
-            
+            model.addAttribute("role", role);
+            List<Event> userEvents = currentUser.getFavoriteEvents();
+            model.addAttribute("userEvents", userEvents); // check in thyemleaf if userEvents is empty
+
             if (currentUser != null) {
                 List<Recommendation> recommendations = recommendationRepository.findByRecommendTo(currentUser);
                 model.addAttribute("recommendations", recommendations); // Add recommendations to model
@@ -91,12 +91,13 @@ public class MainController {
         if (result.hasErrors()) {
             return "signup";
         }
-        if (userRepository.findByEmail(user.getEmail()) != null) {
-            return "redirect:signup?email_already_registered";
+        if (userRepository.findByUsername(user.getUsername()) != null) {
+            return "redirect:signup?username_already_registered";
         }
         if (!user.getPassword().equals(passwordRepeat)) {
             return "redirect:signup?password_mismatch";
         }
+        user.setRole("USER"); // Set the role to USER as default
         userService.register(user);
         return "redirect:login?registered_succesfully";
     }
@@ -129,7 +130,7 @@ public class MainController {
     @GetMapping(path = "/user/{username}")
     public String userView(@PathVariable int userId, Model model, Principal principal) {
         String followButton = "";
-        User currentUser = userRepository.findByEmail(principal.getName());
+        User currentUser = userRepository.findByUsername(principal.getName());
         Optional<User> userOpt = userRepository.findById(userId);
 
         // para que nadie tenga info sobre el server que corre la app.
@@ -221,7 +222,7 @@ public class MainController {
     @PostMapping(path = "/follow/{userId}")
     public String follow(@PathVariable("userId") int followedUserId, Principal principal) {
         Optional<User> followed = userRepository.findById(followedUserId);
-        User currentUser = userRepository.findByEmail(principal.getName());
+        User currentUser = userRepository.findByUsername(principal.getName());
         if (!followed.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Follower not found");
         }try{
@@ -234,7 +235,7 @@ public class MainController {
     @PostMapping(path = "/unfollow/{userId}")
     public String unfollow(@PathVariable("userId") int unfollowedUserId, Principal principal) {
         Optional<User> unfollower = userRepository.findById(unfollowedUserId);
-        User currentUser = userRepository.findByEmail(principal.getName());
+        User currentUser = userRepository.findByUsername(principal.getName());
         if (!unfollower.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Follower not found");
         } try {
