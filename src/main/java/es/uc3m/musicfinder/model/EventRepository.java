@@ -8,14 +8,15 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface EventRepository extends CrudRepository<Event, Integer> {
 
-    Event findById(int id);
+    // Using optional to avoid null pointer exceptions
+    // its a method from the CrudRepository interface
+    // Optional<Event> findById(int id);
 
     //
     List<Event> findAll();
 
-    // which one for chronological order?
-    List<Event> findAllByOrderByTimestampAsc();
-    List<Event> findAllByOrderByTimestampDesc();
+    List<Event> findAllByOrderByTimestampAsc(); // (from oldest to newest)
+    List<Event> findAllByOrderByTimestampDesc(); // (from newest to oldest)
 
     // future method for pagination
     // Page<Event> findAll(Pageable pageable);

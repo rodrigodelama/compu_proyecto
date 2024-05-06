@@ -181,11 +181,21 @@ public class MainController {
             String role = currentUser.getRole();
             model.addAttribute("role", role);
         }
-        // Optional<Event> eventOpt = eventRepository.findById(eventId);
-        // if (!eventOpt.isPresent()) {
-        //     throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
-        // }
-        return "event";
+        // Retrieve the event by its ID
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
+
+        // Handle the case where the event does not exist
+        if (optionalEvent.isEmpty()) {
+            model.addAttribute("error", "Event not found.");
+            return "event_not_found"; // This could be a custom error page or a redirect
+        }
+
+        // If the event exists, add it to the model
+        Event event = optionalEvent.get();
+        model.addAttribute("event", event);
+
+        // You can add additional information to the model as needed
+        return "event"; // This should be the name of the Thymeleaf template for displaying the event
     }
 
     // // Ej 3 P7: New code for the controller method of the message view:
@@ -272,25 +282,64 @@ public class MainController {
         // model.addAttribute("event", new Event());
         return "create_event";
     }
-    @PostMapping(path = "/event/create_event")
-    public String createEvent(@ModelAttribute Event event, Principal principal) {
+    // @PostMapping(path = "/event/create_event")
+    // public String createEvent(@ModelAttribute Event event, Principal principal) {
+    //     // Check login status
+    //     if (principal == null) {
+    //         return "redirect:/forbidden?not_logged_in";
+    //     }
+    //     if (principal != null) {
+    //         User user = userRepository.findByUsername(principal.getName());
+    //         String role = user.getRole();
+    //         if (!(role.equals("ORGANIZER") || role.equals("ADMIN"))) {
+    //             return "redirect:/forbidden?not_authorized_to_create_events";
+    //         }
+    //     }
+
+    //     // event.setUser(user);
+    //     // event.setTimestamp(new Date());
+    //     // eventRepository.save(event);
+
+    //     return "redirect:/event/" + event.getId() + "?succesfully_created";
+    // }
+    @PostMapping(path = "/create_event")
+    public String createEvent(@ModelAttribute Event event, Principal principal
+            // RedirectAttributes redirectAttributes
+            ) {
         // Check login status
+        /*
+        if (principal == null) {
+            redirectAttributes.addFlashAttribute("error", "You must be logged in to create an event.");
+            return "redirect:/forbidden?not_logged_in";
+        }
+
+        // Get the current user
+        User user = userRepository.findByUsername(principal.getName());
+
+        // Ensure the user is allowed to create events (like 'ORGANIZER' or 'ADMIN')
+        if (!(user.getRole().equals("ORGANIZER") || user.getRole().equals("ADMIN"))) {
+            redirectAttributes.addFlashAttribute("error", "You are not authorized to create events.");
+            return "redirect:/forbidden";
+        }
+        */
         if (principal == null) {
             return "redirect:/forbidden?not_logged_in";
         }
-        if (principal != null) {
+        // if (principal != null) {
             User user = userRepository.findByUsername(principal.getName());
             String role = user.getRole();
             if (!(role.equals("ORGANIZER") || role.equals("ADMIN"))) {
                 return "redirect:/forbidden?not_authorized_to_create_events";
             }
-        }
+        // }
 
-        // event.setUser(user);
-        // event.setTimestamp(new Date());
-        // eventRepository.save(event);
+        // event.setCreator(user); // Set the creator to the current user
+        event.setTimestamp(new Date()); // Set the current timestamp
 
-        return "redirect:/event/" + event.getId() + "?succesfully_created";
+        Event savedEvent = eventRepository.save(event);
+
+        // redirectAttributes.addFlashAttribute("success", "Event created successfully.");
+        return "redirect:/event/" + savedEvent.getId() + "?succesfully_created";
     }
 
     @GetMapping(path = "/recommended")
