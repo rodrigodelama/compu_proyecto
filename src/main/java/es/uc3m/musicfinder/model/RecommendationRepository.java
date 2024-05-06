@@ -18,5 +18,6 @@ public interface RecommendationRepository extends CrudRepository<Recommendation,
 
     boolean existsByRecommenderAndRecommendToAndEvent(User recommender, User recommendTo, Event event);
     List<Recommendation> findByRecommendTo(User recommendTo); // To get all recommendations for a user
+    List<Recommendation> findByRecommender(User recommender); // To get all recommendations made by a user
 
 }

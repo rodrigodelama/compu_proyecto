@@ -220,6 +220,7 @@ public class MainController {
     //     model.addAttribute("message", messageOpt.get());
     //     return "message_view";
     // }
+
     @GetMapping(path = "/my_favorite_events")
     public String myFavoriteEventsView(Model model, Principal principal) {
         // Check login status
@@ -235,7 +236,25 @@ public class MainController {
         // Load favorite events
         List<Event> favoriteEvents = currentUser.getFavoriteEvents();
         model.addAttribute("favoriteEvents", favoriteEvents);
-        return "my_favorite_events";
+        return "my_favorites";
+    }
+
+    @GetMapping(path = "/my_recommendations")
+    public String myRecommendationsView(Model model, Principal principal) {
+        // Check login status
+        if (principal == null) {
+            return "redirect:/forbidden?not_logged_in";
+        }
+        // If logged in, retrieve the current user 
+        String username = principal.getName();
+        User currentUser = userRepository.findByUsername(username);
+        String role = currentUser.getRole();
+        model.addAttribute("role", role);
+
+        // Load recommendations
+        List<Recommendation> recommendations = recommendationRepository.findByRecommender(currentUser);
+        model.addAttribute("recommendations", recommendations);
+        return "my_recommendations";
     }
 
     @GetMapping(path = "/event/create_event")
