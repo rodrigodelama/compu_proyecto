@@ -65,11 +65,11 @@
                                 data dashboard (only shown if admin) (ADMIN)
                             -->
                             <!-- Menu navigation links ONLY SHOWN if logged in, and of your type -->
-                            <a th:if="${role == 'USER'}" th:href="@{/my_favorite_events}" class="nav-item nav-link">My Favorites</a>
-                            <a th:if="${role == 'USER'}" th:href="@{/recommended}" class="nav-item nav-link">Recommended</a>
-                            <a th:if="${role == 'USER'}" th:href="@{/my_recommendations}" class="nav-item nav-link">My Recommendations</a>
-                            <a th:if="${role == 'ORGANIZER'}" th:href="@{/my_events}" class="nav-item nav-link">My Events</a> 
-                            <a th:if="${role == 'ORGANIZER'}" th:href="@{/create_event}" class="nav-item nav-link">Create Event</a>
+                            <a th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/my_favorite_events}" class="nav-item nav-link">My Favorites</a>
+                            <a th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/recommended}" class="nav-item nav-link">Recommended</a>
+                            <a th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/my_recommendations}" class="nav-item nav-link">My Recommendations</a>
+                            <a th:if="${role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/my_events}" class="nav-item nav-link">My Events</a> 
+                            <a th:if="${role == 'ORGANIZER' or role == 'ADMIN' or createdEvent == true}" th:href="@{/create_event}" class="nav-item nav-link">Create Event</a>
                             <!-- OR sec:authorize="hasRole('USER')" that previously made an event -->
                             <!-- TODO Custom Thymeleaf Expression below -->
                             <!-- <a sec:authorize="hasRole('ORGANIZER') or @customSecurityExpressions.hasCreatedAnEvent()"
@@ -256,17 +256,18 @@
                                                 <!-- Display the event information -->
                                                 <div class="p-4 border border-secondary border-top-0 rounded-bottom">
                                                     <h4 th:text="${event.name}">Event Name</h4>
-                                                    <p th:text="${event.shortDescription}">Short Description</p>
+                                                    <p th:text="${event.description}">Short Description</p>
                                                     <!-- Form to add the event to favorites with a POST request -->
                                                     <div class="center">
-                                                        <form th:action="@{/event/add-to-favorites}" method="post">
-                                                            <!-- Hidden input to carry the event ID -->
+                                                        <!-- <form th:action="@{/add_to_favorites}" method="post">
+                                                            Hidden input to carry the event ID
                                                             <input type="hidden" name="eventId" th:value="${event.id}"/>
-                                                            <!-- Submit button to add to favorites -->
+                                                            Submit button to add to favorites
                                                             <button type="submit" class="btn border border-secondary rounded-pill px-3 text-primary">
                                                                 <i class="fa text-primary"></i> Add to Favorites
                                                             </button>
-                                                        </form>
+                                                        </form> -->
+                                                        <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa text-primary"></i>Add to Favorites</a>
                                                     </div>
                                                 </div>
                                             </a>

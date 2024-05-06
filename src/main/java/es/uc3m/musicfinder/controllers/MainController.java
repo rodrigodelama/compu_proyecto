@@ -106,6 +106,16 @@ public class MainController {
 
         // Regardless, always load all events
         List<Event> events = eventRepository.findAll();
+
+        // Check if the user has created any events regardless of current role
+        // for (Event event : events) {
+        //     String username = principal.getName(); // Get the username from Principal
+        //     User currentUser = userRepository.findByUsername(username);
+        //     if (event.getCreator().equals(currentUser)) {
+        //         model.addAttribute("createdEvent", true);
+        //     }
+        // }
+
         model.addAttribute("events", events);
 
         return "home"; // Return the home view
@@ -248,6 +258,35 @@ public class MainController {
         model.addAttribute("favoriteEvents", favoriteEvents);
         return "my_favorites";
     }
+    @PostMapping(path = "/add_to_favorites")
+    public String addToFavorites(@RequestParam("eventId") int eventId, Principal principal) {
+        // Check login status
+        if (principal == null) {
+            return "redirect:/forbidden?not_logged_in";
+        }
+        // If logged in, retrieve the current user 
+        String username = principal.getName();
+        User currentUser = userRepository.findByUsername(username);
+        String role = currentUser.getRole();
+
+        // Retrieve the event by its ID
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
+
+        // Handle the case where the event does not exist
+        if (optionalEvent.isEmpty()) {
+            return "redirect:/event_not_found";
+        }
+
+        // If the event exists, add it to the user's favorite events
+        Event event = optionalEvent.get();
+        List<Event> favoriteEvents = currentUser.getFavoriteEvents();
+        favoriteEvents.add(event);
+        currentUser.setFavoriteEvents(favoriteEvents);
+        userRepository.save(currentUser);
+
+        // return "redirect:/event/" + eventId + "?added_to_favorites";
+        return "redirect:/my_favorite_events";
+    }
 
     @GetMapping(path = "/my_recommendations")
     public String myRecommendationsView(Model model, Principal principal) {
@@ -267,7 +306,7 @@ public class MainController {
         return "my_recommendations";
     }
 
-    @GetMapping(path = "/event/create_event")
+    @GetMapping(path = "/create_event")
     public String createEventView(Model model, Principal principal) {
         if (principal == null) {
             return "redirect:/forbidden?not_logged_in";

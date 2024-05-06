@@ -10,6 +10,7 @@ import jakarta.persistence.Column;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 public class Event {
@@ -24,9 +25,12 @@ public class Event {
     private String name;
 
     @Column(nullable = false)
+    // @NotBlank
+    @DateTimeFormat(pattern = "yyyy-MM-dd") // Format expected from client-side
     private Date date; //and time?
 
     @Column(nullable = false)
+
     private int duration;
 
     @Column(nullable = false, length = 64)
@@ -38,6 +42,9 @@ public class Event {
     @NotBlank
     @Size(max = 512)
     private String description;
+
+    // @Column(nullable = false)
+    // private User creator;
 
     @Column(nullable = false)
     private Date timestamp;
@@ -91,6 +98,14 @@ public class Event {
     public void setDescription(String description) {
         this.description = description;
     }
+
+
+    // public User getCreator() {
+    //     return creator;
+    // }
+    // public void setCreator(User creator) {
+    //     this.creator = creator;
+    // }
 
 
     public Date getTimestamp() {
