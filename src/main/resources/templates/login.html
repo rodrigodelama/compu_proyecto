@@ -13,7 +13,7 @@
             <div th:if="${param.logout}">You have been signed out.</div>
             <div th:if="${param.registered}">Your new user has been registered.</div>
             <form th:action="@{/login}" method="post">
-                <div><label>Email: <input type="email" name="username" required /></label></div>
+                <div><label>Username: <input type="username" name="username" required /></label></div>
                 <div><label>Password: <input type="password" name="password" required /></label></div>
                 <div><input type="submit" value="Sign In" /></div>
             </form>

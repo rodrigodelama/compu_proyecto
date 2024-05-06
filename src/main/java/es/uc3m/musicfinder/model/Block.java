@@ -38,9 +38,9 @@ public class Block {
 
     // Constructors ------------------------------------------
 
-    public Block() {
-        this.blockedAt = LocalDateTime.now(); // Set to the current time by default
-    }
+    // public Block() {
+    //     this.blockedAt = LocalDateTime.now(); // Set to the current time by default
+    // }
 
     public Block(User blocker, User blocked) {
         this.blocker = blocker;
@@ -78,7 +78,6 @@ public class Block {
     public LocalDateTime getBlockedAt() {
         return blockedAt;
     }
-
     public void setBlockedAt(LocalDateTime blockedAt) {
         this.blockedAt = blockedAt;
     }

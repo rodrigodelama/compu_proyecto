@@ -129,7 +129,7 @@
 
         <!-- first show recommendations, then show all events in general -->
         <!-- Recommended Events display Start-->
-        <div class="container-fluid fruite py-5">
+        <div sec:authorize="isAuthenticated()" class="container-fluid fruite py-5">
             <div class="container py-5">
                 <div class="tab-class text-center">
                     <div class="row g-4">

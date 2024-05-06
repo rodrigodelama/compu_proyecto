@@ -61,6 +61,7 @@ public class MainController {
             // If logged in, retrieve the current user and load recommendations
             String userEmail = principal.getName(); // Get the email from Principal
             User currentUser = userRepository.findByEmail(userEmail);
+            String role = currentUser.getRole();
             
             if (currentUser != null) {
                 List<Recommendation> recommendations = recommendationRepository.findByRecommendTo(currentUser);
@@ -105,23 +106,22 @@ public class MainController {
         return "login";
     }
 
+    @GetMapping(path = "/event")
+    public String eventView(Model model) {
+        return "event";
+    }
+
+    @GetMapping(path = "/event/{eventID}")
+    public String eventView(@PathVariable int userId, Model model, Principal principal) {
+
+        return "event";
+    }
+
     @GetMapping(path = "/user")
     public String userView(Model model) {
         // List<Message> messages = new ArrayList<Message>();
         // User user = new User();
         // Message message = new Message();
-    
-        // //Ejercicio 2: añadir otro mensaje nuevo.
-        // user = new User();
-        // user.setId(2);
-        // user.setEmail("luciabarranco2002@gmail.com");
-        // user.setUsername("Lucía");
-        // message = new Message();
-        // message.setId(2);
-        // message.setUser(user);
-        // message.setText("hello world!!");
-        // message.setTimestamp(new Date());
-        // messages.add(message);
 
         // model.addAttribute("messages", messages);
         return "user";
@@ -146,7 +146,7 @@ public class MainController {
             followButton = "none";
         }
         if(userService.follows(currentUser, userOpt.get())) {
-            followButton = "unfollow";
+            followButton = "unfollow"; // --------------------------------------- this is useed for favoriting events
         } else {
             followButton = "follow";
         }
@@ -159,6 +159,7 @@ public class MainController {
         return "user";
     }
     
+
 
     /*
     // Ej 3 P7: New code for the controller method of the message view:

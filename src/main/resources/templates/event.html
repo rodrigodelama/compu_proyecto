@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+
+    <head>
+        <meta charset="utf-8">
+        <title>Fruitables - Vegetable Website Template</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="" name="keywords">
+        <meta content="" name="description">
+
+        <!-- Google Web Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet"> 
+
+        <!-- Icon Font Stylesheet -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+        <!-- Libraries Stylesheet -->
+        <link href="public/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+        <link href="public/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+        <!-- Customized Bootstrap Stylesheet -->
+        <link href="public/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Template Stylesheet -->
+        <link href="public/css/style.css" rel="stylesheet">
+    </head>
+
+    <body>
+
+        <!-- Spinner Start -->
+        <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" role="status"></div>
+        </div>
+        <!-- Spinner End -->
+
+
+        <!-- Navbar start -->
+        <div class="container-fluid fixed-top">
+            <div class="container topbar bg-primary d-none d-lg-block">
+                <div class="d-flex justify-content-between">
+                    <div class="top-info ps-2">
+                        <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="mailto:100451775@alumnos.uc3m.es" class="text-white">100451775@alumnos.uc3m.es</a></small>
+                        <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="mailto:100451962@alumnos.uc3m.es" class="text-white">100451962@alumnos.uc3m.es</a></small>
+                    </div>
+                    <div class="top-link pe-2">
+                        <a href="https://www.it.uc3m.es/jaf/cw/" class="text-white"><small class="text-white ms-2">uc3m - Computación Web</small></a>
+                    </div>
+                </div>
+            </div>
+            <div class="container px-0">
+                <nav class="navbar navbar-light bg-white navbar-expand-xl">
+                    <a th:href="@{/}" class="navbar-brand"><h1 class="text-primary display-6">MusicFinder</h1></a>
+                    <!-- In case the screen is too narrow, the navbar will collapse to the hamburger icon on the top right -->
+                    <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                        <span class="fa fa-bars text-primary"></span>
+                    </button>
+                    <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
+                        <div class="navbar-nav mx-auto">
+                            <!--
+                                my_favorite_events (the ones the user has marked as favorite) (ANY USER)
+                                recommended (recieved from other users) (ANY USER)
+                                my_recommendations (the ones the user has recommended to others) (ANY USER)
+                                create_event page (only shown if organizer) (ORGANIZER)
+                                my_events page (the ones the user has created) (ORGANIZER & USERs that have created events)
+                                data dashboard (only shown if admin) (ADMIN)
+                            -->
+                            <!-- Menu navigation links ONLY SHOWN if logged in, and of your type -->
+                            <a sec:authorize="hasRole('USER')" th:href="@{/my_favorite_events}" class="nav-item nav-link">My Favorites</a>
+                            <a sec:authorize="hasRole('USER')" th:href="@{/recommended}" class="nav-item nav-link">Recommended</a>
+                            <a sec:authorize="hasRole('USER')" th:href="@{/my_recommendations}" class="nav-item nav-link">My Recommendations</a>
+                            <a sec:authorize="hasRole('ORGANIZER')" th:href="@{/create_event}" class="nav-item nav-link">Create Event</a>
+                            <a sec:authorize="hasRole('ORGANIZER')" th:href="@{/my_events}" class="nav-item nav-link">My Events</a> 
+                            <!-- OR sec:authorize="hasRole('USER')" that previously made an event -->
+                            <!-- TODO Custom Thymeleaf Expression below -->
+                            <!-- <a sec:authorize="hasRole('ORGANIZER') or @customSecurityExpressions.hasCreatedAnEvent()"
+                                th:href="@{/my_events}" class="nav-item nav-link">My Events</a> -->
+                            <a sec:authorize="hasRole('ADMIN')" th:href="@{/data_dashboard}" class="nav-item nav-link">Data Dashboard</a>
+                        </div>
+                        <div class="d-flex m-3 me-0">
+                            <!-- sign in and sign up buttons here if not logged in -->
+                            <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa text-primary"></i>Log In</a>
+                            <a sec:authorize="isAnonymous()" th:href="@{/signup}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa text-primary"></i>Sign Up</a>
+                            
+                            <!-- User icon and signout button ONLY SHOWN if logged in -->
+                            <a sec:authorize="isAuthenticated()" th:href="@{/user/{username}(username=${ username.findByMail(principal.getName()) })}" class="my-auto">
+                                <i class="fas fa-user fa-2x"></i>
+                            </a>
+                            <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" >
+                                <input type="submit" value="Sign Out" class="btn border border-secondary rounded-pill px-3 text-primary"/>
+                            </form>
+                            
+                            <!-- OLD USER BUTTON -->
+                            <!-- <form th:action="@{/user}" method="post" >
+                                <input type="submit" class="fas fa-user fa-2x"/>
+                            </form> -->
+                            <!-- user name below user icon if logged in ??????????? -->
+                            <!--
+                            <div th:text="${#authentication.principal.username}">
+                                User name here
+                            </div>
+                            -->
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!-- Navbar End -->
+
+        <!-- Single Page Header start -->
+        <div class="container-fluid page-header py-5">
+            <h1 class="text-center text-white display-6">EVENt</h1>
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Events</a></li>
+                <li class="breadcrumb-item active text-white">EVENT</li>
+            </ol>
+        </div>
+        <!-- Single Page Header End -->
+
+        <!-- Event Start -->
+        <div class="container-fluid py-5 mt-5">
+            <div class="container py-5">
+                <h2 class="fw-bold mb-3">EVENT NAME</h2>
+                <div class="row g-4 mb-5">
+                    <div class="row g-4">
+                        <!-- LA FOTO del evento -->
+                        <div class="col-lg-6">
+                            <div class="border rounded">
+                                <a href="#">
+                                    <img src="public/img/single-item.jpg" class="img-fluid rounded" alt="Image">
+                                </a>
+                            </div>
+                        </div>
+                        <!-- EVENT DEETS -->
+                        <div class="col-lg-6">
+                            <h5 class="fw-bold mb-3">ARTIST NAMES</h5>
+                            <p class="mb-3">Category: GENRE</p>
+                            <!-- stars maybe we could calculate off reviews -->
+                            <!-- <div class="d-flex mb-4">
+                                <i class="fa fa-star text-secondary"></i>
+                                <i class="fa fa-star text-secondary"></i>
+                                <i class="fa fa-star text-secondary"></i>
+                                <i class="fa fa-star text-secondary"></i>
+                                <i class="fa fa-star"></i>
+                            </div> -->
+                            <!-- EVENT DESCRIPTION -->
+                            <a href="#" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                            <p class="mb-4">The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic words etc.</p>
+                            <p class="mb-4">Susp endisse ultricies nisi vel quam suscipit. Sabertooth peacock flounder; chain pickerel hatchetfish, pencilfish snailfish</p>
+                        <!-- </div> -->
+                        <!-- <div class="col-lg-12"> -->
+                            <nav>
+                                <div class="nav nav-tabs mb-3">
+                                    <button class="nav-link active border-white border-bottom-0" type="button" role="tab"
+                                        id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about"
+                                        aria-controls="nav-about" aria-selected="true">Description</button>
+                                    <button class="nav-link border-white border-bottom-0" type="button" role="tab"
+                                        id="nav-mission-tab" data-bs-toggle="tab" data-bs-target="#nav-mission"
+                                        aria-controls="nav-mission" aria-selected="false">Reviews</button>
+                                </div>
+                            </nav>
+                            <div class="tab-content mb-5">
+                                <div class="tab-pane active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
+                                    <p>The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic words etc. 
+                                        Susp endisse ultricies nisi vel quam suscipit </p>
+                                    <p>Sabertooth peacock flounder; chain pickerel hatchetfish, pencilfish snailfish filefish Antarctic 
+                                        icefish goldeye aholehole trumpetfish pilot fish airbreathing catfish, electric ray sweeper.</p>
+                                    <div class="px-2">
+                                        <div class="row g-4">
+                                            <div class="col-6">
+                                                <div class="row bg-light align-items-center text-center justify-content-center py-2">
+                                                    <div class="col-6">
+                                                        <p class="mb-0">Weight</p>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <p class="mb-0">1 kg</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row text-center align-items-center justify-content-center py-2">
+                                                    <div class="col-6">
+                                                        <p class="mb-0">Country of Origin</p>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <p class="mb-0">Agro Farm</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row bg-light text-center align-items-center justify-content-center py-2">
+                                                    <div class="col-6">
+                                                        <p class="mb-0">Quality</p>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <p class="mb-0">Organic</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row text-center align-items-center justify-content-center py-2">
+                                                    <div class="col-6">
+                                                        <p class="mb-0">Сheck</p>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <p class="mb-0">Healthy</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row bg-light text-center align-items-center justify-content-center py-2">
+                                                    <div class="col-6">
+                                                        <p class="mb-0">Min Weight</p>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <p class="mb-0">250 Kg</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="nav-mission" role="tabpanel" aria-labelledby="nav-mission-tab">
+                                    <div class="d-flex">
+                                        <img src="public/img/avatar.jpg" class="img-fluid rounded-circle p-3" style="width: 100px; height: 100px;" alt="">
+                                        <div class="">
+                                            <p class="mb-2" style="font-size: 14px;">April 12, 2024</p>
+                                            <div class="d-flex justify-content-between">
+                                                <h5>Jason Smith</h5>
+                                                <div class="d-flex mb-3">
+                                                    <i class="fa fa-star text-secondary"></i>
+                                                    <i class="fa fa-star text-secondary"></i>
+                                                    <i class="fa fa-star text-secondary"></i>
+                                                    <i class="fa fa-star text-secondary"></i>
+                                                    <i class="fa fa-star"></i>
+                                                </div>
+                                            </div>
+                                            <p>The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic 
+                                                words etc. Susp endisse ultricies nisi vel quam suscipit </p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex">
+                                        <img src="public/img/avatar.jpg" class="img-fluid rounded-circle p-3" style="width: 100px; height: 100px;" alt="">
+                                        <div class="">
+                                            <p class="mb-2" style="font-size: 14px;">April 12, 2024</p>
+                                            <div class="d-flex justify-content-between">
+                                                <h5>Sam Peters</h5>
+                                                <div class="d-flex mb-3">
+                                                    <i class="fa fa-star text-secondary"></i>
+                                                    <i class="fa fa-star text-secondary"></i>
+                                                    <i class="fa fa-star text-secondary"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                </div>
+                                            </div>
+                                            <p class="text-dark">The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic 
+                                                words etc. Susp endisse ultricies nisi vel quam suscipit </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="nav-vision" role="tabpanel">
+                                    <p class="text-dark">Tempor erat elitr rebum at clita. Diam dolor diam ipsum et tempor sit. Aliqu diam
+                                        amet diam et eos labore. 3</p>
+                                    <p class="mb-0">Diam dolor diam ipsum et tempor sit. Aliqu diam amet diam et eos labore.
+                                        Clita erat ipsum et lorem et sit</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Event End -->
+
+        <!-- Footer & Copyright Start -->
+        <div class="container-fluid copyright bg-dark py-4">
+            <div class="container">
+                <div class="pb-4 mb-4" style="border-bottom: 1px solid rgba(226, 175, 24, 0.5) ;">
+                    <div class="col-lg-3">
+                        <a href="#">
+                            <h1 class="text-primary mb-0">MusicFinder</h1>
+                            <p class="text-secondary mb-0">Where music meets you</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        <span class="text-light"><a href="#"><i class="fas fa-copyright text-light me-2"></i>MusicFinder</a>, All right reserved.</span>
+                    </div>
+                    <div class="col-md-6 my-auto text-center text-md-end text-white">
+                        <!--/*** This template is free as long as you keep the below author’s credit link/attribution link/backlink. ***/-->
+                        <!--/*** If you'd like to use the template without the below author’s credit link/attribution link/backlink, ***/-->
+                        <!--/*** you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". ***/-->
+                        Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a> Distributed By <a class="border-bottom" href="https://themewagon.com">ThemeWagon</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer & Copyright End -->
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
+
+        
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="public/lib/easing/easing.min.js"></script>
+    <script src="public/lib/waypoints/waypoints.min.js"></script>
+    <script src="public/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="public/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="public/js/main.js"></script>
+    </body>
+
+</html>

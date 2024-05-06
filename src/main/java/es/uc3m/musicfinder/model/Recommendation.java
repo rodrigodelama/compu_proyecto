@@ -50,9 +50,9 @@ public class Recommendation {
 
     // Constructors ------------------------------------------
 
-    public Recommendation() {
-        this.recommendedAt = LocalDateTime.now();
-    }
+    // public Recommendation() {
+    //     this.recommendedAt = LocalDateTime.now();
+    // }
 
     public Recommendation(User recommender, User recommendTo, Event event) {
         this.recommender = recommender;

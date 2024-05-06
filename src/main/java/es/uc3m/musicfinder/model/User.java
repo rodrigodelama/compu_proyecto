@@ -29,7 +29,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(nullable = false, length = 64)
+    @Column(unique= true, nullable = false, length = 64)
     @NotBlank
     @Size(max = 64)
     private String username;
