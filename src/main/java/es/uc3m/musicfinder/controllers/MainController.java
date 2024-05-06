@@ -40,16 +40,20 @@ import es.uc3m.musicfinder.services.*;
 public class MainController {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private UserService userService;
+
+    // Repositories
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private EventRepository eventRepository;
 
     @Autowired
     private RecommendationRepository recommendationRepository;
+
+    @Autowired
+    private BlockRepository blockRepository;
 
     // MAIN VIEW -----------------------------------------------------------------------
     @GetMapping(path = "/")
@@ -66,8 +70,37 @@ public class MainController {
             // model.addAttribute("userEvents", userEvents); // check in thyemleaf if userEvents is empty
 
             if (currentUser != null) {
+                // Load recommendations
                 List<Recommendation> recommendations = recommendationRepository.findByRecommendTo(currentUser);
-                model.addAttribute("recommendations", recommendations); // Add recommendations to model
+                
+                if (recommendations.isEmpty()) {
+                    model.addAttribute("noRecommendations", true);
+                } else {
+                    model.addAttribute("noRecommendations", false);
+                }
+
+                // Check for blocked users and add to list
+                List<Block> blockedUsers = blockRepository.findByBlocker(currentUser);
+                
+                // Clean recommendations from blocked users
+                if (!blockedUsers.isEmpty()) {
+                    for (Block block : blockedUsers) {
+                        recommendations.removeIf(rec -> rec.getRecommender().equals(block.getBlocked()));
+                    }
+                    
+                    // old copilot
+                    // List<Recommendation> recommendations = new ArrayList<Recommendation>();
+                    // for (Recommendation rec : recommendationRepository.findByRecommendTo(currentUser)) {
+                    //     if (!blockedUsers.contains(rec.getRecommender())) {
+                    //         recommendations.add(rec);
+                    //     }
+                    // }
+                    model.addAttribute("recommendations", recommendations);
+                } else { // If the user has not blocked anyone, load all recommendations
+                    model.addAttribute("recommendations", recommendations);
+                }
+            } else { // Case where the user is null
+                model.addAttribute("noRecommendations", true);
             }
         }
 
@@ -187,6 +220,23 @@ public class MainController {
     //     model.addAttribute("message", messageOpt.get());
     //     return "message_view";
     // }
+    @GetMapping(path = "/my_favorite_events")
+    public String myFavoriteEventsView(Model model, Principal principal) {
+        // Check login status
+        if (principal == null) {
+            return "redirect:/forbidden?not_logged_in";
+        }
+        // If logged in, retrieve the current user 
+        String username = principal.getName();
+        User currentUser = userRepository.findByUsername(username);
+        String role = currentUser.getRole();
+        model.addAttribute("role", role);
+
+        // Load favorite events
+        List<Event> favoriteEvents = currentUser.getFavoriteEvents();
+        model.addAttribute("favoriteEvents", favoriteEvents);
+        return "my_favorite_events";
+    }
 
     @GetMapping(path = "/event/create_event")
     public String createEventView(Model model, Principal principal) {
@@ -237,7 +287,7 @@ public class MainController {
         model.addAttribute("role", role);
 
         // Load recommendations
-        List<Recommendation> recommendations = recommendationRepository.findByRecommendTo(user);
+        List<Recommendation> recommendations = recommendationRepository.findByRecommendTo(currentUser);
         model.addAttribute("recommendations", recommendations);
         return "recommended";
     }
