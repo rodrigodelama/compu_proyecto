@@ -6,6 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
+// import java.time.ZoneId;
+// import java.time.format.DateTimeFormatter;
+
+// import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +32,7 @@ import org.springframework.data.domain.PageRequest;
 
 import org.springframework.beans.factory.annotation.Autowired; // p6
 
-// p6 signup
+// Signup
 import org.springframework.validation.BindingResult;
 import jakarta.validation.Valid;
 
@@ -66,46 +71,60 @@ public class MainController {
             String role = currentUser.getRole();
             model.addAttribute("role", role);
 
+            // Check if the user has created any events regardless of current role
+            List<Event> events = eventRepository.findAllByOrderByTimestampDesc();
+            for (Event event : events) {
+                if (event.getCreator().equals(currentUser)) {
+                    model.addAttribute("createdEvent", true);
+                }
+            }
+
             // List<Event> userEvents = currentUser.getFavoriteEvents();
             // model.addAttribute("userEvents", userEvents); // check in thyemleaf if userEvents is empty
 
             if (currentUser != null) {
-                // Load recommendations
-                List<Recommendation> recommendations = recommendationRepository.findByRecommendTo(currentUser);
+                // Load all recommendations
+                // List<Recommendation> recommendations = recommendationRepository.findByRecommendTo(currentUser);
+                // TODO: ONLY LOAD RECENT RECOMMENDATIONS (10 most recent for example)
+                List<Recommendation> recentRecommendations = recommendationRepository.findTopNRecommendationsExcludingBlockedUsers(currentUser, PageRequest.of(0, 10));
                 
-                if (recommendations.isEmpty()) {
+                if (recentRecommendations.isEmpty()) {
                     model.addAttribute("noRecommendations", true);
                 } else {
                     model.addAttribute("noRecommendations", false);
                 }
 
+                // TODO: specific query for only grabbing non blocked recommendations
                 // Check for blocked users and add to list
                 List<Block> blockedUsers = blockRepository.findByBlocker(currentUser);
                 
                 // Clean recommendations from blocked users
-                if (!blockedUsers.isEmpty()) {
-                    for (Block block : blockedUsers) {
-                        recommendations.removeIf(rec -> rec.getRecommender().equals(block.getBlocked()));
-                    }
+                // if (!blockedUsers.isEmpty()) {
+                //     for (Block block : blockedUsers) {
+                //         recentRecommendations.removeIf(rec -> rec.getRecommender().equals(block.getBlocked()));
+                //     }
                     
-                    // old copilot
-                    // List<Recommendation> recommendations = new ArrayList<Recommendation>();
-                    // for (Recommendation rec : recommendationRepository.findByRecommendTo(currentUser)) {
-                    //     if (!blockedUsers.contains(rec.getRecommender())) {
-                    //         recommendations.add(rec);
-                    //     }
-                    // }
-                    model.addAttribute("recommendations", recommendations);
-                } else { // If the user has not blocked anyone, load all recommendations
-                    model.addAttribute("recommendations", recommendations);
-                }
+                //     // old copilot
+                //     // List<Recommendation> recommendations = new ArrayList<Recommendation>();
+                //     // for (Recommendation rec : recommendationRepository.findByRecommendTo(currentUser)) {
+                //     //     if (!blockedUsers.contains(rec.getRecommender())) {
+                //     //         recommendations.add(rec);
+                //     //     }
+                //     // }
+
+                //     model.addAttribute("recommendations", recentRecommendations);
+                // } else { // If the user has not blocked anyone, load all recommendations
+                //     model.addAttribute("recommendations", recentRecommendations);
+                // }
             } else { // Case where the user is null
                 model.addAttribute("noRecommendations", true);
             }
         }
 
-        // Regardless, always load all events
-        List<Event> events = eventRepository.findAll();
+        // TODO: maybe change to only if not blocked
+        // pero no lo pide expresamente en el enunciado
+        // Regardless, always load all events by timestamp
+        List<Event> events = eventRepository.findAllByOrderByTimestampDesc();
 
         // Check if the user has created any events regardless of current role
         // for (Event event : events) {
@@ -301,7 +320,7 @@ public class MainController {
         model.addAttribute("role", role);
 
         // Load recommendations
-        List<Recommendation> recommendations = recommendationRepository.findByRecommender(currentUser);
+        List<Recommendation> recommendations = recommendationRepository.findByRecommenderOrderByTimestampDesc(currentUser);
         model.addAttribute("recommendations", recommendations);
         return "my_recommendations";
     }
@@ -342,10 +361,10 @@ public class MainController {
     //     return "redirect:/event/" + event.getId() + "?succesfully_created";
     // }
     @PostMapping(path = "/create_event")
-    public String createEvent(@ModelAttribute Event event, Principal principal
+    public String createEvent(@ModelAttribute Event event, Principal principal) {
             // RedirectAttributes redirectAttributes
-            ) {
-        // Check login status
+            // , HttpServletRequest request) {
+        // Check login status to avoid allowing non-logged in users to create events
         /*
         if (principal == null) {
             redirectAttributes.addFlashAttribute("error", "You must be logged in to create an event.");
@@ -364,22 +383,76 @@ public class MainController {
         if (principal == null) {
             return "redirect:/forbidden?not_logged_in";
         }
-        // if (principal != null) {
-            User user = userRepository.findByUsername(principal.getName());
-            String role = user.getRole();
-            if (!(role.equals("ORGANIZER") || role.equals("ADMIN"))) {
-                return "redirect:/forbidden?not_authorized_to_create_events";
-            }
-        // }
+        User user = userRepository.findByUsername(principal.getName());
+        String role = user.getRole();
+        if (!(role.equals("ORGANIZER") || role.equals("ADMIN"))) {
+            return "redirect:/forbidden?not_authorized_to_create_events";
+        }
 
-        // event.setCreator(user); // Set the creator to the current user
+        event.setCreator(user); // Set the creator to the current user
         event.setTimestamp(new Date()); // Set the current timestamp
 
+        // // Extract the date and time from the request
+        // String dateStr = request.getParameter("date");
+        // String timeStr = request.getParameter("time");
+
+        // // Combine them into a single DateTime string
+        // String combinedDateTimeStr = dateStr + " " + timeStr;
+
+        // // Parse into a Date object
+        // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        // LocalDateTime localDateTime = LocalDateTime.parse(combinedDateTimeStr, formatter);
+        // Date date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        // event.setDate(date);
+
+
+        // Save the event to the database
         Event savedEvent = eventRepository.save(event);
 
         // redirectAttributes.addFlashAttribute("success", "Event created successfully.");
         return "redirect:/event/" + savedEvent.getId() + "?succesfully_created";
     }
+    // copilot
+    // @PostMapping("/create_event")
+    // public String createEvent(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+    //                           @RequestParam("time") @DateTimeFormat(pattern = "HH:mm") String time,
+    //                           Event event, Principal principal) {
+    //     if (principal == null) {
+    //         return "redirect:/forbidden?not_logged_in";
+    //     }
+
+    //     User user = userRepository.findByUsername(principal.getName());
+    //     String role = user.getRole();
+    //     if (!(role.equals("ORGANIZER") || role.equals("ADMIN"))) {
+    //         return "redirect:/forbidden?not_authorized_to_create_events";
+    //     }
+        
+    //     try {
+    //         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+    //         Date timePart = dateFormat.parse(time);
+    //         Calendar timeCalendar = Calendar.getInstance();
+    //         timeCalendar.setTime(timePart);
+    //         int hours = timeCalendar.get(Calendar.HOUR_OF_DAY);
+    //         int minutes = timeCalendar.get(Calendar.MINUTE);
+
+    //         Calendar eventCalendar = Calendar.getInstance();
+    //         eventCalendar.setTime(date);
+    //         eventCalendar.set(Calendar.HOUR_OF_DAY, hours);
+    //         eventCalendar.set(Calendar.MINUTE, minutes);
+
+    //         event.setDate(eventCalendar.getTime());
+    //     } catch (ParseException e) {
+    //         e.printStackTrace();
+    //     }
+
+    //     event.setCreator(user); // Set the creator to the current user
+    //     event.setTimestamp(new Date()); // Set the current timestamp
+    
+    //     Event savedEvent = eventRepository.save(event);
+
+    //     // redirectAttributes.addFlashAttribute("success", "Event created successfully.");
+    //     return "redirect:/event/" + savedEvent.getId() + "?succesfully_created";
+    // }
 
     @GetMapping(path = "/recommended")
     public String recommendedView(Model model, Principal principal) {
@@ -394,7 +467,7 @@ public class MainController {
         model.addAttribute("role", role);
 
         // Load recommendations
-        List<Recommendation> recommendations = recommendationRepository.findByRecommendTo(currentUser);
+        List<Recommendation> recommendations = recommendationRepository.findRecommendationsExcludingBlockedUsers(currentUser);
         model.addAttribute("recommendations", recommendations);
         return "recommended";
     }
@@ -437,6 +510,8 @@ public class MainController {
     public String userView(@PathVariable int userId, Model model, Principal principal) {
         String followButton = "";
         User currentUser = userRepository.findByUsername(principal.getName());
+        // Using optional to avoid null pointer exceptions
+        // its a method from the CrudRepository interface
         Optional<User> userOpt = userRepository.findById(userId);
 
         // para que nadie tenga info sobre el server que corre la app.

@@ -5,18 +5,21 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface EventRepository extends CrudRepository<Event, Integer> {
 
-    // Using optional to avoid null pointer exceptions
-    // its a method from the CrudRepository interface
-    // Optional<Event> findById(int id);
+    // Return number of events (rows)
+    long count();
 
-    //
+
+    // TODO: maybe remove
     List<Event> findAll();
 
-    List<Event> findAllByOrderByTimestampAsc(); // (from oldest to newest)
     List<Event> findAllByOrderByTimestampDesc(); // (from newest to oldest)
+
+    // Find events created by a user
+    List<Event> findByCreator(@Param("user") User creator);
 
     // future method for pagination
     // Page<Event> findAll(Pageable pageable);

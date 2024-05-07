@@ -119,16 +119,16 @@
         <!-- Create Event Start-->
         <div sec:authorize="isAuthenticated()" class="container-fluid fruite py-5">
             <div class="container py-5">
-                <div class="col-md-12 col-lg-7">
+                <div class="col-md-12 col-lg-12">
                     <form th:action="@{/create_event}" method="post">
                         <div class="row">
-                            <div class="col-md-6 mb-4">
+                            <div class="col-md-12 mb-4">
                                 <label for="event_name" class="form-label">Event Name</label>
                                 <input type="text" class="form-control border-2 border-secondary rounded-pill" id="event_name" name="name" required>
                             </div>
                             <div class="col-md-6 mb-4">
-                                <label for="event_date" class="form-label">Event Date</label>
-                                <input type="date" class="form-control border-2 border-secondary rounded-pill" id="event_date" name="date" required>
+                                <label for="event_date" class="form-label">Event Date & Time</label>
+                                <input type="datetime-local" class="form-control border-2 border-secondary rounded-pill" id="event_date" name="date" required>
                             </div>
                             <div class="col-md-6 mb-4">
                                 <label for="event_duration" class="form-label">Event Duration (minutes)</label>

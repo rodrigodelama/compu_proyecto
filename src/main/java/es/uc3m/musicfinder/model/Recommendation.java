@@ -1,7 +1,7 @@
 package es.uc3m.musicfinder.model;
 
 import java.util.List;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import es.uc3m.musicfinder.model.Event;
 import es.uc3m.musicfinder.model.User;
@@ -28,38 +28,25 @@ public class Recommendation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    // User who recommends the event
+    // User who recommends the event can recommend multiple events
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recommender_id", nullable = false)
     private User recommender;
 
-    // User to whom the event is recommended
+    // User to whom the event is recommendedn can be recommended multiple events
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recommend_to_id", nullable = false)
     private User recommendTo;
 
     // The recommended event
+    // @Column(nullable = false) // This errors out
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
     // Timestamp of when the recommendation was sent
     @Column(nullable = false)
-    private LocalDateTime recommendedAt;
-
-
-    // Constructors ------------------------------------------
-
-    // public Recommendation() {
-    //     this.recommendedAt = LocalDateTime.now();
-    // }
-
-    public Recommendation(User recommender, User recommendTo, Event event) {
-        this.recommender = recommender;
-        this.recommendTo = recommendTo;
-        this.event = event;
-        this.recommendedAt = LocalDateTime.now();
-    }
+    private Date timestamp;
 
 
     // Getters & Setters --------------------------------------
@@ -95,11 +82,12 @@ public class Recommendation {
         this.event = event;
     }
 
-    public LocalDateTime getRecommendedAt() {
-        return recommendedAt;
+
+    public Date getTimestamp() {
+        return timestamp;
     }
-    public void setRecommendedAt(LocalDateTime recommendedAt) {
-        this.recommendedAt = recommendedAt;
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 
 }

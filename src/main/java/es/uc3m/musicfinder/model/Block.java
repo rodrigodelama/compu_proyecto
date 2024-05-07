@@ -1,6 +1,5 @@
 package es.uc3m.musicfinder.model;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 import es.uc3m.musicfinder.model.User;
@@ -33,20 +32,7 @@ public class Block {
     private User blocked; // The user being blocked
 
     @Column(nullable = false)
-    private LocalDateTime blockedAt; // The time when the block is made
-
-
-    // Constructors ------------------------------------------
-
-    // public Block() {
-    //     this.blockedAt = LocalDateTime.now(); // Set to the current time by default
-    // }
-
-    public Block(User blocker, User blocked) {
-        this.blocker = blocker;
-        this.blocked = blocked;
-        this.blockedAt = LocalDateTime.now(); // Record when the block is created
-    }
+    private Date blockedAt; // The time when the block was made
 
 
     // Getters & Setters --------------------------------------
@@ -75,10 +61,10 @@ public class Block {
     }
 
 
-    public LocalDateTime getBlockedAt() {
+    public Date getBlockedAt() {
         return blockedAt;
     }
-    public void setBlockedAt(LocalDateTime blockedAt) {
+    public void setBlockedAt(Date blockedAt) {
         this.blockedAt = blockedAt;
     }
 

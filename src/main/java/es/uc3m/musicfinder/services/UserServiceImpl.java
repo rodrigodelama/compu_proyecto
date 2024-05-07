@@ -1,6 +1,7 @@
 package es.uc3m.musicfinder.services;
 
 import java.util.List;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -120,12 +121,19 @@ public class UserServiceImpl implements UserService {
         if (recommendationRepository.existsByRecommenderAndRecommendToAndEvent(recommender, recommendTo, event)) {
             throw new UserServiceException("Recommendation already exists.");
         }
-        Recommendation recommendation = new Recommendation(recommender, recommendTo, event);
-        recommendationRepository.save(recommendation); // Save the new recommendation
+        // Create a new recommendation
+        Recommendation recommendation = new Recommendation();
+        recommendation.setRecommender(recommender);
+        recommendation.setRecommendTo(recommendTo);
+        recommendation.setEvent(event);
+
+        // Save the new recommendation
+        recommendationRepository.save(recommendation);
     }
     @Override
     public List<Recommendation> getRecommendationsForUser(User recommendTo) {
-        return recommendationRepository.findByRecommendTo(recommendTo); // Get all recommendations for a user
+        // return recommendationRepository.findByRecommendTo(recommendTo); // Get all recommendations for a user
+        return recommendationRepository.findRecommendationsExcludingBlockedUsers(recommendTo);
     }
 
 
@@ -144,9 +152,14 @@ public class UserServiceImpl implements UserService {
         if (blocked(blocker, blocked)) {
             throw new UserServiceException("This user is already blocked.");
         }
+        // Create a new block
+        Block block = new Block();
+        block.setBlocker(blocker);
+        block.setBlocked(blocked);
+        block.setBlockedAt(new Date());
 
-        Block block = new Block(blocker, blocked);
-        blockRepository.save(block); // Save the new block
+        // Save the new block
+        blockRepository.save(block);
     }
     @Override
     public void unblock(User blocker, User blocked) throws UserServiceException {

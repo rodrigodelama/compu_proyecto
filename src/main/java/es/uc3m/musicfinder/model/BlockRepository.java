@@ -8,8 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface BlockRepository extends CrudRepository<Block, Integer> {
 
-    // List<User> findAllBlockedUsersByUser(User user);
-
     // Checks if a specific block exists between a blocker and a blocked user
     boolean existsByBlockerAndBlocked(User blocker, User blocked);
 

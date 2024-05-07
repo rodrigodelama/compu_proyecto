@@ -1,6 +1,9 @@
 package es.uc3m.musicfinder.model;
 
 import java.util.Date;
+import java.time.LocalDateTime;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -11,6 +14,8 @@ import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Event {
@@ -25,12 +30,13 @@ public class Event {
     private String name;
 
     @Column(nullable = false)
-    // @NotBlank
-    @DateTimeFormat(pattern = "yyyy-MM-dd") // Format expected from client-side
-    private Date date; //and time?
+    // Format expected from client-side
+    // @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime date;
 
     @Column(nullable = false)
-
     private int duration;
 
     @Column(nullable = false, length = 64)
@@ -43,8 +49,8 @@ public class Event {
     @Size(max = 512)
     private String description;
 
-    // @Column(nullable = false)
-    // private User creator;
+    @ManyToOne(optional = false) // Many events can be created by one user
+    private User creator;
 
     @Column(nullable = false)
     private Date timestamp;
@@ -68,10 +74,10 @@ public class Event {
     }
 
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
@@ -100,12 +106,12 @@ public class Event {
     }
 
 
-    // public User getCreator() {
-    //     return creator;
-    // }
-    // public void setCreator(User creator) {
-    //     this.creator = creator;
-    // }
+    public User getCreator() {
+        return creator;
+    }
+    public void setCreator(User creator) {
+        this.creator = creator;
+    }
 
 
     public Date getTimestamp() {
