@@ -49,7 +49,7 @@ public interface RecommendationRepository extends CrudRepository<Recommendation,
 
     
     //recomendaciones que le han realizado 
-    @Query("SELECT r FROM Recommendation r WHERE r.recommendTo = :user ORDER BY r.timestamp DESC") //deberia ser la consulta a la base de datos de reocomendaciones que tiene ese usuario
+    @Query("SELECT COUNT(r) FROM Recommendation r WHERE r.recommendTo = :user ORDER BY r.timestamp DESC")
     int countRecommendationsFromFriends(@Param("user") User user);
 
     //num recomendaciones realizadas a amigos

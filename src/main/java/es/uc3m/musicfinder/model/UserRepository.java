@@ -13,4 +13,8 @@ import es.uc3m.musicfinder.model.User;
 public interface UserRepository extends CrudRepository<User, Integer> {
     User findByUsername(String username);
 
+    // //Eventos favoritos
+    // @Query("SELECT COUNT(f) FROM User f WHERE f.favorite = :user")
+    // int countFavoritedEventsByUser(@Param("user") User user);
+
 }

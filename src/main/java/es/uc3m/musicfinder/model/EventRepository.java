@@ -25,9 +25,12 @@ public interface EventRepository extends CrudRepository<Event, Integer> {
     @Query("SELECT COUNT(e) FROM Event e WHERE e.creator = :user")
     int countEventsCreatedByUser(@Param("user") User user);
 
-    //Eventos favoritos
-    // @Query("SELECT COUNT(f) FROM FavoriteEvent f WHERE f.user = :user")
-    // int countFavoriteEventsForUser(@Param("user") User user);
+    // @Query("SELECT COUNT(e) FROM Event e JOIN e.favoriteEvents f WHERE f.id = :userId")
+    // int countFavoritedEventsByUser(@Param("userId") Integer userId);
+
+    // @Query("SELECT COUNT(fe) FROM User u JOIN u.favoriteEvents fe WHERE u = :user")
+    // int countFavoritedEventsByUser(@Param("user") User user);
+
 
     // future method for pagination
     // Page<Event> findAll(Pageable pageable);
