@@ -125,8 +125,15 @@ public class MainController {
                 model.addAttribute("noRecommendations", true);
             }
         }
+        
+        // Ensure 'page' is a valid index and non-negative
+        if (page < 0) {
+            page = 0;
+        }
+        
+        int itemsPerPage = 16; // Number of events per page
         // Create a Pageable object to specify the page and number of items per page
-        Pageable pageable = PageRequest.of(page, 8); // 8 items per page
+        Pageable pageable = PageRequest.of(page, itemsPerPage);
 
         // Retrieve the desired page of events
         Page<Event> eventPage = eventRepository.findAllByOrderByTimestampDesc(pageable);
