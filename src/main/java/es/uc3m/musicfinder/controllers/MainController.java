@@ -222,8 +222,8 @@ public class MainController {
         return "event";
     }
 
-    @GetMapping(path = "/event/{eventID}")
-    public String eventView(@PathVariable int eventId, Model model, Principal principal) {
+    @GetMapping(path = "/event/{eventId}")
+    public String eventView(@PathVariable("eventId") int eventId, Model model, Principal principal) {
         // Check login status for navbar
         if (principal != null) {
             String username = principal.getName();
@@ -237,15 +237,21 @@ public class MainController {
         // Handle the case where the event does not exist
         if (optionalEvent.isEmpty()) {
             model.addAttribute("error", "Event not found.");
-            return "event_not_found"; // This could be a custom error page or a redirect
+            return "/404?event_not_found"; // This could be a custom error page or a redirect
         }
 
         // If the event exists, add it to the model
         Event event = optionalEvent.get();
         model.addAttribute("event", event);
 
-        // You can add additional information to the model as needed
-        return "event"; // This should be the name of the Thymeleaf template for displaying the event
+        // // Check if the current user has this event in favorites (if logged in)
+        // if (principal != null) {
+        //     User currentUser = userRepository.findByUsername(principal.getName());
+        //     boolean isFavorite = currentUser.getFavoriteEvents().contains(event);
+        //     model.addAttribute("isFavorite", isFavorite); // Boolean to indicate if the event is favorited
+        // }
+
+        return "event";
     }
 
     // // Ej 3 P7: New code for the controller method of the message view:

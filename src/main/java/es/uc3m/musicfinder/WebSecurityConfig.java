@@ -30,8 +30,8 @@ public class WebSecurityConfig {
         http
             //autorization rules
             .authorizeHttpRequests((authorize) -> authorize
-            .requestMatchers("/**", "/index", "/login", "/signup", "/public/**", "/images/**", "/error", "/event/**").permitAll()
-            .requestMatchers("/user/**").hasRole("ADMIN")
+            .requestMatchers("/**", "/index", "/login", "/signup", "/public/**", "/static/**", "/images/**", "/error", "/event/**").permitAll()
+            .requestMatchers("/user/**", "/admin_panel", "/data_dashboard").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             //login page, especifies the loging page, all requests are permitted to acces it
