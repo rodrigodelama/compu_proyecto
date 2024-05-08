@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="utf-8">
-        <title>MusicFinder - EVENT NAME PLACEHODER</title>
+        <title th:text="'MusicFinder - ' + ${event.name}">MusicFinder - Event Placeholder</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
@@ -18,14 +18,18 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
         <!-- Libraries Stylesheet -->
-        <link href="public/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
-        <link href="public/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+        <link th:href="@{/public/lib/lightbox/css/lightbox.min.css}" rel="stylesheet">
+        <link th:href="@{/public/lib/owlcarousel/assets/owl.carousel.min.css}" rel="stylesheet">
+        <!-- <link href="public/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+        <link href="public/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet"> -->
 
         <!-- Customized Bootstrap Stylesheet -->
-        <link href="public/css/bootstrap.min.css" rel="stylesheet">
+        <link th:href="@{/public/css/bootstrap.min.css}" rel="stylesheet">
+        <!-- <link href="public/css/bootstrap.min.css" rel="stylesheet"> -->
 
         <!-- Template Stylesheet -->
-        <link href="public/css/style.css" rel="stylesheet">
+        <link th:href="@{/public/css/style.css}" rel="stylesheet">
+        <!-- <link href="public/css/style.css" rel="stylesheet"> -->
     </head>
 
     <body>
@@ -114,142 +118,120 @@
             <div class="container py-5">
                 <div class="row g-4 mb-5">
                     <div class="row g-4">
-                        <h2 class="fw-bold mb-3">EVENT NAME</h2>
-                        <!-- LA FOTO del evento -->
+                        <h2 class="fw-bold mb-3" th:text="${event.name}">{{ event.name }}</h2> <!-- Event Name -->
+                        
+                        <!-- Event Image -->
                         <div class="col-lg-6">
                             <div class="border rounded">
-                                <a href="#">
-                                    <img src="public/img/single-item.jpg" class="img-fluid rounded" alt="Image">
-                                </a>
+                                <!-- <img src="public/img/single-item.jpg" class="img-fluid rounded" alt="Event Image"> Event Image URL -->
+                                <img th:src="@{/public/img/single-item.jpg}" class="img-fluid rounded" alt="Sample Image">
                             </div>
                         </div>
-                        <!-- EVENT DEETS -->
+                        <!-- Event Details start THYMELEAF -->
                         <div class="col-lg-6">
-                            <h5 class="fw-bold mb-3">ARTIST NAMES</h5>
-                            <p class="mb-3">Category: GENRE</p>
-                            <!-- stars maybe we could calculate off reviews -->
-                            <!-- <div class="d-flex mb-4">
-                                <i class="fa fa-star text-secondary"></i>
-                                <i class="fa fa-star text-secondary"></i>
-                                <i class="fa fa-star text-secondary"></i>
-                                <i class="fa fa-star text-secondary"></i>
-                                <i class="fa fa-star"></i>
-                            </div> -->
-                            <!-- EVENT DESCRIPTION -->
-                            <a href="#" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> ADD TO FAVORITE DYNAMIC</a>
-                            <p class="mb-4">The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic words etc.</p>
-                            <p class="mb-4">Susp endisse ultricies nisi vel quam suscipit. Sabertooth peacock flounder; chain pickerel hatchetfish, pencilfish snailfish</p>
-                        <!-- </div> -->
-                        <!-- <div class="col-lg-12"> -->
+                            <!-- Artist Names -->
+                            <!-- <h5 class="fw-bold mb-3">{{ event.artistNames }}</h5> -->
+                            <!-- Event Genre -->
+                            <!-- <p class="mb-3">Category: {{ event.genre }}</p> -->
+                            
+                            <!-- Event Description -->
+                            <!-- <p class="mb-4">{{ event.description }}</p> Event Description -->
+                            <p class="mb-4" th:text="${event.description}">Event Description Placeholder</p>
+
+                            <!-- Add to Favorites Button -->
+                            <!-- <a href="/add_to_favorites?eventId={{ event.id }}" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
+                                <i class="fa fa-heart me-2 text-primary"></i> Add to Favorites
+                            </a> -->
+                            <!-- <a th:href="@{/add_to_favorites(eventId=${event.id})}" 
+                            class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
+                            th:if="${isFavorite == false}">
+                                <i class="fa fa-heart me-2 text-primary"></i> Add to Favorites
+                            </a>
+
+                            <a th:href="@{/remove_from_favorites(eventId=${event.id})}"
+                            class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
+                            th:if="${isFavorite == true}">
+                                <i class="fa fa-heartbeat me-2 text-primary"></i> Remove from Favorites
+                            </a> -->
+
+
+                            <!-- Tabs for additional information -->
                             <nav>
                                 <div class="nav nav-tabs mb-3">
                                     <button class="nav-link active border-white border-bottom-0" type="button" role="tab"
-                                        id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about"
-                                        aria-controls="nav-about" aria-selected="true">Description</button>
+                                            data-bs-toggle="tab" data-bs-target="#nav-about"
+                                            aria-controls="nav-about" aria-selected="true">Description</button>
                                     <button class="nav-link border-white border-bottom-0" type="button" role="tab"
-                                        id="nav-mission-tab" data-bs-toggle="tab" data-bs-target="#nav-mission"
-                                        aria-controls="nav-mission" aria-selected="false">Reviews</button>
+                                            data-bs-toggle="tab" data-bs-target="#nav-reviews"
+                                            aria-controls="nav-reviews" aria-selected="false">Reviews</button>
                                 </div>
                             </nav>
+
+                            <!-- <div class="tab-content mb-5">
+                                <div class="tab-pane active" id="nav-about" role="tabpanel">
+                                    <p>{{ event.detailedDescription }}</p> Detailed description
+                                </div>
+                                
+                                <div class="tab-pane" id="nav-reviews" role="tabpanel">
+                                    Reviews Section
+                                    <p>Here you can add a list of reviews for the event</p> Placeholder for reviews
+                                </div>
+                            </div> -->
+                        </div>
+                        <!-- Event Details End THYMELEAF -->
+
+                        <!-- TODO: MORE DETAILED EVENT VIEW -->
+                        <!-- Event Details Start THYMELEAF
+                        <div class="col-lg-6">
+                            Artist Names
+                            <h5 class="fw-bold mb-3" th:text="${event.artistNames}">Artist Names Placeholder</h5>
+                            
+                            Event Genre
+                            <p class="mb-3" th:text="'Category: ' + ${event.genre}">Category: Genre Placeholder</p>
+                            
+                            Event Description
+                            <p class="mb-4" th:text="${event.description}">Event Description Placeholder</p>
+
+                            Add to Favorites Button
+                            <a th:href="@{/add_to_favorites(eventId=${event.id})}" 
+                            class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
+                            th:if="${isFavorite == false}">
+                                <i class="fa fa-heart me-2 text-primary"></i> Add to Favorites
+                            </a>
+
+                            <a th:href="@{/remove_from_favorites(eventId=${event.id})}"
+                            class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
+                            th:if="${isFavorite == true}">
+                                <i class="fa fa-heartbeat me-2 text-primary"></i> Remove from Favorites
+                            </a>
+
+                            Tabs for Additional Information
+                            <nav>
+                                <div class="nav nav-tabs mb-3">
+                                    <button class="nav-link active border-white border-bottom-0"
+                                            type="button" role="tab"
+                                            data-bs-toggle="tab" data-bs-target="#nav-about"
+                                            aria-controls="nav-about" aria-selected="true">Description</button>
+                                    <button class="nav-link border-white border-bottom-0"
+                                            type="button" role="tab"
+                                            data-bs-toggle="tab" data-bs-target="#nav-reviews"
+                                            aria-controls="nav-reviews" aria-selected="false">Reviews</button>
+                                </div>
+                            </nav>
+
                             <div class="tab-content mb-5">
-                                <div class="tab-pane active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
-                                    <p>The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic words etc. 
-                                        Susp endisse ultricies nisi vel quam suscipit </p>
-                                    <p>Sabertooth peacock flounder; chain pickerel hatchetfish, pencilfish snailfish filefish Antarctic 
-                                        icefish goldeye aholehole trumpetfish pilot fish airbreathing catfish, electric ray sweeper.</p>
-                                    <div class="px-2">
-                                        <div class="row g-4">
-                                            <div class="col-6">
-                                                <div class="row bg-light align-items-center text-center justify-content-center py-2">
-                                                    <div class="col-6">
-                                                        <p class="mb-0">Weight</p>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <p class="mb-0">1 kg</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row text-center align-items-center justify-content-center py-2">
-                                                    <div class="col-6">
-                                                        <p class="mb-0">Country of Origin</p>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <p class="mb-0">Agro Farm</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row bg-light text-center align-items-center justify-content-center py-2">
-                                                    <div class="col-6">
-                                                        <p class="mb-0">Quality</p>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <p class="mb-0">Organic</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row text-center align-items-center justify-content-center py-2">
-                                                    <div class="col-6">
-                                                        <p class="mb-0">Сheck</p>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <p class="mb-0">Healthy</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row bg-light text-center align-items-center justify-content-center py-2">
-                                                    <div class="col-6">
-                                                        <p class="mb-0">Min Weight</p>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <p class="mb-0">250 Kg</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                About Tab
+                                <div class="tab-pane active" id="nav-about" role="tabpanel">
+                                    <p th:text="${event.detailedDescription}">Detailed description placeholder</p>
                                 </div>
-                                <div class="tab-pane" id="nav-mission" role="tabpanel" aria-labelledby="nav-mission-tab">
-                                    <div class="d-flex">
-                                        <img src="public/img/avatar.jpg" class="img-fluid rounded-circle p-3" style="width: 100px; height: 100px;" alt="">
-                                        <div class="">
-                                            <p class="mb-2" style="font-size: 14px;">April 12, 2024</p>
-                                            <div class="d-flex justify-content-between">
-                                                <h5>Jason Smith</h5>
-                                                <div class="d-flex mb-3">
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                            <p>The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic 
-                                                words etc. Susp endisse ultricies nisi vel quam suscipit </p>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex">
-                                        <img src="public/img/avatar.jpg" class="img-fluid rounded-circle p-3" style="width: 100px; height: 100px;" alt="">
-                                        <div class="">
-                                            <p class="mb-2" style="font-size: 14px;">April 12, 2024</p>
-                                            <div class="d-flex justify-content-between">
-                                                <h5>Sam Peters</h5>
-                                                <div class="d-flex mb-3">
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                            <p class="text-dark">The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic 
-                                                words etc. Susp endisse ultricies nisi vel quam suscipit </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane" id="nav-vision" role="tabpanel">
-                                    <p class="text-dark">Tempor erat elitr rebum at clita. Diam dolor diam ipsum et tempor sit. Aliqu diam
-                                        amet diam et eos labore. 3</p>
-                                    <p class="mb-0">Diam dolor diam ipsum et tempor sit. Aliqu diam amet diam et eos labore.
-                                        Clita erat ipsum et lorem et sit</p>
+                                
+                                Reviews Tab
+                                <div class="tab-pane" id="nav-reviews" role="tabpanel">
+                                    <p>Placeholder for reviews content</p> Placeholder for actual reviews
                                 </div>
                             </div>
                         </div>
+                        Event Details End THYMELEAF -->
                     </div>
                 </div>
             </div>
@@ -289,13 +271,18 @@
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="public/lib/easing/easing.min.js"></script>
+    <!-- <script src="public/lib/easing/easing.min.js"></script>
     <script src="public/lib/waypoints/waypoints.min.js"></script>
     <script src="public/lib/lightbox/js/lightbox.min.js"></script>
-    <script src="public/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="public/lib/owlcarousel/owl.carousel.min.js"></script> -->
+    <script th:src="@{/public/lib/easing/easing.min.js}"></script>
+    <script th:src="@{/public/lib/waypoints/waypoints.min.js}"></script>
+    <script th:src="@{/public/lib/lightbox/js/lightbox.min.js}"></script>
+    <script th:src="@{/public/lib/owlcarousel/owl.carousel.min.js}"></script>
 
     <!-- Template Javascript -->
-    <script src="public/js/main.js"></script>
+    <script th:src="@{/public/js/main.js}"></script>
+    <!-- <script src="public/js/main.js"></script> -->
     </body>
 
 </html>
