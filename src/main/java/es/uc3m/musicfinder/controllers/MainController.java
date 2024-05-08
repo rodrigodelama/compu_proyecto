@@ -40,6 +40,11 @@ import jakarta.validation.Valid;
 import es.uc3m.musicfinder.model.*;
 import es.uc3m.musicfinder.services.*;
 
+// Pagination
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+
 @Controller
 @RequestMapping(path = "/")
 public class MainController {
@@ -62,7 +67,7 @@ public class MainController {
 
     // MAIN VIEW -----------------------------------------------------------------------
     @GetMapping(path = "/")
-    public String mainView(Model model, Principal principal) {
+    public String mainView(Model model, Principal principal, @RequestParam(value = "page", defaultValue = "0") int page) {
         // Check login status for navbar
         if (principal != null) {
             // If logged in, retrieve the current user and load recommendations
@@ -120,11 +125,20 @@ public class MainController {
                 model.addAttribute("noRecommendations", true);
             }
         }
+        // Create a Pageable object to specify the page and number of items per page
+        Pageable pageable = PageRequest.of(page, 8); // 8 items per page
+
+        // Retrieve the desired page of events
+        Page<Event> eventPage = eventRepository.findAllByOrderByTimestampDesc(pageable);
+
+        model.addAttribute("events", eventPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", eventPage.getTotalPages());
 
         // TODO: maybe change to only if not blocked
         // pero no lo pide expresamente en el enunciado
         // Regardless, always load all events by timestamp
-        List<Event> events = eventRepository.findAllByOrderByTimestampDesc();
+        // List<Event> events = eventRepository.findAllByOrderByTimestampDesc();
 
         // Check if the user has created any events regardless of current role
         // for (Event event : events) {
@@ -135,7 +149,7 @@ public class MainController {
         //     }
         // }
 
-        model.addAttribute("events", events);
+        // model.addAttribute("events", events);
 
         return "home"; // Return the home view
     }
@@ -502,11 +516,15 @@ public class MainController {
         if (!(role.equals("ADMIN"))) {
             return "redirect:/forbidden?not_authorized_to_view_data_dashboard";
         }
-        // Obtener el número de recomendaciones para el usuario actual 
+
+        // Add the username to the model
+        model.addAttribute("username", user.getUsername());
+
+        // Obtener el número de recomendaciones para el usuario actual
         int recommendationToUserCount = recommendationRepository.countRecommendationsFromFriends(user);
         model.addAttribute("recommendationToUserCount", recommendationToUserCount);
 
-        //obetener el numero de recomendaciones realizadas por el usuario actual
+        // Obetener el numero de recomendaciones realizadas por el usuario actual
         int recommendationFromUserCount = recommendationRepository.countRecommendationsToFriends(user);
         model.addAttribute("recommendationFromUserCount", recommendationFromUserCount);
 
@@ -516,7 +534,7 @@ public class MainController {
 
         // Obtener el número de usuarios que han bloqueado al usuario actual
         int UsersBlockingUserCount = blockRepository.countUsersBlockingUser(user);
-        model.addAttribute("UsersBlockingUserCount", blockedUserCount);
+        model.addAttribute("usersBlockingUserCount", blockedUserCount);
 
         // Obtener el número de eventos creados por el usuario actual
         int eventCount = eventRepository.countEventsCreatedByUser(user);
@@ -524,9 +542,10 @@ public class MainController {
 
         // Obtener el número de eventos marcados como favoritos por el usuario actual
         // int favoriteEventCount = eventRepository.countFavoriteEventsForUser(user);
-        // model.addAttribute("favoriteEventCount", favoriteEventCount);
+        int favoriteEventCount = user.getFavoriteEvents().size();
+        model.addAttribute("favoriteEventCount", favoriteEventCount);
     return "data_dashboard";
-}
+    }
 
 
 

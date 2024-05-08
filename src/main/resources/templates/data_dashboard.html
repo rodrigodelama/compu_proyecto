@@ -109,52 +109,70 @@
         <!-- Navbar End -->
 
         <!-- Hero Start -->
-        <div class="container-fluid py-5 mb-5 hero-header">
-            <div class="container py-5">
-                <div class="row g-5 align-items-center">
-                    <h1 class="mb-5 display-3 text-primary">User Data Dashboard</h1>
+        <div class="container-fluid py-5 mb-3 hero-header">
+            <div class="container py-3">
+                <div class="row g-3 align-items-center">
+                    <h2 class="mb-1 display-3 text-primary">User Data Dashboard</h2>
                 </div>
             </div>
         </div>
         <!-- Hero End -->
 
-        {% comment %} data {% endcomment %}
+        <!-- Data Dashboard Start -->
         <div sec:authorize="isAuthenticated()" class="container-fluid fruite py-5">
             <div class="container py-5">
-                <div class="col-md-12 col-lg-12">
-                    <form th:action="@{/data_dashboard}">
-                        <!-- Aquí puedes mostrar las estadísticas -->
-                        <div class="col-lg-6">
-                            <h4 class="fw-bold mb-3">Número de usuarios que tiene bloqueados</h4>
-                            <p>{{ blockedUserCount }}</p>
+                <div class="row justify-content-center">
+                    <!-- Start with a card to contain the content -->
+                    <div class="col-12 col-lg-8">
+                        <div class="card rounded">
+                            <div class="card-body">
+                                <!-- Title at the top -->
+                                <h3 class="text-center fw-bold mb-4" th:text="'Estadísticas de ' + ${username}"></h3>
+
+                                <!-- Section for blocked users -->
+                                <div class="row">
+                                    <div class="col-12 col-md-6 mb-3">
+                                        <h5 class="fw-bold">Usuarios bloqueados</h5>
+                                        <p class="rounded text-center p-2 bg-light" th:text="${blockedUserCount}"></p>
+                                    </div>
+                                    <div class="col-12 col-md-6 mb-3">
+                                        <h5 class="fw-bold">Usuarios que le bloquean</h5>
+                                        <p class="rounded text-center p-2 bg-light" th:text="${usersBlockingUserCount}"></p>
+                                    </div>
+                                </div>
+
+                                <!-- Section for recommendations -->
+                                <div class="row">
+                                    <div class="col-12 col-md-6 mb-3">
+                                        <h5 class="fw-bold">Recomendaciones recibidas</h5>
+                                        <p class="rounded text-center p-2 bg-light" th:text="${recommendationToUserCount}"></p>
+                                    </div>
+                                    <div class="col-12 col-md-6 mb-3">
+                                        <h5 class="fw-bold">Recomendaciones enviadas</h5>
+                                        <p class="rounded text-center p-2 bg-light" th:text="${recommendationFromUserCount}"></p>
+                                    </div>
+                                </div>
+
+                                <!-- Section for events -->
+                                <div class="row">
+                                    <div class="col-12 col-md-6 mb-3">
+                                        <h5 class="fw-bold">Eventos favoritos</h5>
+                                        <p class="rounded text-center p-2 bg-light" th:text="${favoriteEventCount}"></p>
+                                    </div>
+                                    <div class="col-12 col-md-6 mb-3">
+                                        <h5 class="fw-bold">Eventos creados</h5>
+                                        <p class="rounded text-center p-2 bg-light" th:text="${eventCount}"></p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-lg-6">
-                            <h4 class="fw-bold mb-3">Número de usuarios que le han bloqueado</h4>
-                            <p>{{ usersBlockingUserCount }}</p>
-                        </div>
-                        <div class="col-lg-6">
-                            <h4 class="fw-bold mb-3">Número de recomendaciones que le han realizado</h4>
-                            <p>{{ recommendationToUserCount }}</p>
-                        </div>
-                        <div class="col-lg-6">
-                            <h4 class="fw-bold mb-3">Número de recomendaciones que ha realizado</h4>
-                            <p>{{ recommendationFromUserCount }}</p>
-                        </div>
-                        {% comment %} <div class="col-lg-6">
-                            <h4 class="fw-bold mb-3">Número de eventos que tiene en favoritos</h4>
-                            <p>{{ favoriteEventCount }}</p>
-                        </div> {% endcomment %}
-                        <div class="col-lg-6">
-                            <h4 class="fw-bold mb-3">Número de eventos que ha creado el usuario</h4>
-                            <p>{{ eventCount }}</p>
-                        </div>
-                    </form>
-                    <!-- Añade más secciones para mostrar otras estadísticas -->
+                    </div>
                 </div>
             </div>
         </div>
-        {% comment %} end data  {% endcomment %}
-        
+        <!-- Data Dashboard End -->
+
+
         <!-- Footer & Copyright Start -->
         <div class="container-fluid copyright bg-dark py-4">
             <div class="container">
