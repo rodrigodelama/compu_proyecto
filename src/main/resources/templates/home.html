@@ -134,10 +134,6 @@
                                     <div th:if="${noRecommendations == true}" class="col-lg-12 align-items-center">
                                         <h3 class="text-center">It's awefully quiet here... See our latest events below!</h3>
                                     </div>
-                                    <script>
-                                        const img = new Image();
-                                        img.src = 'public/img/single_item.jpg';
-                                    </script>
                                     <!-- AUTOGENERATE WITH THYMELEAF -->
                                     <div class="col-md-6 col-lg-4 col-xl-3" th:each="recommendation : ${recommendations}">
                                         <!-- Link to the event details or the recommendation target -->
@@ -145,7 +141,7 @@
                                             <!-- Display the event image -->
                                             <div class="fruite-img">
                                                 <!-- <img th:src="${recommendation.event.imageUrl}" class="img-fluid w-100 rounded-top" alt="Event Image"> -->
-                                                <img src="event_img_placeholder" class="img-fluid w-100 rounded-top" alt="Event Image">
+                                                <img th:src="@{/public/img/single-item.jpg}" class="img-fluid w-100 rounded-top" alt="Event Image">
                                             </div>
                                             <!-- Display the event information -->
                                             <div class="p-4 border border-secondary border-top-0 rounded-bottom">
@@ -153,14 +149,25 @@
                                                 <p th:text="${recommendation.event.shortDescription}">SHORT DESCRIPTION</p>
                                                 <!-- Add to Favorites button with placeholder link -->
                                                 <div class="center">
-                                                    <form th:action="@{/event/add-to-favorites}" method="post">
-                                                        <!-- Hidden input to carry the event ID -->
+                                                    <!-- <form th:action="@{/event/add-to-favorites}" method="post">
+                                                        Hidden input to carry the event ID
                                                         <input type="hidden" name="eventId" th:value="${recommendation.event.id}"/>
-                                                        <!-- Submit button to add to favorites -->
+                                                        Submit button to add to favorites
                                                         <button type="submit" class="btn border border-secondary rounded-pill px-3 text-primary">
                                                             <i class="fa text-primary"></i> Add to Favorites
                                                         </button>
-                                                    </form>
+                                                    </form> -->
+                                                    <a th:href="@{/add_to_favorites(eventId=${event.id})}" 
+                                                            class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
+                                                            th:if="${isFavorite == false}">
+                                                        <i class="fa fa-heart me-2 text-primary"></i> Add to Favorites
+                                                    </a>
+                        
+                                                    <a th:href="@{/remove_from_favorites(eventId=${event.id})}"
+                                                            class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
+                                                            th:if="${isFavorite == true}">
+                                                        <i class="fa fa-heartbeat me-2 text-primary"></i> Remove from Favorites
+                                                    </a>
                                                 </div>
                                             </div>
                                         </a>
@@ -271,7 +278,18 @@
                                                         <i class="fa text-primary"></i> Add to Favorites
                                                             </button>
                                                         </form> -->
-                                                        <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa text-primary"></i>Add to Favorites</a>
+                                                        <!-- <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa text-primary"></i>Add to Favorites</a> -->
+                                                        <a th:href="@{/add_to_favorites(eventId=${event.id})}" 
+                                                                class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
+                                                                th:if="${isFavorite == false}">
+                                                            <i class="fa fa-heart me-2 text-primary"></i> Add to Favorites
+                                                        </a>
+                            
+                                                        <a th:href="@{/remove_from_favorites(eventId=${event.id})}"
+                                                                class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
+                                                                th:if="${isFavorite == true}">
+                                                            <i class="fa fa-heartbeat me-2 text-primary"></i> Remove from Favorites
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </a>

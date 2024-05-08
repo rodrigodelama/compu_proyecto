@@ -82,6 +82,9 @@ public class MainController {
                 if (event.getCreator().equals(currentUser)) {
                     model.addAttribute("createdEvent", true);
                 }
+                // Check if the current user has this event in favorites (if logged in)
+                boolean isFavorite = currentUser.getFavoriteEvents().contains(event);
+                model.addAttribute("isFavorite", isFavorite); // Boolean to indicate if the event is favorited
             }
 
             // List<Event> userEvents = currentUser.getFavoriteEvents();
@@ -244,12 +247,12 @@ public class MainController {
         Event event = optionalEvent.get();
         model.addAttribute("event", event);
 
-        // // Check if the current user has this event in favorites (if logged in)
-        // if (principal != null) {
-        //     User currentUser = userRepository.findByUsername(principal.getName());
-        //     boolean isFavorite = currentUser.getFavoriteEvents().contains(event);
-        //     model.addAttribute("isFavorite", isFavorite); // Boolean to indicate if the event is favorited
-        // }
+        // Check if the current user has this event in favorites (if logged in)
+        if (principal != null) {
+            User currentUser = userRepository.findByUsername(principal.getName());
+            boolean isFavorite = currentUser.getFavoriteEvents().contains(event);
+            model.addAttribute("isFavorite", isFavorite); // Boolean to indicate if the event is favorited
+        }
 
         return "event";
     }

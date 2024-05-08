@@ -142,17 +142,17 @@
                             <!-- <a href="/add_to_favorites?eventId={{ event.id }}" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
                                 <i class="fa fa-heart me-2 text-primary"></i> Add to Favorites
                             </a> -->
-                            <!-- <a th:href="@{/add_to_favorites(eventId=${event.id})}" 
-                            class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
-                            th:if="${isFavorite == false}">
+                            <a th:href="@{/add_to_favorites(eventId=${event.id})}" 
+                                    class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
+                                    th:if="${isFavorite == false}">
                                 <i class="fa fa-heart me-2 text-primary"></i> Add to Favorites
                             </a>
 
                             <a th:href="@{/remove_from_favorites(eventId=${event.id})}"
-                            class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
-                            th:if="${isFavorite == true}">
+                                    class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
+                                    th:if="${isFavorite == true}">
                                 <i class="fa fa-heartbeat me-2 text-primary"></i> Remove from Favorites
-                            </a> -->
+                            </a>
 
 
                             <!-- Tabs for additional information -->
