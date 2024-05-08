@@ -28,21 +28,27 @@ public class WebSecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            //autorization rules
             .authorizeHttpRequests((authorize) -> authorize
             .requestMatchers("/**", "/index", "/login", "/signup", "/public/**", "/images/**", "/error", "/event/**").permitAll()
+            .requestMatchers("/user/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
+            //login page, especifies the loging page, all requests are permitted to acces it
             .formLogin(formLogin -> formLogin
                 .loginPage("/login")
                 .permitAll());
-        return http.build();
+            
+        return http.build(); //called to build and return the OBjectsecutiry object
     }
 
+    // for encoiding the password
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    //handeling user authentication and spring application
     @Bean
     UserDetailsService userDetailsService() {
         return new UserDetailsServiceImpl();

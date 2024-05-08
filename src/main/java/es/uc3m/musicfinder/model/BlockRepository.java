@@ -3,6 +3,7 @@ package es.uc3m.musicfinder.model;
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,5 +14,13 @@ public interface BlockRepository extends CrudRepository<Block, Integer> {
 
     // Retrieves all users blocked by a given user
     List<Block> findByBlocker(User blocker);
+
+    //num usuarios que tiene bloqueado el usuario
+    @Query("SELECT COUNT(b) FROM Block b WHERE b.blocker = :user")
+    int countBlockedUsers(@Param("user") User user);
+
+   //num usuarios que bloquean a este usuario
+    @Query("SELECT COUNT(b) FROM Block b WHERE b.blocked = :user")
+    int countUsersBlockingUser(@Param("user") User user);
 
 }

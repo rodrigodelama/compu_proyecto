@@ -472,6 +472,65 @@ public class MainController {
         return "recommended";
     }
 
+
+    @GetMapping(path = "/admin_view")
+    public String admin_view(Model model, Principal principal) {
+        // Check login status
+        if (principal == null) {
+            return "redirect:/forbidden?not_logged_in";
+        }
+        // If logged in, retrieve the current user 
+        User user = userRepository.findByUsername(principal.getName());
+        String role = user.getRole();
+        //solo si es adming puede ver las estadisticas
+        if (!(role.equals("ADMIN"))) {
+            return "redirect:/forbidden?not_authorized_to_view_admin_view";
+        }
+        return "admin_view";
+    }
+
+    @GetMapping("/data_dashboard")
+    public String dataDashboard(Model model, Principal principal) {
+        // Check login status
+        if (principal == null) {
+            return "redirect:/forbidden?not_logged_in";
+        }
+        // If logged in, retrieve the current user 
+        User user = userRepository.findByUsername(principal.getName());
+        String role = user.getRole();
+        //solo si es adming puede ver las estadisticas
+        if (!(role.equals("ADMIN"))) {
+            return "redirect:/forbidden?not_authorized_to_view_data_dashboard";
+        }
+        // Obtener el número de recomendaciones para el usuario actual 
+        int recommendationToUserCount = recommendationRepository.countRecommendationsFromFriends(user);
+        model.addAttribute("recommendationToUserCount", recommendationToUserCount);
+
+        //obetener el numero de recomendaciones realizadas por el usuario actual
+        int recommendationFromUserCount = recommendationRepository.countRecommendationsToFriends(user);
+        model.addAttribute("recommendationFromUserCount", recommendationFromUserCount);
+
+        // Obtener el número de usuarios bloqueados por el usuario actual
+        int blockedUserCount = blockRepository.countBlockedUsers(user);
+        model.addAttribute("blockedUserCount", blockedUserCount);
+
+        // Obtener el número de usuarios que han bloqueado al usuario actual
+        int UsersBlockingUserCount = blockRepository.countUsersBlockingUser(user);
+        model.addAttribute("UsersBlockingUserCount", blockedUserCount);
+
+        // Obtener el número de eventos creados por el usuario actual
+        int eventCount = eventRepository.countEventsCreatedByUser(user);
+        model.addAttribute("eventCount", eventCount);
+
+        // Obtener el número de eventos marcados como favoritos por el usuario actual
+        // int favoriteEventCount = eventRepository.countFavoriteEventsForUser(user);
+        // model.addAttribute("favoriteEventCount", favoriteEventCount);
+    return "data_dashboard";
+}
+
+
+
+
     // //Nuevo metodo para ruta /post
     // @PostMapping(path = "/post")
     // public String postMessage(@ModelAttribute Message message, Principal principal) {
