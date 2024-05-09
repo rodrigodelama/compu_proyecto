@@ -110,10 +110,6 @@
                         <div class="col-lg-6">
                             <h2 class="fw-bold mb-3" th:text="${event.name}">Event Name</h2> <!-- Event Name -->
 
-                            <!-- Add/Remove from Favorites -->
-                            <!-- <a href="/add_to_favorites?eventId={{ event.id }}" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
-                                <i class="fa fa-heart me-2 text-primary"></i> Add to Favorites
-                            </a> -->
                             <!-- Form for adding to favorites with hidden field for returnUrl -->
                             <form th:action="@{/add_to_favorites(eventId=${event.id})}" method="post" th:if="${isFavorite == false}">
                                 <!-- Hidden field to capture current URL -->
@@ -132,17 +128,6 @@
                                 </button>
                             </form>
 
-                            <!-- <a th:href="@{/add_to_favorites(eventId=${event.id})}" 
-                            class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
-                            th:if="${isFavorite == false}">
-                                <i class="fa fa-heart me-2 text-primary"></i> Add to Favorites
-                            </a>
-                            <a th:href="@{/remove_from_favorites(eventId=${event.id})}"
-                            class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
-                            th:if="${isFavorite == true}">
-                                <i class="fa fa-heartbeat me-2 text-primary"></i> Remove from Favorites
-                            </a> -->
-
                             <!-- Posted On, Creator, and Block Button -->
                             <div class="row mb-4">
                                 <!-- Posted On -->
@@ -158,17 +143,26 @@
                                 </div>
 
                                 <!-- Block User -->
-                            <!-- <div th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}"> -->
+                                <!-- <form th:action="@{/remove_from_favorites(eventId=${event.id})}" method="post" th:if="${isFavorite == true}">
+                                    <input type="hidden" id="returnUrl" name="returnUrl">
+                                    <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
+                                    <i class="fa fa-heartbeat me-2 text-primary"></i> Remove from Favorites
+                                    </button>
+                                </form> -->
 
                                 <div class="col-4 text-end">
-                                    <!-- Check if a user is logged in and not the event creator -->
-                                    <a th:if="${#authentication.principal != null 
-                                            and (role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN')
-                                            and #authentication.principal.username != event.creator.username}"
-                                    th:href="@{/block_user(username=${event.creator.username})}"
-                                    class="btn border border-danger rounded-pill text-danger">
-                                        Block User
-                                    </a>
+                                    <!-- Ensure user is logged in, not the event creator, and has permission to block -->
+                                    <form th:if="${#authentication.principal != null 
+                                                and (role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN')
+                                                and #authentication.principal.username != event.creator.username}"
+                                        th:action="@{/block_user(username=${event.creator.username})}" 
+                                        method="post">
+                                        <!-- Hidden field to capture current URL for redirecting back -->
+                                        <input type="hidden" id="returnBlockUrl" name="returnBlockUrl"/>
+                                        <button type="submit" class="btn border border-danger rounded-pill text-danger">
+                                            Block User
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
 

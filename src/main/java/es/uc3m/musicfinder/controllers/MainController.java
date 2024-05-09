@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
+import java.beans.BeanProperty;
 import java.security.Principal;
 import java.time.LocalDateTime;
 // import java.time.ZoneId;
@@ -539,4 +539,82 @@ public class MainController {
         return finalRedirect;
     }
 
+    // th:action="@{/block_user(username=${event.creator.username})}" 
+    @PostMapping("/block_user")
+    public String blockUser(@RequestParam("username") String username,
+                        @RequestParam("returnBlockUrl") String returnBlockUrl,
+                        RedirectAttributes redirectAttributes, Principal principal) {
+        // Check login status
+        if (principal == null) {
+            return "redirect:/forbidden?not_logged_in";
+        }
+
+        // If logged in, retrieve the current user
+        String currentUsername = principal.getName();
+        User currentUser = userRepository.findByUsername(currentUsername);
+
+        // Retrieve the user to block by their username
+        User userToBlock = userRepository.findByUsername(username);
+
+        // Check if the user to block exists
+        if (userToBlock == null) {
+            return "redirect:/error?user_to_block_not_found";
+        }
+
+        // Check if the user is trying to block themselves
+        if (currentUser.equals(userToBlock)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to block user.");
+            return "redirect:/error?cannot_block_yourself";
+        }
+
+        // Check if the user is already blocked
+        if (blockRepository.existsByBlockerAndBlocked(currentUser, userToBlock)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to block user.");
+            return "redirect:/error?user_already_blocked";
+        }
+
+        // Block the user
+        Block newBlock = new Block();
+        newBlock.setBlocker(currentUser);
+        newBlock.setBlocked(userToBlock);
+        newBlock.setBlockedAt(new Date());
+
+        // Save the block to the database
+        blockRepository.save(newBlock);
+
+        // redirectAttributes.addFlashAttribute("successMessage", "User has been blocked.");
+
+        return "redirect:/?__user_blocked_succesfully";
+    }
+
+
+
+
+
+    // @PostMapping("/block_user")
+    // public String blockUser(
+    //     @RequestParam("username") String username,
+    //     @RequestParam("returnBlockUrl") String returnBlockUrl,
+    //     RedirectAttributes redirectAttributes
+    // ) {
+    //     // Implement your logic to block the user with the given username
+    //     boolean isBlocked = blockUserByUsername(username);
+
+    //     if (isBlocked) {
+    //         // Add success message to redirect attributes
+    //         redirectAttributes.addFlashAttribute("successMessage", "User has been blocked.");
+    //     } else {
+    //         // Add failure message to redirect attributes
+    //         redirectAttributes.addFlashAttribute("errorMessage", "Failed to block user.");
+    //     }
+
+    //     // Redirect to the provided URL
+    //     return "redirect:" + returnBlockUrl;
+    // }
+
+    // private boolean blockUserByUsername(String username) {
+    //     // Your logic to block a user by username
+    //     // Return true if successful, false otherwise
+    //     return true; // Example implementation
+    // }
 }
