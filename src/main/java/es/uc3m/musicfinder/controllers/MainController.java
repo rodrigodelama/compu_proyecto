@@ -44,13 +44,29 @@ import es.uc3m.musicfinder.services.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+// Redirect
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+// PreAuthorize
+// import org.springframework.security.access.prepost.PreAuthorize;
+
 
 @Controller
 @RequestMapping(path = "/")
 public class MainController {
 
+    // Services
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EventService eventService;
+
+    @Autowired
+    private RecommendationService recommendationService;
+
+    @Autowired
+    private BlockService blockService;
 
     // Repositories
     @Autowired
@@ -522,7 +538,7 @@ public class MainController {
     }
 
 
-    @GetMapping(path = "/admin_view")
+    @GetMapping(path = "/admin_panel")
     public String admin_view(Model model, Principal principal) {
         // Check login status
         if (principal == null) {
@@ -535,52 +551,64 @@ public class MainController {
         if (!(role.equals("ADMIN"))) {
             return "redirect:/forbidden?not_authorized_to_view_admin_view";
         }
-        return "admin_view";
+        model.addAttribute("role", role);
+        return "admin_panel";
     }
 
-    @GetMapping("/data_dashboard")
-    public String dataDashboard(Model model, Principal principal) {
-        // Check login status
-        if (principal == null) {
-            return "redirect:/forbidden?not_logged_in";
-        }
-        // If logged in, retrieve the current user 
-        User user = userRepository.findByUsername(principal.getName());
-        String role = user.getRole();
-        //solo si es adming puede ver las estadisticas
-        if (!(role.equals("ADMIN"))) {
-            return "redirect:/forbidden?not_authorized_to_view_data_dashboard";
+    @PostMapping("/admin_panel/search_user")
+    // @PreAuthorize("hasRole('ADMIN')") // Only admins can perform this action
+    public String searchUser(@RequestParam("username") String username, RedirectAttributes redirectAttributes) {
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            // If the user doesn't exist, add an error message to be displayed on the admin view
+            redirectAttributes.addFlashAttribute("error", "User not found");
+            return "redirect:/admin_panel";
         }
 
-        model.addAttribute("role", role);
+        // If the user exists, redirect to the data dashboard for that user
+        return "redirect:/data_dashboard/" + user.getId();
+    }
 
-        // Add the username to the model
+    // public String eventView(@PathVariable("eventId") int eventId, Model model, Principal principal)
+    @GetMapping("/data_dashboard/{userId}")
+    // @PreAuthorize("hasRole('ADMIN')") // Only admin can view specific user data
+    public String dataDashboardByUserId(@PathVariable("userId") int userId, Model model) {
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if (userOptional.isEmpty()) {
+            return "error"; // Redirect or return error page
+        }
+        model.addAttribute("role", "ADMIN");
+
+        User user = userOptional.get();
+
         model.addAttribute("username", user.getUsername());
 
-        // Obtener el número de recomendaciones para el usuario actual
+        // Número de recomendaciones que ha recibido el usuario
         int recommendationToUserCount = recommendationRepository.countRecommendationsFromFriends(user);
         model.addAttribute("recommendationToUserCount", recommendationToUserCount);
 
-        // Obetener el numero de recomendaciones realizadas por el usuario actual
+        // Número de recomendaciones que ha hecho el usuario
         int recommendationFromUserCount = recommendationRepository.countRecommendationsToFriends(user);
         model.addAttribute("recommendationFromUserCount", recommendationFromUserCount);
 
-        // Obtener el número de usuarios bloqueados por el usuario actual
+        // Numero de bloqueos realizados por el usuario
         int blockedUserCount = blockRepository.countBlockedUsers(user);
         model.addAttribute("blockedUserCount", blockedUserCount);
 
-        // Obtener el número de usuarios que han bloqueado al usuario actual
-        int UsersBlockingUserCount = blockRepository.countUsersBlockingUser(user);
-        model.addAttribute("usersBlockingUserCount", blockedUserCount);
+        // Numero de bloqueos recibidos por el usuario
+        int usersBlockingUserCount = blockRepository.countUsersBlockingUser(user);
+        model.addAttribute("usersBlockingUserCount", usersBlockingUserCount);
 
-        // Obtener el número de eventos creados por el usuario actual
+        // Numero de eventos creados por el usuario
         int eventCount = eventRepository.countEventsCreatedByUser(user);
         model.addAttribute("eventCount", eventCount);
 
-        // Obtener el número de eventos marcados como favoritos por el usuario actual
-        // int favoriteEventCount = eventRepository.countFavoriteEventsForUser(user);
+        // Numero de eventos favoritos del usuario
         int favoriteEventCount = user.getFavoriteEvents().size();
         model.addAttribute("favoriteEventCount", favoriteEventCount);
+
     return "data_dashboard";
     //broken better do data_dashboard/{user.getId()}
     // return "data_dashboard/" + user.getId() + "?statistics";

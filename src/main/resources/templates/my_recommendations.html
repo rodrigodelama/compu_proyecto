@@ -74,7 +74,7 @@
                             <!-- TODO Custom Thymeleaf Expression below -->
                             <!-- <a sec:authorize="hasRole('ORGANIZER') or @customSecurityExpressions.hasCreatedAnEvent()"
                                 th:href="@{/my_events}" class="nav-item nav-link">My Events</a> -->
-                            <a th:if="${role == 'ADMIN'}" th:href="@{/data_dashboard}" class="nav-item nav-link">Data Dashboard</a>
+                            <a th:if="${role == 'ADMIN'}" th:href="@{/admin_panel}" class="nav-item nav-link">Admin Panel</a>
                         </div>
                         <div class="d-flex m-3 me-0">
                             <!-- sign in and sign up buttons here if not logged in -->
@@ -151,9 +151,9 @@
                                     <div class="col-md-6 col-lg-4 col-xl-3">
                                         <div class="rounded position-relative fruite-item">
                                             <div class="fruite-img">
-                                                <img src="public/img/fruite-item-5.jpg" class="img-fluid w-100 rounded-top" alt="">
+                                                <img th:src="@{/public/img/single-item.jpg}" class="img-fluid w-100 rounded-top" alt="">
                                             </div>
-                                            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">Fruits</div>
+
                                             <div class="p-4 border border-secondary border-top-0 rounded-bottom">
                                                 <h4>Grapes</h4>
                                                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te incididunt</p>

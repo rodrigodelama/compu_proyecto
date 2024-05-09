@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="utf-8">
-        <title>MusicFinder - EVENT NAME PLACEHODER</title>
+        <title>MusicFinder - Where music meets you</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
@@ -11,7 +11,7 @@
         <!-- Google Web Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet">
 
         <!-- Icon Font Stylesheet -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
@@ -67,7 +67,7 @@
                                 my_events page (the ones the user has created) (ORGANIZER & USERs that have created events)
                                 data dashboard (only shown if admin) (ADMIN)
                             -->
-                            <!-- Menu navigation links ONLY SHOWN if logged in, and of your type -->
+        <!-- Menu navigation links ONLY SHOWN if logged in, and of your type -->
                             <a th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/my_favorite_events}" class="nav-item nav-link">My Favorites</a>
                             <a th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/recommended}" class="nav-item nav-link">Recommended</a>
                             <a th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/my_recommendations}" class="nav-item nav-link">My Recommendations</a>
@@ -77,7 +77,7 @@
                             <!-- TODO Custom Thymeleaf Expression below -->
                             <!-- <a sec:authorize="hasRole('ORGANIZER') or @customSecurityExpressions.hasCreatedAnEvent()"
                                 th:href="@{/my_events}" class="nav-item nav-link">My Events</a> -->
-                            <a th:if="${role == 'ADMIN'}" th:href="@{/data_dashboard}" class="nav-item nav-link">Data Dashboard</a>
+                            <a th:if="${role == 'ADMIN'}" th:href="@{/admin_panel}" class="nav-item nav-link">Admin Panel</a>
                             
                         </div>
                         <div class="d-flex m-3 me-0">
@@ -110,154 +110,36 @@
         </div>
         <!-- Navbar End -->
 
-        <!-- User Panel Start -->
-        <div class="container-fluid py-5 mt-5">
+        <!-- Single Page Header start -->
+        <div class="container-fluid page-header py-5">
+            <h1 class="text-center text-white display-6">Search for a user's statistics here</h1>
+        </div>
+        <!-- Single Page Header End -->
+
+        <!-- User Search Start -->
+        <div sec:authorize="isAuthenticated()" class="container-fluid fruite py-5">
             <div class="container py-5">
-                <div class="row g-4 mb-5">
-                    <div class="col-lg-8 col-xl-9">
-                        <div class="row g-4">
-                            <div class="col-lg-6">
-                                <div class="border rounded">
-                                    <a href="#">
-                                        <img src="img/single-item.jpg" class="img-fluid rounded" alt="Image">
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <h4 class="fw-bold mb-3">Brocoli</h4>
-                                <p class="mb-3">Category: Vegetables</p>
-                                <h5 class="fw-bold mb-3">3,35 $</h5>
-                                <div class="d-flex mb-4">
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <p class="mb-4">The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic words etc.</p>
-                                <p class="mb-4">Susp endisse ultricies nisi vel quam suscipit. Sabertooth peacock flounder; chain pickerel hatchetfish, pencilfish snailfish</p>
-                                <!-- <div class="input-group quantity mb-5" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-minus rounded-circle bg-light border" >
-                                            <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm text-center border-0" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-plus rounded-circle bg-light border">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div> -->
-                                <a href="#" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to Favorite</a>
-                            </div>
-                            <div class="col-lg-12">
-                                <nav>
-                                    <div class="nav nav-tabs mb-3">
-                                        <button class="nav-link active border-white border-bottom-0" type="button" role="tab"
-                                            id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about"
-                                            aria-controls="nav-about" aria-selected="true">Description</button>
-                                        <button class="nav-link border-white border-bottom-0" type="button" role="tab"
-                                            id="nav-mission-tab" data-bs-toggle="tab" data-bs-target="#nav-mission"
-                                            aria-controls="nav-mission" aria-selected="false">Reviews</button>
-                                    </div>
-                                </nav>
-                                <div class="tab-content mb-5">
-                                    <div class="tab-pane active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
-                                        <p>The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic words etc. 
-                                            Susp endisse ultricies nisi vel quam suscipit </p>
-                                        <p>Sabertooth peacock flounder; chain pickerel hatchetfish, pencilfish snailfish filefish Antarctic 
-                                            icefish goldeye aholehole trumpetfish pilot fish airbreathing catfish, electric ray sweeper.</p>
-                                        <div class="px-2">
-                                            <div class="row g-4">
-                                                <div class="col-6">
-                                                    <div class="row bg-light align-items-center text-center justify-content-center py-2">
-                                                        <div class="col-6">
-                                                            <p class="mb-0">Weight</p>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <p class="mb-0">1 kg</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row text-center align-items-center justify-content-center py-2">
-                                                        <div class="col-6">
-                                                            <p class="mb-0">Country of Origin</p>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <p class="mb-0">Agro Farm</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row bg-light text-center align-items-center justify-content-center py-2">
-                                                        <div class="col-6">
-                                                            <p class="mb-0">Quality</p>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <p class="mb-0">Organic</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row text-center align-items-center justify-content-center py-2">
-                                                        <div class="col-6">
-                                                            <p class="mb-0">Сheck</p>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <p class="mb-0">Healthy</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row bg-light text-center align-items-center justify-content-center py-2">
-                                                        <div class="col-6">
-                                                            <p class="mb-0">Min Weight</p>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <p class="mb-0">250 Kg</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                <div class="row justify-content-center">
+                    <!-- Start with a card to contain the content -->
+                    <div class="col-12 col-lg-8">
+                        <div class="card rounded">
+                            <div class="card-body">
+                                <!-- Search for a user -->
+                                <div class="row mb-4">
+                                    <div class="col-12 col-md-8 mx-auto">
+                                        <h4 class="fw-bold">Search:</h4>
+                                        <form th:action="@{/admin_panel/search_user}" method="post">
+                                            <div class="position-relative mx-auto">
+                                                <input class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" 
+                                                    type="text" 
+                                                    name="username" 
+                                                    placeholder="Username"
+                                                    required> <!-- Make the field required -->
+                                                <button type="submit" 
+                                                    class="btn btn-primary border-2 border-secondary py-3 px-4 position-absolute rounded-pill text-white h-100" 
+                                                    style="top: 0; right: 25%;">Buscar</button>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane" id="nav-mission" role="tabpanel" aria-labelledby="nav-mission-tab">
-                                        <div class="d-flex">
-                                            <img src="img/avatar.jpg" class="img-fluid rounded-circle p-3" style="width: 100px; height: 100px;" alt="">
-                                            <div class="">
-                                                <p class="mb-2" style="font-size: 14px;">April 12, 2024</p>
-                                                <div class="d-flex justify-content-between">
-                                                    <h5>Jason Smith</h5>
-                                                    <div class="d-flex mb-3">
-                                                        <i class="fa fa-star text-secondary"></i>
-                                                        <i class="fa fa-star text-secondary"></i>
-                                                        <i class="fa fa-star text-secondary"></i>
-                                                        <i class="fa fa-star text-secondary"></i>
-                                                        <i class="fa fa-star"></i>
-                                                    </div>
-                                                </div>
-                                                <p>The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic 
-                                                    words etc. Susp endisse ultricies nisi vel quam suscipit </p>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex">
-                                            <img src="img/avatar.jpg" class="img-fluid rounded-circle p-3" style="width: 100px; height: 100px;" alt="">
-                                            <div class="">
-                                                <p class="mb-2" style="font-size: 14px;">April 12, 2024</p>
-                                                <div class="d-flex justify-content-between">
-                                                    <h5>Sam Peters</h5>
-                                                    <div class="d-flex mb-3">
-                                                        <i class="fa fa-star text-secondary"></i>
-                                                        <i class="fa fa-star text-secondary"></i>
-                                                        <i class="fa fa-star text-secondary"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                    </div>
-                                                </div>
-                                                <p class="text-dark">The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic 
-                                                    words etc. Susp endisse ultricies nisi vel quam suscipit </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane" id="nav-vision" role="tabpanel">
-                                        <p class="text-dark">Tempor erat elitr rebum at clita. Diam dolor diam ipsum et tempor sit. Aliqu diam
-                                            amet diam et eos labore. 3</p>
-                                        <p class="mb-0">Diam dolor diam ipsum et tempor sit. Aliqu diam amet diam et eos labore.
-                                            Clita erat ipsum et lorem et sit</p>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -266,9 +148,8 @@
                 </div>
             </div>
         </div>
-        <!-- User Panel End -->
+        <!-- User Search End -->
 
-        
         <!-- Footer & Copyright Start -->
         <div class="container-fluid copyright bg-dark py-4">
             <div class="container">
@@ -305,10 +186,6 @@
     <script src="public/lib/waypoints/waypoints.min.js"></script>
     <script src="public/lib/lightbox/js/lightbox.min.js"></script>
     <script src="public/lib/owlcarousel/owl.carousel.min.js"></script>
-    <script>
-        const img = new Image();
-        img.src = 'public/img/single_item.jpg';
-    </script>   
 
     <!-- Template Javascript -->
     <script src="public/js/main.js"></script>
