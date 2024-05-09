@@ -125,13 +125,31 @@
                         </div>
                         <!-- Event Details start THYMELEAF -->
                         <div class="col-lg-6">
-                            <h2 class="fw-bold mb-3" th:text="${event.name}">{{ event.name }}</h2> <!-- Event Name -->
+                            <h2 class="fw-bold mb-3" th:text="${event.name}">Event Name</h2> <!-- Event Name -->
 
                             <!-- Add/Remove from Favorites -->
                             <!-- <a href="/add_to_favorites?eventId={{ event.id }}" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
                                 <i class="fa fa-heart me-2 text-primary"></i> Add to Favorites
                             </a> -->
-                            <a th:href="@{/add_to_favorites(eventId=${event.id})}" 
+                            <!-- Form for adding to favorites with hidden field for returnUrl -->
+                            <form th:action="@{/add_to_favorites(eventId=${event.id})}" method="post" th:if="${isFavorite == false}">
+                                <!-- Hidden field to capture current URL -->
+                                <input type="hidden" id="returnUrl" name="returnUrl">
+                                <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
+                                <i class="fa fa-heart me-2 text-primary"></i> Add to Favorites
+                                </button>
+                            </form>
+                            
+                            <!-- Form for removing from favorites with hidden field for returnUrl -->
+                            <form th:action="@{/remove_from_favorites(eventId=${event.id})}" method="post" th:if="${isFavorite == true}">
+                                <!-- Hidden field to capture current URL -->
+                                <input type="hidden" id="returnUrl" name="returnUrl">
+                                <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
+                                <i class="fa fa-heartbeat me-2 text-primary"></i> Remove from Favorites
+                                </button>
+                            </form>
+
+                            <!-- <a th:href="@{/add_to_favorites(eventId=${event.id})}" 
                             class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
                             th:if="${isFavorite == false}">
                                 <i class="fa fa-heart me-2 text-primary"></i> Add to Favorites
@@ -140,7 +158,7 @@
                             class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
                             th:if="${isFavorite == true}">
                                 <i class="fa fa-heartbeat me-2 text-primary"></i> Remove from Favorites
-                            </a>
+                            </a> -->
 
                             <!-- Posted On, Creator, and Block Button -->
                             <div class="row mb-4">
@@ -157,10 +175,16 @@
                                 </div>
 
                                 <!-- Block User -->
+                            <!-- <div th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}"> -->
+
                                 <div class="col-4 text-end">
-                                    <a th:href="@{/block_user(username=${event.creator.username})}"
+                                    <!-- Check if a user is logged in and not the event creator -->
+                                    <a th:if="${#authentication.principal != null 
+                                            and (role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN')
+                                            and #authentication.principal.username != event.creator.username}"
+                                    th:href="@{/block_user(username=${event.creator.username})}"
                                     class="btn border border-danger rounded-pill text-danger">
-                                    Block User
+                                        Block User
                                     </a>
                                 </div>
                             </div>
@@ -225,21 +249,30 @@
         <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
 
         
-    <!-- JavaScript Libraries -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- <script src="public/lib/easing/easing.min.js"></script>
-    <script src="public/lib/waypoints/waypoints.min.js"></script>
-    <script src="public/lib/lightbox/js/lightbox.min.js"></script>
-    <script src="public/lib/owlcarousel/owl.carousel.min.js"></script> -->
-    <script th:src="@{/public/lib/easing/easing.min.js}"></script>
-    <script th:src="@{/public/lib/waypoints/waypoints.min.js}"></script>
-    <script th:src="@{/public/lib/lightbox/js/lightbox.min.js}"></script>
-    <script th:src="@{/public/lib/owlcarousel/owl.carousel.min.js}"></script>
+        <!-- JavaScript Libraries -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script th:src="@{/public/lib/easing/easing.min.js}"></script>
+        <script th:src="@{/public/lib/waypoints/waypoints.min.js}"></script>
+        <script th:src="@{/public/lib/lightbox/js/lightbox.min.js}"></script>
+        <script th:src="@{/public/lib/owlcarousel/owl.carousel.min.js}"></script>
 
-    <!-- Template Javascript -->
-    <script th:src="@{/public/js/main.js}"></script>
-    <!-- <script src="public/js/main.js"></script> -->
+        <!-- Template Javascript -->
+        <script th:src="@{/public/js/main.js}"></script>
+
+        <!-- Added JavaScript to capture the current URL and set a hidden field -->
+        <script>
+            // Get the current URL (including query parameters, if any)
+            const currentUrl = window.location.href;
+        
+            // Set the value of hidden input field with id 'returnUrl'
+            window.addEventListener("load", function () {
+            const returnUrlField = document.getElementById("returnUrl");
+            if (returnUrlField) {
+                returnUrlField.value = currentUrl;
+            }
+            });
+        </script>
     </body>
 
 </html>
