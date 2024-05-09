@@ -17,9 +17,9 @@ public interface UserService {
     void unblock(User user, User blocked) throws UserServiceException;
 
     // Follows SAME AS FAVORITES
-    boolean follows(User follower, User followed); 
-    void follow(User follower, User followed) throws UserServiceException;
-    void unfollow(User follower, User followed) throws UserServiceException;
+    // boolean follows(User follower, User followed); 
+    // void follow(User follower, User followed) throws UserServiceException;
+    // void unfollow(User follower, User followed) throws UserServiceException;
 
     // Favorites
     boolean favoritedEvent(User user, Event event);

@@ -33,7 +33,7 @@ public class Event {
     // Format expected from client-side
     // @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") //TODO: cambiar al borrar base de datos
     private LocalDateTime date;
 
     @Column(nullable = false)

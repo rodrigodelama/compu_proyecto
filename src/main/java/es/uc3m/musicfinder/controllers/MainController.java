@@ -47,8 +47,8 @@ import org.springframework.data.domain.Pageable;
 // Redirect
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-// PreAuthorize
-// import org.springframework.security.access.prepost.PreAuthorize;
+// Transactional (for unblocking)
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Controller
@@ -92,11 +92,13 @@ public class MainController {
             String role = currentUser.getRole();
             model.addAttribute("role", role);
 
+            if (currentUser.getFavoriteEvents().size() != 0)
+                model.addAttribute("createdEvent", true);
+
             // TODO: CHANGE TO USE CUSTOM QUERY Check if the user has created any events regardless of current role
             List<Event> events = eventRepository.findAllByOrderByTimestampDesc();
             for (Event event : events) {
                 if (event.getCreator().equals(currentUser)) {
-                    model.addAttribute("createdEvent", true);
                 }
                 // Check if the current user has this event in favorites (if logged in)
                 boolean isFavorite = currentUser.getFavoriteEvents().contains(event);
@@ -107,11 +109,18 @@ public class MainController {
                 // ONLY LOAD RECENT RECOMMENDATIONS (10 most recent for example)
                 // Recomendations always exclude blocked users
                 List<Recommendation> recentRecommendations = recommendationRepository.findTopNRecommendationsExcludingBlockedUsers(currentUser, PageRequest.of(0, 10));
-                
-                if (recentRecommendations.isEmpty()) 
+                model.addAttribute("recommendations", recentRecommendations);
+                if (recentRecommendations.isEmpty()) {
                     model.addAttribute("noRecommendations", true);
+                } else {
+                    for (Recommendation recommendation : recentRecommendations) {
+                        // Check if the current user has this event in favorites (if logged in)
+                        boolean isFavorite = currentUser.getFavoriteEvents().contains(recommendation.getEvent());
+                        model.addAttribute("isFavorite"+recommendation.getEvent().getId(), isFavorite); // Boolean to indicate if the event is favorited
+                    }
+                    model.addAttribute("noRecommendations", false);
+                }
             }
-            model.addAttribute("noRecommendations", true);
         }
         
         // Ensure 'page' is a valid index and non-negative
@@ -227,13 +236,6 @@ public class MainController {
 
     @GetMapping(path = "/event/{eventId}")
     public String eventView(@PathVariable("eventId") int eventId, Model model, Principal principal) {
-        // Check login status for navbar
-        if (principal != null) {
-            String username = principal.getName();
-            User currentUser = userRepository.findByUsername(username);
-            String role = currentUser.getRole();
-            model.addAttribute("role", role);
-        }
         // Retrieve the event by its ID
         Optional<Event> optionalEvent = eventRepository.findById(eventId);
 
@@ -246,12 +248,23 @@ public class MainController {
         // If the event exists, add it to the model
         Event event = optionalEvent.get();
         model.addAttribute("event", event);
-
-        // Check if the current user has this event in favorites (if logged in)
+        
+        // Check login status for navbar
         if (principal != null) {
-            User currentUser = userRepository.findByUsername(principal.getName());
+            String username = principal.getName();
+            User currentUser = userRepository.findByUsername(username);
+            String role = currentUser.getRole();
+            model.addAttribute("role", role);
+
+            // Check if the current user has this event in favorites (if logged in)
             boolean isFavorite = currentUser.getFavoriteEvents().contains(event);
             model.addAttribute("isFavorite", isFavorite); // Boolean to indicate if the event is favorited
+
+            // if the current user has blocked the creator
+            if (blockRepository.existsByBlockerAndBlocked(currentUser, event.getCreator()))
+                model.addAttribute("creatorBlocked", true);
+            else
+                model.addAttribute("creatorBlocked", false);
         }
 
         return "event";
@@ -542,8 +555,9 @@ public class MainController {
     // th:action="@{/block_user(username=${event.creator.username})}" 
     @PostMapping("/block_user")
     public String blockUser(@RequestParam("username") String username,
-                        @RequestParam("returnBlockUrl") String returnBlockUrl,
-                        RedirectAttributes redirectAttributes, Principal principal) {
+                        // @RequestParam("returnBlockUrl") String returnBlockUrl,
+                        // RedirectAttributes redirectAttributes, TODO: valorar si poner banners mirar DELETE event
+                        Principal principal) {
         // Check login status
         if (principal == null) {
             return "redirect:/forbidden?not_logged_in";
@@ -563,17 +577,20 @@ public class MainController {
 
         // Check if the user is trying to block themselves
         if (currentUser.equals(userToBlock)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to block user.");
+            // redirectAttributes.addFlashAttribute("errorMessage", "Failed to block user.");
             return "redirect:/error?cannot_block_yourself";
         }
 
         // Check if the user is already blocked
         if (blockRepository.existsByBlockerAndBlocked(currentUser, userToBlock)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to block user.");
+            // redirectAttributes.addFlashAttribute("errorMessage", "Failed to block user.");
             return "redirect:/error?user_already_blocked";
         }
 
         // Block the user
+        // TODO: use BlockService
+        // TODO: do BlockServiceImpl etc
+        // blockService.block(currentUser, userToBlock);
         Block newBlock = new Block();
         newBlock.setBlocker(currentUser);
         newBlock.setBlocked(userToBlock);
@@ -587,34 +604,104 @@ public class MainController {
         return "redirect:/?__user_blocked_succesfully";
     }
 
+    // TODO: implement later
+    @PostMapping("/unblock_user")
+    @Transactional
+    public String unblockUser(@RequestParam("username") String username,
+                        // @RequestParam("returnBlockUrl") String returnBlockUrl,
+                        // RedirectAttributes redirectAttributes,
+                        Principal principal) {
+        // Check login status
+        if (principal == null) {
+            return "redirect:/forbidden?not_logged_in";
+        }
 
+        // If logged in, retrieve the current user
+        String currentUsername = principal.getName();
+        User currentUser = userRepository.findByUsername(currentUsername);
 
+        // Retrieve the user to unblock by their username
+        User userToUnblock = userRepository.findByUsername(username);
 
+        // Check if the user to unblock exists
+        if (userToUnblock == null) {
+            return "redirect:/error?user_to_unblock_not_found";
+        }
 
-    // @PostMapping("/block_user")
-    // public String blockUser(
-    //     @RequestParam("username") String username,
-    //     @RequestParam("returnBlockUrl") String returnBlockUrl,
-    //     RedirectAttributes redirectAttributes
-    // ) {
-    //     // Implement your logic to block the user with the given username
-    //     boolean isBlocked = blockUserByUsername(username);
+        // Check if the user is trying to unblock themselves
+        if (currentUser.equals(userToUnblock)) {
+            // redirectAttributes.addFlashAttribute("errorMessage", "Failed to unblock user.");
+            return "redirect:/error?cannot_unblock_yourself";
+        }
 
-    //     if (isBlocked) {
-    //         // Add success message to redirect attributes
-    //         redirectAttributes.addFlashAttribute("successMessage", "User has been blocked.");
-    //     } else {
-    //         // Add failure message to redirect attributes
-    //         redirectAttributes.addFlashAttribute("errorMessage", "Failed to block user.");
-    //     }
+        // Check if the user is not blocked
+        if (!blockRepository.existsByBlockerAndBlocked(currentUser, userToUnblock)) {
+            // redirectAttributes.addFlashAttribute("errorMessage", "Failed to unblock user.");
+            return "redirect:/error?user_not_blocked";
+        }
 
-    //     // Redirect to the provided URL
-    //     return "redirect:" + returnBlockUrl;
-    // }
+        // Unblock the user
+        // Block block = blockRepository.findByBlockerAndBlocked(currentUser, userToUnblock);
+        // blockRepository.delete(block);
 
-    // private boolean blockUserByUsername(String username) {
-    //     // Your logic to block a user by username
-    //     // Return true if successful, false otherwise
-    //     return true; // Example implementation
-    // }
+        blockRepository.deleteByBlockerAndBlocked(currentUser, userToUnblock);
+
+        // redirectAttributes.addFlashAttribute("successMessage", "User has been unblocked.");
+
+        return "redirect:/?__user_unblocked_succesfully";
+    }
+
+    // Recommendation
+    // <form th:action="@{/recommend_event(eventId=${event.id})}" method="post">
+    @PostMapping("/recommend_event")
+    public String recommendEvent(@RequestParam("eventId") int eventId,
+                                 @RequestParam("username") String username,
+                                 Principal principal) {
+        // Check login status
+        if (principal == null) {
+            return "redirect:/forbidden?not_logged_in";
+        }
+
+        // If logged in, retrieve the current user
+        String currentUsername = principal.getName();
+        User currentUser = userRepository.findByUsername(currentUsername);
+
+        // Retrieve the user to recommend the event to by their username
+        User userToRecommend = userRepository.findByUsername(username);
+
+        // Check if the user to recommend the event to exists
+        if (userToRecommend == null) {
+            return "redirect:/error?user_to_recommend_event_not_found";
+        }
+
+        // Retrieve the event by its ID
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
+
+        // Handle the case where the event does not exist
+        if (optionalEvent.isEmpty()) {
+            return "redirect:/error?event_to_recommend_not_found";
+        }
+
+        // If the event exists, add a recommendation
+        Event event = optionalEvent.get();
+
+        //TODO: review recommend in UserServiceImpl (UserServiceException)
+
+        // try {
+        //     userService.recommend(userToRecommend, userToRecommend, event);
+        // } catch (UserServiceException e) {
+        //     return "redirect:/error?failed_to_recommend_event";
+        // }
+
+        Recommendation newRecommendation = new Recommendation();
+        newRecommendation.setEvent(event);
+        newRecommendation.setRecommender(currentUser);
+        newRecommendation.setRecommendTo(userToRecommend);
+        newRecommendation.setTimestamp(new Date());
+
+        // Save the recommendation to the database
+        recommendationRepository.save(newRecommendation);
+
+        return "redirect:/?__event_recommended_succesfully";
+    }
 }

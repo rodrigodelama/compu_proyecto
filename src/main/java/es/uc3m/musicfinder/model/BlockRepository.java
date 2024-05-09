@@ -12,6 +12,12 @@ public interface BlockRepository extends CrudRepository<Block, Integer> {
     // Checks if a specific block exists between a blocker and a blocked user
     boolean existsByBlockerAndBlocked(User blocker, User blocked);
 
+    Block findByBlockerAndBlocked(User blocker, User blocked);
+
+    // Delete Block
+    // had to include @Transactional in PostMapping for it to work
+    void deleteByBlockerAndBlocked(User blocker, User blocked);
+
     // Retrieves all users blocked by a given user
     List<Block> findByBlocker(User blocker);
 

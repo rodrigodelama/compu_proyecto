@@ -47,43 +47,43 @@ public class UserServiceImpl implements UserService {
      * devuelve true si el usuario seguido está contenido en la lista de usuarios que sigue el usuario seguidor.
      * false en caso contrario.
      */
-    @Override
-    public boolean follows(User follower, User followed) { // para ver si un usuario sigue a otro.
-        /*
-         * devuelve true si el usuario seguido está contenido en la lista de usuarios 
-         * que sigue el usuario seguidor
-         *-----------------------------------
-         * false en caso contrario. 
-         */
-        if(follower.getFollowing().contains(followed)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    @Override
-    public void follow(User follower, User followed) throws UserServiceException {
-        //follower: el que quiere ser seguidor
-        //followed: el que quiere ser seguido
-        //verifica primero que el usuario seguidor no esté intentando seguirse a sí mismo
-        //verifica que el usuario seguidor no esté siguiendo ya al usuario seguido
-        if((!follows(follower, followed)) && (!follower.equals(followed))) {
-            follower.getFollowing().add(followed);
-            userRepository.save(follower);
-        } else {
-            throw new UserServiceException("El usuario no se puede seguir a sí mismo");
-        }
-    }
-    @Override
-    public void unfollow(User follower, User followed) throws UserServiceException {
-        //verifica que el usuario seguidor esté siguiendo al usuario seguido.
-        if(!follows(follower, followed)) {
-            throw new UserServiceException("El seguidor no está siguiendo al usuario seguido");
-        } else {
-            follower.getFollowing().remove(followed);
-            userRepository.save(follower);
-        }
-    }
+    // @Override
+    // public boolean follows(User follower, User followed) { // para ver si un usuario sigue a otro.
+    //     /*
+    //      * devuelve true si el usuario seguido está contenido en la lista de usuarios 
+    //      * que sigue el usuario seguidor
+    //      *-----------------------------------
+    //      * false en caso contrario. 
+    //      */
+    //     if(follower.getFollowing().contains(followed)) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
+    // @Override
+    // public void follow(User follower, User followed) throws UserServiceException {
+    //     //follower: el que quiere ser seguidor
+    //     //followed: el que quiere ser seguido
+    //     //verifica primero que el usuario seguidor no esté intentando seguirse a sí mismo
+    //     //verifica que el usuario seguidor no esté siguiendo ya al usuario seguido
+    //     if((!follows(follower, followed)) && (!follower.equals(followed))) {
+    //         follower.getFollowing().add(followed);
+    //         userRepository.save(follower);
+    //     } else {
+    //         throw new UserServiceException("El usuario no se puede seguir a sí mismo");
+    //     }
+    // }
+    // @Override
+    // public void unfollow(User follower, User followed) throws UserServiceException {
+    //     //verifica que el usuario seguidor esté siguiendo al usuario seguido.
+    //     if(!follows(follower, followed)) {
+    //         throw new UserServiceException("El seguidor no está siguiendo al usuario seguido");
+    //     } else {
+    //         follower.getFollowing().remove(followed);
+    //         userRepository.save(follower);
+    //     }
+    // }
 
 
     // Marcar y desmarcar eventos como favoritos:

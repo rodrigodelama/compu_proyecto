@@ -58,17 +58,8 @@
                             <a th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/my_favorite_events}" class="nav-item nav-link">My Favorites</a>
                             <a th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/recommended}" class="nav-item nav-link">Recommended</a>
                             <a th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/my_recommendations}" class="nav-item nav-link">My Recommendations</a>
-                            <a th:if="${role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/my_events}" class="nav-item nav-link">My Events</a> 
-                            <a th:if="${role == 'ORGANIZER' or role == 'ADMIN' or createdEvent == true}" th:href="@{/create_event}" class="nav-item nav-link">Create Event</a>
-                            <!-- OR sec:authorize="hasRole('USER')" that previously made an event -->
-                            <!-- OR sec:authorize="hasRole('USER')" that previously made an event -->
-                            <!-- TODO Custom Thymeleaf Expression below -->
-                            <!-- <a sec:authorize="hasRole('ORGANIZER') or @customSecurityExpressions.hasCreatedAnEvent()"
-                                th:href="@{/my_events}" class="nav-item nav-link">My Events</a> -->
-                                        <!-- OR sec:authorize="hasRole('USER')" that previously made an event -->
-                            <!-- TODO Custom Thymeleaf Expression below -->
-                            <!-- <a sec:authorize="hasRole('ORGANIZER') or @customSecurityExpressions.hasCreatedAnEvent()"
-                                th:href="@{/my_events}" class="nav-item nav-link">My Events</a> -->
+                            <a th:if="${role == 'ORGANIZER' or role == 'ADMIN' or createdEvent == true}" th:href="@{/my_events}" class="nav-item nav-link">My Events</a> 
+                            <a th:if="${role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/create_event}" class="nav-item nav-link">Create Event</a>
                             <a th:if="${role == 'ADMIN'}" th:href="@{/admin_panel}" class="nav-item nav-link">Admin Panel</a>
                         </div>
                         <div class="d-flex m-3 me-0">
@@ -131,39 +122,36 @@
                                         <h3 class="text-center">It's awefully quiet here... See our latest events below!</h3>
                                     </div>
                                     <!-- AUTOGENERATE WITH THYMELEAF -->
+                                    <!-- Display the paginated list of events -->
                                     <div class="col-md-6 col-lg-4 col-xl-3" th:each="recommendation : ${recommendations}">
-                                        <!-- Link to the event details or the recommendation target -->
+                                        <!-- Link to event details -->
                                         <a th:href="@{/event/{id}(id=${recommendation.event.id})}" class="rounded position-relative fruite-item">
-                                            <!-- Display the event image -->
+                                            <!-- Display event image -->
                                             <div class="fruite-img">
-                                                <!-- <img th:src="${recommendation.event.imageUrl}" class="img-fluid w-100 rounded-top" alt="Event Image"> -->
                                                 <img th:src="@{/public/img/single-item.jpg}" class="img-fluid w-100 rounded-top" alt="Event Image">
                                             </div>
-                                            <!-- Display the event information -->
+                                            <!-- Event information -->
                                             <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-                                                <h4 th:text="${recommendation.event.name}">EVENT NAME</h4>
-                                                <p th:text="${recommendation.event.description}">SHORT DESCRIPTION</p>
-                                                <!-- Add to Favorites button with placeholder link -->
+                                                <h4 th:text="${recommendation.event.name}">Event Name</h4>
+                                                <p th:text="${recommendation.event.description}">Short Description</p>
+                                                <!-- Favorites management with a POST requests -->
                                                 <div class="center">
-                                                    <!-- <form th:action="@{/event/add-to-favorites}" method="post">
-                                                        Hidden input to carry the event ID
-                                                        <input type="hidden" name="eventId" th:value="${recommendation.event.id}"/>
-                                                        Submit button to add to favorites
-                                                        <button type="submit" class="btn border border-secondary rounded-pill px-3 text-primary">
-                                                            <i class="fa text-primary"></i> Add to Favorites
-                                                        </button>
-                                                    </form> -->
-                                                    <a th:href="@{/add_to_favorites(eventId=${event.id})}" 
-                                                            class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
-                                                            th:if="${isFavorite == false}">
+                                                    <!-- Form for adding to favorites with hidden field for returnUrl -->
+                                                    <form th:action="@{/add_to_favorites(eventId=${recommendation.event.id})}" method="post" th:if="${#vars['isFavorite' + recommendation.event.id] == false}">
+                                                        <!-- Hidden field to capture current URL -->
+                                                        <input type="hidden" id="returnUrl-[[${recommendation.event.id}]]" name="returnUrl">
+                                                        <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
                                                         <i class="fa fa-heart me-2 text-primary"></i> Add to Favorites
-                                                    </a>
-                                                    
-                                                    <a th:href="@{/remove_from_favorites(eventId=${event.id})}"
-                                                            class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
-                                                            th:if="${isFavorite == true}">
+                                                        </button>
+                                                    </form>
+                                                    <!-- Form for removing from favorites with hidden field for returnUrl -->
+                                                    <form th:action="@{/remove_from_favorites(eventId=${recommendation.event.id})}" method="post" th:if="${#vars['isFavorite' + recommendation.event.id] == true}">
+                                                        <!-- Hidden field to capture current URL -->
+                                                        <input type="hidden" id="returnUrl-[[${recommendation.event.id}]]" name="returnUrl">
+                                                        <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
                                                         <i class="fa fa-heartbeat me-2 text-primary"></i> Remove from Favorites
-                                                    </a>
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </a>
@@ -240,7 +228,6 @@
                                                         <!-- Form for adding to favorites with hidden field for returnUrl -->
                                                         <form th:action="@{/add_to_favorites(eventId=${event.id})}" method="post" th:if="${#vars['isFavorite' + event.id] == false}">
                                                             <!-- Hidden field to capture current URL -->
-                                                            <!-- <input type="hidden" id="returnUrl" name="returnUrl"> -->
                                                             <input type="hidden" id="returnUrl-[[${event.id}]]" name="returnUrl">
                                                             <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
                                                             <i class="fa fa-heart me-2 text-primary"></i> Add to Favorites
@@ -250,7 +237,6 @@
                                                         <!-- Form for removing from favorites with hidden field for returnUrl -->
                                                         <form th:action="@{/remove_from_favorites(eventId=${event.id})}" method="post" th:if="${#vars['isFavorite' + event.id] == true}">
                                                             <!-- Hidden field to capture current URL -->
-                                                            <!-- <input type="hidden" id="returnUrl" name="returnUrl"> -->
                                                             <input type="hidden" id="returnUrl-[[${event.id}]]" name="returnUrl">
                                                             <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
                                                             <i class="fa fa-heartbeat me-2 text-primary"></i> Remove from Favorites

@@ -53,19 +53,6 @@ public class User {
     @JoinColumn(name = "user_id")
     private List<Event> favoriteEvents;
 
-    //TODO: deprecate below
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="following",
-        joinColumns=@JoinColumn(name="follower_id"),
-        inverseJoinColumns=@JoinColumn(name="followed_id"))
-    private List<User> following; // usuarios seguidos
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="following",
-        joinColumns=@JoinColumn(name="followed_id"),
-        inverseJoinColumns=@JoinColumn(name="follower_id"))
-    private List<User> followers; // usuarios que le siguen
-
 
     // Getters & setters -----------------------------------------
 
@@ -116,21 +103,6 @@ public class User {
         this.favoriteEvents = favoriteEvents;
     }
 
-
-    public List<User> getFollowing() {
-        return this.following;
-    }
-    public void setFollowing(List<User> following) {
-        this.following = following;
-    }
-
-
-    public List<User> getFollowers() {
-        return this.followers;
-    }
-    public void setFollowers(List<User> followers) {
-        this.followers = followers;
-    }
 
     // ------------------------------------------------------------
 
