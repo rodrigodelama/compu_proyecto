@@ -290,6 +290,24 @@ public class MainController {
     //     return "message_view";
     // }
 
+    @GetMapping(path = "/my_events")
+    public String myEventsView(Model model, Principal principal) {
+        // Check login status
+        if (principal == null) {
+            return "redirect:/forbidden?not_logged_in";
+        }
+        // If logged in, retrieve the current user 
+        String username = principal.getName();
+        User currentUser = userRepository.findByUsername(username);
+        String role = currentUser.getRole();
+        model.addAttribute("role", role);
+
+        // Load events created by the current user
+        List<Event> userEvents = eventRepository.findByCreatorOrderByTimestampDesc(currentUser);
+        model.addAttribute("userEvents", userEvents);
+        return "my_events";
+    }
+
     @GetMapping(path = "/my_favorite_events")
     public String myFavoriteEventsView(Model model, Principal principal) {
         // Check login status
@@ -366,8 +384,9 @@ public class MainController {
             if (!(role.equals("ORGANIZER") || role.equals("ADMIN"))) {
                 return "redirect:/forbidden?not_authorized";
             }
+            model.addAttribute("role", role);
         }
-        // model.addAttribute("event", new Event());
+        
         return "create_event";
     }
     // @PostMapping(path = "/event/create_event")
@@ -533,6 +552,8 @@ public class MainController {
             return "redirect:/forbidden?not_authorized_to_view_data_dashboard";
         }
 
+        model.addAttribute("role", role);
+
         // Add the username to the model
         model.addAttribute("username", user.getUsername());
 
@@ -561,6 +582,8 @@ public class MainController {
         int favoriteEventCount = user.getFavoriteEvents().size();
         model.addAttribute("favoriteEventCount", favoriteEventCount);
     return "data_dashboard";
+    //broken better do data_dashboard/{user.getId()}
+    // return "data_dashboard/" + user.getId() + "?statistics";
     }
 
 
@@ -637,31 +660,37 @@ public class MainController {
 
     //Nuevo metodo ej 6 p8: Controladores para seguir y dejar de seguir a usuarios.
     //Hará que el usuario asociado a la sesión actual siga a otro usuario. Este último se recibirá como un parámetro en la URL:
-    @PostMapping(path = "/follow/{userId}")
-    public String follow(@PathVariable("userId") int followedUserId, Principal principal) {
-        Optional<User> followed = userRepository.findById(followedUserId);
-        User currentUser = userRepository.findByUsername(principal.getName());
-        if (!followed.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Follower not found");
-        }try{
-            userService.follow(currentUser, followed.get());
-            return "redirect:/user/" + followedUserId;
-        }catch(UserServiceException ex){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Seguidor ya sigue al usuario loggeado");
-        }
+    @PostMapping(path = "/favorite/{eventId}")
+    public String follow(@PathVariable("eventId") int eventId, Principal principal) {
+
+        // Optional<Event> event = eventRepository.findById(eventId);
+
+        // User currentUser = userRepository.findByUsername(principal.getName());
+
+    //     if (!event.isPresent()) {
+    //         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Follower not found");
+    //     }try{
+    //         userService.follow(currentUser, followed.get());
+            return "redirect:?added_to_favorites";
+    //     }catch(UserServiceException ex){
+    //         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Seguidor ya sigue al usuario loggeado");
+    //     }
     }
-    @PostMapping(path = "/unfollow/{userId}")
-    public String unfollow(@PathVariable("userId") int unfollowedUserId, Principal principal) {
-        Optional<User> unfollower = userRepository.findById(unfollowedUserId);
-        User currentUser = userRepository.findByUsername(principal.getName());
-        if (!unfollower.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Follower not found");
-        } try {
-            userService.unfollow(currentUser, unfollower.get());
-        } catch(UserServiceException ex) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Seguidor no sigue ya al usuario loggeado");
-        }
-        return "redirect:/user/" + unfollowedUserId;
+    @PostMapping(path = "/unfavorite/{eventId}")
+    public String unfollow(@PathVariable("eventId") int eventId, Principal principal) {
+
+        // Optional<User> unfollower = userRepository.findById(unfollowedUserId);
+
+        // User currentUser = userRepository.findByUsername(principal.getName());
+        
+        // if (!unfollower.isPresent()) {
+        //     throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Follower not found");
+        // } try {
+        //     userService.unfollow(currentUser, unfollower.get());
+        // } catch(UserServiceException ex) {
+        //     throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Seguidor no sigue ya al usuario loggeado");
+        // }
+            return "redirect:?removed_from_favorites";
     }
 
 }
