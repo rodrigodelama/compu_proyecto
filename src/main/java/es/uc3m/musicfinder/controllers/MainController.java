@@ -100,7 +100,7 @@ public class MainController {
                 }
                 // Check if the current user has this event in favorites (if logged in)
                 boolean isFavorite = currentUser.getFavoriteEvents().contains(event);
-                model.addAttribute("isFavorite", isFavorite); // Boolean to indicate if the event is favorited
+                model.addAttribute("isFavorite"+event.getId(), isFavorite); // Boolean to indicate if the event is favorited
             }
 
             if (currentUser != null) {
@@ -440,8 +440,7 @@ public class MainController {
     }
 
     // FAVORITES ----------------------------------------------------------------------------
-    // @PostMapping(path = "/add_to_favorites")
-    // public String addToFavorites(@RequestParam("eventId") int eventId, Principal principal) {
+
     @PostMapping("/add_to_favorites")
     public String addToFavorites(@RequestParam("eventId") int eventId,
                                  @RequestParam(name = "returnUrl", required = false) String returnUrl,
@@ -470,15 +469,18 @@ public class MainController {
         currentUser.setFavoriteEvents(favoriteEvents);
         userRepository.save(currentUser);
 
-        // return "redirect:/event/" + eventId + "?added_to_favorites";
-
-        // Appending the query parameter for feedback
+        // Creating a new URL without keeping previous query parameters
         String redirectUrl = (returnUrl != null && !returnUrl.isEmpty()) ? returnUrl : "/event/" + eventId;
 
-        return "redirect:" + redirectUrl + "?__event=" + eventId + "__added_to_favorites";
+        String queryParam = "?__event=" + eventId + "__added_to_favorites";
+
+        // Construct the clean URL
+        // Spliting at first ? to ensure previous query parameters are removed
+        String finalRedirect = "redirect:" + redirectUrl.split("\\?")[0] + queryParam;
+
+        return finalRedirect;
     }
-    // @PostMapping(path = "/remove_from_favorites")
-    // public String removeFromFavorites(@RequestParam("eventId") int eventId, Principal principal) {
+
     @PostMapping("/remove_from_favorites")
     public String removeFromFavorites(@RequestParam("eventId") int eventId,
                                       @RequestParam(name = "returnUrl", required = false) String returnUrl, Principal principal) {
@@ -510,12 +512,16 @@ public class MainController {
             userRepository.save(currentUser);
         }
 
-        // return "redirect:/event/" + eventId + "?removed_from_favorites";
-
-        // Appending the query parameter for feedback
+        // Creating a new URL without keeping previous query parameters
         String redirectUrl = (returnUrl != null && !returnUrl.isEmpty()) ? returnUrl : "/event/" + eventId;
 
-        return "redirect:" + redirectUrl + "?__event=" + eventId + "__removed_from_favorites";
+        String queryParam = "?__event=" + eventId + "__removed_from_favorites";
+
+        // Construct the clean URL
+        // Spliting at first ? to ensure previous query parameters are removed
+        String finalRedirect = "redirect:" + redirectUrl.split("\\?")[0] + queryParam;
+
+        return finalRedirect;
     }
 
 }

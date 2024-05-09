@@ -257,18 +257,20 @@
                                                     <!-- Favorites management with a POST requests -->
                                                     <div class="center">
                                                         <!-- Form for adding to favorites with hidden field for returnUrl -->
-                                                        <form th:action="@{/add_to_favorites(eventId=${event.id})}" method="post" th:if="${isFavorite == false}">
+                                                        <form th:action="@{/add_to_favorites(eventId=${event.id})}" method="post" th:if="${#vars['isFavorite' + event.id] == false}">
                                                             <!-- Hidden field to capture current URL -->
-                                                            <input type="hidden" id="returnUrl" name="returnUrl">
+                                                            <!-- <input type="hidden" id="returnUrl" name="returnUrl"> -->
+                                                            <input type="hidden" id="returnUrl-[[${event.id}]]" name="returnUrl">
                                                             <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
                                                             <i class="fa fa-heart me-2 text-primary"></i> Add to Favorites
                                                             </button>
                                                         </form>
                                                         
                                                         <!-- Form for removing from favorites with hidden field for returnUrl -->
-                                                        <form th:action="@{/remove_from_favorites(eventId=${event.id})}" method="post" th:if="${isFavorite == true}">
+                                                        <form th:action="@{/remove_from_favorites(eventId=${event.id})}" method="post" th:if="${#vars['isFavorite' + event.id] == true}">
                                                             <!-- Hidden field to capture current URL -->
-                                                            <input type="hidden" id="returnUrl" name="returnUrl">
+                                                            <!-- <input type="hidden" id="returnUrl" name="returnUrl"> -->
+                                                            <input type="hidden" id="returnUrl-[[${event.id}]]" name="returnUrl">
                                                             <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
                                                             <i class="fa fa-heartbeat me-2 text-primary"></i> Remove from Favorites
                                                             </button>
@@ -351,11 +353,13 @@
             const currentUrl = window.location.href;
         
             // Set the value of hidden input field with id 'returnUrl'
-            window.addEventListener("load", function () {
-            const returnUrlField = document.getElementById("returnUrl");
-            if (returnUrlField) {
-                returnUrlField.value = currentUrl;
-            }
+            window.addEventListener("load", function() {
+                const returnUrlFields = document.querySelectorAll("input[name='returnUrl']"); // Use a common attribute or class
+                const currentUrl = window.location.href;
+
+                returnUrlFields.forEach(function(field) {
+                    field.value = currentUrl; // Set the current URL for each field
+                });
             });
         </script>
     </body>
