@@ -2,7 +2,8 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
     <head>
         <meta charset="utf-8">
-        <title>MusicFinder - Where music meets you</title>
+        <title>MusicFinder - My Events</title>
+        <!-- <title th:text="'MusicFinder - ' + ${user.name} + '\'events'">MusicFinder - Event Placeholder</title> -->
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
@@ -17,16 +18,15 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
         <!-- Libraries Stylesheet -->
-        <link href="public/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
-        <link href="public/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+        <link th:href="@{/public/lib/lightbox/css/lightbox.min.css}" rel="stylesheet">
+        <link th:href="@{/public/lib/owlcarousel/assets/owl.carousel.min.css}" rel="stylesheet">
 
         <!-- Customized Bootstrap Stylesheet -->
-        <link href="public/css/bootstrap.min.css" rel="stylesheet">
+        <link th:href="@{/public/css/bootstrap.min.css}" rel="stylesheet">
 
         <!-- Template Stylesheet -->
-        <link href="public/css/style.css" rel="stylesheet">
+        <link th:href="@{/public/css/style.css}" rel="stylesheet">
     </head>
-
     <body>
         <!-- Spinner Start -->
         <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
@@ -56,24 +56,14 @@
                     </button>
                     <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                         <div class="navbar-nav mx-auto">
-                            <!--
-                                my_favorite_events (the ones the user has marked as favorite) (ANY USER)
-                                recommended (recieved from other users) (ANY USER)
-                                my_recommendations (the ones the user has recommended to others) (ANY USER)
-                                create_event page (only shown if organizer) (ORGANIZER)
-                                my_events page (the ones the user has created) (ORGANIZER & USERs that have created events)
-                                data dashboard (only shown if admin) (ADMIN)
-                            -->
-                            <!-- Menu navigation links ONLY SHOWN if logged in, and of your type -->
+
                             <a th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/my_favorite_events}" class="nav-item nav-link">My Favorites</a>
                             <a th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/recommended}" class="nav-item nav-link">Recommended</a>
                             <a th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/my_recommendations}" class="nav-item nav-link">My Recommendations</a>
                             <a th:if="${role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/my_events}" class="nav-item nav-link">My Events</a> 
                             <a th:if="${role == 'ORGANIZER' or role == 'ADMIN' or createdEvent == true}" th:href="@{/create_event}" class="nav-item nav-link">Create Event</a>
-                            <!-- OR sec:authorize="hasRole('USER')" that previously made an event -->
-                            <!-- TODO Custom Thymeleaf Expression below -->
-                            <!-- <a sec:authorize="hasRole('ORGANIZER') or @customSecurityExpressions.hasCreatedAnEvent()"
-                                th:href="@{/my_events}" class="nav-item nav-link">My Events</a> -->
+                                        <!-- OR sec:authorize="hasRole('USER')" that previously made an event -->
+
                             <a th:if="${role == 'ADMIN'}" th:href="@{/admin_panel}" class="nav-item nav-link">Admin Panel</a>
                         </div>
                         <div class="d-flex m-3 me-0">
@@ -216,12 +206,28 @@
         <!-- JavaScript Libraries -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="public/lib/easing/easing.min.js"></script>
-        <script src="public/lib/waypoints/waypoints.min.js"></script>
-        <script src="public/lib/lightbox/js/lightbox.min.js"></script>
-        <script src="public/lib/owlcarousel/owl.carousel.min.js"></script>
+        <script th:src="@{/public/lib/easing/easing.min.js}"></script>
+        <script th:src="@{/public/lib/waypoints/waypoints.min.js}"></script>
+        <script th:src="@{/public/lib/lightbox/js/lightbox.min.js}"></script>
+        <script th:src="@{/public/lib/owlcarousel/owl.carousel.min.js}"></script>
 
         <!-- Template Javascript -->
-        <script src="public/js/main.js"></script>
+        <script th:src="@{/public/js/main.js}"></script>
+
+        <!-- Added JavaScript to capture the current URL and set a hidden field -->
+        <script>
+            // Get the current URL (including query parameters, if any)
+            const currentUrl = window.location.href;
+        
+            // Set the value of hidden input field with id 'returnUrl'
+            window.addEventListener("load", function() {
+                const returnUrlFields = document.querySelectorAll("input[name='returnUrl']"); // Use a common attribute or class
+                const currentUrl = window.location.href;
+
+                returnUrlFields.forEach(function(field) {
+                    field.value = currentUrl; // Set the current URL for each field
+                });
+            });
+        </script>
     </body>
 </html>

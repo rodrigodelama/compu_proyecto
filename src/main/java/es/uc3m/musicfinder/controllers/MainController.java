@@ -183,6 +183,21 @@ public class MainController {
     public String loginForm() {
         return "login";
     }
+    // TODO @{/customLogout} see event and home in the navbar for the potential implementation
+    @PostMapping(path = "/logout")
+    public String logout(@RequestParam(name = "returnLogOutUrl", required = false) String returnUrl) {
+        // Creating a new URL without keeping previous query parameters
+        String redirectUrl = (returnUrl != null && !returnUrl.isEmpty()) ? returnUrl : "/";
+
+        String queryParam = "?_logged_out";
+
+        // Construct the clean URL
+        // Spliting at first ? to ensure previous query parameters are removed
+        String finalRedirect = "redirect:" + redirectUrl.split("\\?")[0] + queryParam;
+
+        return finalRedirect;
+    }
+
     @GetMapping(path = "/signup")
     public String signUpForm(User user) {
         return "signup";
