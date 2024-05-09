@@ -23,30 +23,39 @@ public interface RecommendationRepository extends CrudRepository<Recommendation,
 //             "AND r.recommender " + 
 //             "NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = ?1)") // To get all recommendations for a user
 //     List<Recommendation> findByRecommendToNotBlockedByTimestampDesc(User recommendTo);
-    @Query("SELECT r FROM Recommendation r WHERE r.recommendTo = :user AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :user) ORDER BY r.timestamp DESC")
+
+    //busca todas las recomendaciones dirigidas a un usuario específico, excluyendo los recomendadores que hayan sido bloqueados por ese usuario. 
+    //para mostrar en la pagina todas las recomendaciones
+    // @Query("SELECT r FROM Recommendation r WHERE r.recommendTo = :user AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :user) ORDER BY r.timestamp DESC")
+    // List<Recommendation> findRecommendationsExcludingBlockedUsers(@Param("user") User user);
+
+    // @Query("SELECT new Recommendation(r.title, r.description) FROM Recommendation r WHERE r.recommendTo = :user AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :user) ORDER BY r.timestamp DESC")
+    // List<Recommendation> findRecommendationsExcludingBlockedUsers(@Param("user") User user);
+
+    //cojo los datos de evento que voy a mostrar en la recomendacion ?? 
+    @Query("SELECT new Recommendation(e.name, e.date) FROM Recommendation r JOIN r.event e WHERE r.recommendTo = :user AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :user) ORDER BY r.timestamp DESC")
     List<Recommendation> findRecommendationsExcludingBlockedUsers(@Param("user") User user);
 
-    @Query("SELECT r FROM Recommendation r WHERE r.recommendTo = :user AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :user) ORDER BY r.timestamp DESC")
+
+    //objeto Pageable para especificar el número de página y el tamaño de la página que se debe recuperar, para mostrar en la pagina principal solo las 10 primeras
+    @Query("SELECT new Recommendation(e.name, e.date) FROM Recommendation r JOIN r.event e WHERE r.recommendTo = :user AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :user) ORDER BY r.timestamp DESC")
     List<Recommendation> findTopNRecommendationsExcludingBlockedUsers(@Param("user") User user, Pageable pageable);
 
-    @Query("SELECT COUNT(r) FROM Recommendation r WHERE r.timestamp > :date AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :user) AND r.recommendTo = :user")
-    int countNewRecommendationsExcludingBlockedUsers(@Param("date") Date date, @Param("user") User user);
+
+    //para las nuevas recomendaciones, las mas recientes
+    // @Query("SELECT COUNT(r) FROM Recommendation r WHERE r.timestamp > :date AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :user) AND r.recommendTo = :user")
+    // int countNewRecommendationsExcludingBlockedUsers(@Param("date") Date date, @Param("user") User user);
 
     // Home view - only the N most recent
     // get only the first n recommendations for a user ordered by timestamp from newest to oldest
-    List<Recommendation> findTopNByRecommendTo(User recommendTo, Pageable pageable);
-//     @Query( "SELECT r " +
-//             "FROM Recommendation r " +
-//             "WHERE r.recommendTo = ?1 " +
-//             "AND r.recommender " + 
-//             "NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = ?1)") // To get all recommendations for a user
-//     List<Recommendation> findTopNByRecommendToNotBlockedByTimestampDesc(User recommendTo, Pageable pageable);
+    // @Query("SELECT new Recommendation(e.name, e.date) FROM Recommendation r JOIN r.event e WHERE r.recommendTo = :recommendTo AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :recommendTo) ORDER BY r.timestamp DESC")
+    // List<Recommendation> findTopNByRecommendTo(User recommendTo, Pageable pageable);
+
 
     // My Recommendations view
     // get all recommendations made by a user ordered by timestamp from newest to oldest
-    List<Recommendation> findByRecommenderOrderByTimestampDesc(@Param("user") User recommender); //-- BREAKS
-    // List<Recommendation> findByRecommender(User recommender);
-
+    // @Query("SELECT new Recommendation(e.name, e.date) FROM Recommendation r JOIN r.event e WHERE r.recommendTo = :recommendTo AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :recommendTo) ORDER BY r.timestamp DESC")
+    // List<Recommendation> findByRecommenderOrderByTimestampDesc(@Param("user") User recommender); //-- BREAKS
     
     //recomendaciones que le han realizado 
     @Query("SELECT COUNT(r) FROM Recommendation r WHERE r.recommendTo = :user ORDER BY r.timestamp DESC")

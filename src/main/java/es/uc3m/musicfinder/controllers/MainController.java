@@ -371,23 +371,7 @@ public class MainController {
         return "redirect:/my_favorite_events";
     }
 
-    @GetMapping(path = "/my_recommendations")
-    public String myRecommendationsView(Model model, Principal principal) {
-        // Check login status
-        if (principal == null) {
-            return "redirect:/forbidden?not_logged_in";
-        }
-        // If logged in, retrieve the current user 
-        String username = principal.getName();
-        User currentUser = userRepository.findByUsername(username);
-        String role = currentUser.getRole();
-        model.addAttribute("role", role);
-
-        // Load recommendations
-        List<Recommendation> recommendations = recommendationRepository.findByRecommenderOrderByTimestampDesc(currentUser);
-        model.addAttribute("recommendations", recommendations);
-        return "my_recommendations";
-    }
+    
 
     @GetMapping(path = "/create_event")
     public String createEventView(Model model, Principal principal) {
@@ -535,6 +519,24 @@ public class MainController {
         List<Recommendation> recommendations = recommendationRepository.findRecommendationsExcludingBlockedUsers(currentUser);
         model.addAttribute("recommendations", recommendations);
         return "recommended";
+    }
+
+    @GetMapping(path = "/my_recommendations")
+    public String myRecommendationsView(Model model, Principal principal) {
+        // Check login status
+        if (principal == null) {
+            return "redirect:/forbidden?not_logged_in";
+        }
+        // If logged in, retrieve the current user 
+        String username = principal.getName();
+        User currentUser = userRepository.findByUsername(username);
+        String role = currentUser.getRole();
+        model.addAttribute("role", role);
+
+        // Load recommendations
+        List<Recommendation> my_recommendations = recommendationRepository.findByRecommenderOrderByTimestampDesc(currentUser);
+        model.addAttribute("my_recommendations", my_recommendations);
+        return "my_recommendations";
     }
 
 

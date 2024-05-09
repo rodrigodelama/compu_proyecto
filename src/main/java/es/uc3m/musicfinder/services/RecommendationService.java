@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import es.uc3m.musicfinder.model.*;
+import java.util.List;
 
 @Service
 public class RecommendationService {
@@ -20,5 +21,13 @@ public class RecommendationService {
         Integer count = recommendationRepository.countRecommendationsToFriends(user);
         return (count == null) ? 0 : count;
     }
+
+    // public List<Recommendation> findRecommendationsExcludingBlockedUsers(User user) {
+    //     return recommendationRepository.findRecommendationsExcludingBlockedUsers(user);
+    // }
+
+
+
+
 
 }
