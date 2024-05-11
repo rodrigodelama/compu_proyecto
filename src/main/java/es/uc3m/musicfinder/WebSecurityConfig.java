@@ -32,6 +32,7 @@ public class WebSecurityConfig {
             .authorizeHttpRequests((authorize) -> authorize
             .requestMatchers("/**", "/index", "/login", "/signup", "/public/**", "/static/**", "/images/**", "/error", "/event/**").permitAll()
             .requestMatchers("/user/**", "/admin_panel", "/data_dashboard").hasRole("ADMIN")
+            .requestMatchers("/create_event").hasRole("ORGANIZER") // añadir para organizador solo el de create event ? 
                 .anyRequest().authenticated()
             )
             //login page, especifies the loging page, all requests are permitted to acces it

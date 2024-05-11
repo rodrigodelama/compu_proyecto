@@ -81,7 +81,11 @@ public class MainController {
     @Autowired
     private BlockRepository blockRepository;
 
-    // MAIN VIEW -----------------------------------------------------------------------
+
+
+
+
+    // MAIN VIEW ------------------------------------------------------------------------------------------------------------------------------------------------------
     @GetMapping(path = "/")
     public String mainView(Model model, Principal principal, @RequestParam(value = "page", defaultValue = "0") int page) {
         // Check login status for navbar
@@ -145,7 +149,9 @@ public class MainController {
         return "home"; // Return the home view
     }
 
-    // ERROR & FORBIDDEN ----------------------------------------------------------------
+
+
+    // ERROR & FORBIDDEN --------------------------------------------------------------------------------------------------------------------------------
     @GetMapping(path = "/error")
     public String errorView(Model model, Principal principal) {
         // Check login status to mainatain a consistent navbar
@@ -182,7 +188,9 @@ public class MainController {
         return "forbidden";
     }
 
-    // LOGIN & SIGNUP ------------------------------------------------------------------
+
+
+    // LOGIN & SIGNUP --------------------------------------------------------------------------------------------------------------------------------------    
     @GetMapping(path = "/login")
     public String loginForm() {
         return "login";
@@ -251,11 +259,11 @@ public class MainController {
         model.addAttribute("blockedUserCount", blockedUserCount);
 
         // Número de recomendaciones que ha recibido el usuario
-        int recommendationToUserCount = recommendationRepository.countRecommendationsFromFriends(currentUser);
+        int recommendationToUserCount = recommendationRepository.countRecommendationsFromFriendsExcludingBlokedUsers(currentUser);
         model.addAttribute("recommendationToUserCount", recommendationToUserCount);
 
         // Número de recomendaciones que ha hecho el usuario
-        int recommendationFromUserCount = recommendationRepository.countRecommendationsToFriends(currentUser);
+        int recommendationFromUserCount = recommendationRepository.countRecommendationsToFriendsExcludingBlokedUsers(currentUser);
         model.addAttribute("recommendationFromUserCount", recommendationFromUserCount);
 
         // Numero de eventos favoritos del usuario
@@ -274,7 +282,10 @@ public class MainController {
         return "user";
     }
 
-    // EVENT ---------------------------------------------------------------------------
+
+
+
+    // EVENT ----------------------------------------------------------------------------------------------------------------------------------------------
     // @GetMapping(path = "/event")
     // public String eventView(Model model) {
     //     return "event";
@@ -377,7 +388,7 @@ public class MainController {
         }
         User user = userRepository.findByUsername(principal.getName());
         String role = user.getRole();
-        if (!(role.equals("ORGANIZER") || role.equals("ADMIN"))) {
+        if (!(role.equals("ORGANIZER"))) {
             return "redirect:/forbidden?not_authorized";
         }
         // Check if the user has created any events
@@ -389,14 +400,14 @@ public class MainController {
         return "create_event";
     }
 
-    @PostMapping(path = "/create_event")
+    @PostMapping(path = "/create_event") 
     public String createEvent(@ModelAttribute Event event, Principal principal) {
         if (principal == null) {
             return "redirect:/forbidden?not_logged_in";
         }
         User user = userRepository.findByUsername(principal.getName());
         String role = user.getRole();
-        if (!(role.equals("ORGANIZER") || role.equals("ADMIN"))) {
+        if (!(role.equals("ORGANIZER"))) {
             return "redirect:/forbidden?not_authorized_to_create_events";
         }
 
@@ -433,7 +444,7 @@ public class MainController {
         }
         User user = userRepository.findByUsername(principal.getName());
         String role = user.getRole();
-        if (!(role.equals("ORGANIZER") || role.equals("ADMIN"))) {
+        if (!(role.equals("ORGANIZER"))) {
             return "redirect:/forbidden?not_authorized_to_delete_events";
         }
 
@@ -464,6 +475,8 @@ public class MainController {
 
         return finalRedirect;
     }
+
+     // RECOMENDACIONES -------------------------------------------------------------------------------------------------------------------------------------------
 
     @GetMapping(path = "/recommended")
     public String recommendedView(Model model, Principal principal) {
@@ -546,6 +559,138 @@ public class MainController {
         return "my_recommendations";
     }
 
+    @PostMapping("/recommend_event")
+    public String recommendEvent(@RequestParam("eventId") int eventId,
+                                @RequestParam("username") String username,
+                                @RequestParam(name = "returnRecUrl", required = false) String returnRecUrl,
+                                Principal principal) {
+        // Check login status
+        if (principal == null) {
+            return "redirect:/forbidden?not_logged_in";
+        }
+
+        // If logged in, retrieve the current user
+        String currentUsername = principal.getName();
+        User currentUser = userRepository.findByUsername(currentUsername);
+
+        // Retrieve the user to recommend the event to by their username
+        User userToRecommend = userRepository.findByUsername(username);
+
+        // Check if the user to recommend the event to exists
+        if (userToRecommend == null) {
+            return "redirect:/error?user_to_recommend_event_not_found";
+        }
+
+        // Retrieve the event by its ID
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
+
+        // Handle the case where the event does not exist
+        if (optionalEvent.isEmpty()) {
+            return "redirect:/error?event_to_recommend_not_found";
+        }
+
+        // If the event exists, add a recommendation
+        Event event = optionalEvent.get();
+
+        //TODO: review recommend in UserServiceImpl (UserServiceException)
+
+        // try {
+        //     userService.recommend(userToRecommend, userToRecommend, event);
+        // } catch (UserServiceException e) {
+        //     return "redirect:/error?failed_to_recommend_event";
+        // }
+        
+        // Check if the user is trying to recommend the event to themselves
+        if (currentUser.equals(userToRecommend)) {
+            return "redirect:/error?cannot_recommend_event_to_yourself";
+        }
+
+        // Check if the user has already recommended the event to the target user
+        // if (recommendationRepository.existsByRecommenderAndRecommendToAndEvent(currentUser, userToRecommend, event)) {
+        //     return "redirect:/event/" + eventId + "?event_already_recommended_to_user";
+        // }
+        // Check if the user has already recommended the event to the target user
+        if (recommendationRepository.existsByRecommenderAndRecommendToAndEvent(currentUser, userToRecommend, event)) {
+            // Construct the URL with a query parameter indicating the error
+            String redirectUrl = "/event/" + eventId + "?event_already_recommended_to_user";
+
+            // Redirect to the constructed URL
+            return "redirect:" + redirectUrl;
+        }
+
+        Recommendation newRecommendation = new Recommendation();
+        newRecommendation.setEvent(event);
+        newRecommendation.setRecommender(currentUser);
+        newRecommendation.setRecommendTo(userToRecommend);
+        newRecommendation.setTimestamp(new Date());
+
+        // Save the recommendation to the database
+        recommendationRepository.save(newRecommendation);
+
+        // return "redirect:/?__event_recommended_succesfully";
+
+        // Creating a new URL without keeping previous query parameters
+        String redirectUrl = (returnRecUrl != null && !returnRecUrl.isEmpty()) ? returnRecUrl : "/event/" + eventId;
+
+        String queryParam = "?__event=" + eventId + "__recommended_succesfully";
+
+        // Construct the clean URL
+        // Spliting at first ? to ensure previous query parameters are removed
+        String finalRedirect = "redirect:" + redirectUrl.split("\\?")[0] + queryParam;
+
+        return finalRedirect;
+    }
+
+    @PostMapping("/remove_recommendation")
+    public String removeRecommendation(@RequestParam("recommendationId") int recommendationId,
+                                    @RequestParam(name = "returnRemoveUrl", required = false) String returnRemoveUrl,
+                                    Principal principal) {
+        // Check login status
+        if (principal == null) {
+            return "redirect:/forbidden?not_logged_in";
+        }
+
+        // If logged in, retrieve the current user
+        String currentUsername = principal.getName();
+        User currentUser = userRepository.findByUsername(currentUsername);
+
+        // Retrieve the recommendation by its ID
+        Optional<Recommendation> optionalRecommendation = recommendationRepository.findById(recommendationId);
+
+        // Handle the case where the recommendation does not exist
+        if (optionalRecommendation.isEmpty()) {
+            return "redirect:/error?recommendation_not_found";
+        }
+
+        // If the recommendation exists, remove it
+        Recommendation recommendation = optionalRecommendation.get();
+
+        // Check if the current user is the recommender
+        if (!recommendation.getRecommender().equals(currentUser)) {
+            return "redirect:/forbidden?you_couldnt_have_made_this_recommendation_to_yourself_haha";
+        }
+
+        // Delete the recommendation
+        recommendationRepository.deleteById(recommendationId);
+
+        // return "redirect:/?__recommendation_removed_succesfully";
+
+        // Creating a new URL without keeping previous query parameters
+        String redirectUrl = (returnRemoveUrl != null && !returnRemoveUrl.isEmpty()) ? returnRemoveUrl : "/my_recommendations";
+
+        String queryParam = "?__recommendation_removed_succesfully";
+
+        // Construct the clean URL
+        // Spliting at first ? to ensure previous query parameters are removed
+        String finalRedirect = "redirect:" + redirectUrl.split("\\?")[0] + queryParam;
+
+        return finalRedirect;
+    }
+
+
+
+
+    // ADMIN PANEL --------------------------------------------------------------------------------------------------------------------------------------
 
     @GetMapping(path = "/admin_panel")
     public String admin_view(Model model, Principal principal) {
@@ -609,11 +754,11 @@ public class MainController {
         model.addAttribute("email", user.getEmail());
 
         // Número de recomendaciones que ha recibido el usuario
-        int recommendationToUserCount = recommendationRepository.countRecommendationsFromFriends(user);
+        int recommendationToUserCount = recommendationRepository.countRecommendationsFromFriendsExcludingBlokedUsers(user);
         model.addAttribute("recommendationToUserCount", recommendationToUserCount);
 
         // Número de recomendaciones que ha hecho el usuario
-        int recommendationFromUserCount = recommendationRepository.countRecommendationsToFriends(user);
+        int recommendationFromUserCount = recommendationRepository.countRecommendationsToFriendsExcludingBlokedUsers(user);
         model.addAttribute("recommendationFromUserCount", recommendationFromUserCount);
 
         // Numero de bloqueos realizados por el usuario
@@ -653,12 +798,12 @@ public class MainController {
         return "redirect:/data_dashboard/" + user.getUsername();
     }
 
-    // FAVORITES ----------------------------------------------------------------------------
+    // FAVORITES ---------------------------------------------------------------------------------------------------------------------------------------
 
     @PostMapping("/add_to_favorites")
     public String addToFavorites(@RequestParam("eventId") int eventId,
-                                 @RequestParam(name = "returnUrl", required = false) String returnUrl,
-                                 RedirectAttributes redirectAttributes, Principal principal) {
+                                @RequestParam(name = "returnUrl", required = false) String returnUrl,
+                                RedirectAttributes redirectAttributes, Principal principal) {
         // Check login status
         if (principal == null) {
             return "redirect:/forbidden?not_logged_in";
@@ -697,8 +842,8 @@ public class MainController {
 
     @PostMapping("/remove_from_favorites")
     public String removeFromFavorites(@RequestParam("eventId") int eventId,
-                                      @RequestParam(name = "returnUrl", required = false) String returnUrl,
-                                      Principal principal) {
+                                    @RequestParam(name = "returnUrl", required = false) String returnUrl,
+                                    Principal principal) {
         // Check login status
         if (principal == null) {
             return "redirect:/forbidden?not_logged_in";
@@ -738,6 +883,11 @@ public class MainController {
 
         return finalRedirect;
     }
+
+
+
+
+    // BLOCK USERS --------------------------------------------------------------------------------------------------------------------------------------
 
     // th:action="@{/block_user(username=${event.creator.username})}" 
     @PostMapping("/block_user")
@@ -857,133 +1007,5 @@ public class MainController {
         return finalRedirect;
     }
 
-    // Recommendation
-    // <form th:action="@{/recommend_event(eventId=${event.id})}" method="post">
-    @PostMapping("/recommend_event")
-    public String recommendEvent(@RequestParam("eventId") int eventId,
-                                 @RequestParam("username") String username,
-                                 @RequestParam(name = "returnRecUrl", required = false) String returnRecUrl,
-                                 Principal principal) {
-        // Check login status
-        if (principal == null) {
-            return "redirect:/forbidden?not_logged_in";
-        }
 
-        // If logged in, retrieve the current user
-        String currentUsername = principal.getName();
-        User currentUser = userRepository.findByUsername(currentUsername);
-
-        // Retrieve the user to recommend the event to by their username
-        User userToRecommend = userRepository.findByUsername(username);
-
-        // Check if the user to recommend the event to exists
-        if (userToRecommend == null) {
-            return "redirect:/error?user_to_recommend_event_not_found";
-        }
-
-        // Retrieve the event by its ID
-        Optional<Event> optionalEvent = eventRepository.findById(eventId);
-
-        // Handle the case where the event does not exist
-        if (optionalEvent.isEmpty()) {
-            return "redirect:/error?event_to_recommend_not_found";
-        }
-
-        // If the event exists, add a recommendation
-        Event event = optionalEvent.get();
-
-        //TODO: review recommend in UserServiceImpl (UserServiceException)
-
-        // try {
-        //     userService.recommend(userToRecommend, userToRecommend, event);
-        // } catch (UserServiceException e) {
-        //     return "redirect:/error?failed_to_recommend_event";
-        // }
-        
-        // Check if the user is trying to recommend the event to themselves
-        if (currentUser.equals(userToRecommend)) {
-            return "redirect:/error?cannot_recommend_event_to_yourself";
-        }
-
-        // Check if the user has already recommended the event to the target user
-        // if (recommendationRepository.existsByRecommenderAndRecommendToAndEvent(currentUser, userToRecommend, event)) {
-        //     return "redirect:/event/" + eventId + "?event_already_recommended_to_user";
-        // }
-        // Check if the user has already recommended the event to the target user
-        if (recommendationRepository.existsByRecommenderAndRecommendToAndEvent(currentUser, userToRecommend, event)) {
-            // Construct the URL with a query parameter indicating the error
-            String redirectUrl = "/event/" + eventId + "?event_already_recommended_to_user";
-
-            // Redirect to the constructed URL
-            return "redirect:" + redirectUrl;
-        }
-
-        Recommendation newRecommendation = new Recommendation();
-        newRecommendation.setEvent(event);
-        newRecommendation.setRecommender(currentUser);
-        newRecommendation.setRecommendTo(userToRecommend);
-        newRecommendation.setTimestamp(new Date());
-
-        // Save the recommendation to the database
-        recommendationRepository.save(newRecommendation);
-
-        // return "redirect:/?__event_recommended_succesfully";
-
-        // Creating a new URL without keeping previous query parameters
-        String redirectUrl = (returnRecUrl != null && !returnRecUrl.isEmpty()) ? returnRecUrl : "/event/" + eventId;
-
-        String queryParam = "?__event=" + eventId + "__recommended_succesfully";
-
-        // Construct the clean URL
-        // Spliting at first ? to ensure previous query parameters are removed
-        String finalRedirect = "redirect:" + redirectUrl.split("\\?")[0] + queryParam;
-
-        return finalRedirect;
-    }
-
-    @PostMapping("/remove_recommendation")
-    public String removeRecommendation(@RequestParam("recommendationId") int recommendationId,
-                                       @RequestParam(name = "returnRemoveUrl", required = false) String returnRemoveUrl,
-                                       Principal principal) {
-        // Check login status
-        if (principal == null) {
-            return "redirect:/forbidden?not_logged_in";
-        }
-
-        // If logged in, retrieve the current user
-        String currentUsername = principal.getName();
-        User currentUser = userRepository.findByUsername(currentUsername);
-
-        // Retrieve the recommendation by its ID
-        Optional<Recommendation> optionalRecommendation = recommendationRepository.findById(recommendationId);
-
-        // Handle the case where the recommendation does not exist
-        if (optionalRecommendation.isEmpty()) {
-            return "redirect:/error?recommendation_not_found";
-        }
-
-        // If the recommendation exists, remove it
-        Recommendation recommendation = optionalRecommendation.get();
-
-        // Check if the current user is the recommender
-        if (!recommendation.getRecommender().equals(currentUser)) {
-            return "redirect:/forbidden?you_couldnt_have_made_this_recommendation_to_yourself_haha";
-        }
-
-        // Delete the recommendation
-        recommendationRepository.deleteById(recommendationId);
-
-        // return "redirect:/?__recommendation_removed_succesfully";
-
-        // Creating a new URL without keeping previous query parameters
-        String redirectUrl = (returnRemoveUrl != null && !returnRemoveUrl.isEmpty()) ? returnRemoveUrl : "/my_recommendations";
-
-        String queryParam = "?__recommendation_removed_succesfully";
-
-        // Construct the clean URL
-        // Spliting at first ? to ensure previous query parameters are removed
-        String finalRedirect = "redirect:" + redirectUrl.split("\\?")[0] + queryParam;
-
-        return finalRedirect;
-    }
 }

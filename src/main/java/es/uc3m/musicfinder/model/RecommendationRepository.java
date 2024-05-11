@@ -56,12 +56,12 @@ public interface RecommendationRepository extends CrudRepository<Recommendation,
     List<Recommendation> findByRecommenderOrderByTimestampDesc(@Param("user") User recommender);
     
     //recomendaciones que le han realizado 
-    @Query("SELECT COUNT(r) FROM Recommendation r WHERE r.recommendTo = :user ORDER BY r.timestamp DESC")
-    int countRecommendationsFromFriends(@Param("user") User user);
+    @Query("SELECT COUNT(r) FROM Recommendation r WHERE r.recommendTo = :user AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :user) ORDER BY r.timestamp DESC")
+    int countRecommendationsFromFriendsExcludingBlokedUsers(@Param("user") User user);
 
     //num recomendaciones realizadas a amigos
-    @Query("SELECT COUNT(r) FROM Recommendation r WHERE r.recommender = :user ORDER BY r.timestamp DESC")
-    int countRecommendationsToFriends(@Param("user") User user);
+    @Query("SELECT COUNT(r) FROM Recommendation r WHERE r.recommender = :user AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :user) ORDER BY r.timestamp DESC")
+    int countRecommendationsToFriendsExcludingBlokedUsers(@Param("user") User user);
 
 
 }

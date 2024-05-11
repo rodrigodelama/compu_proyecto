@@ -13,12 +13,12 @@ public class RecommendationService {
     private RecommendationRepository recommendationRepository;
 
     public int getRecommendationsCountFromFriends(User user) {
-        Integer count = recommendationRepository.countRecommendationsFromFriends(user);
+        Integer count = recommendationRepository.countRecommendationsFromFriendsExcludingBlokedUsers(user);
         return (count == null) ? 0 : count;
     }
 
     public int getRecommendationsCountToFriends(User user) {
-        Integer count = recommendationRepository.countRecommendationsToFriends(user);
+        Integer count = recommendationRepository.countRecommendationsToFriendsExcludingBlokedUsers(user);
         return (count == null) ? 0 : count;
     }
 
