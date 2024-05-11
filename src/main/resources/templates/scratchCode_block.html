@@ -1,0 +1,27 @@
+<div class="col-4 text-end">
+    <!-- Ensure user is logged in, not the event creator, and has permission to block -->
+    <!-- Block -->
+    <form th:if="${#authentication.principal != null 
+                and (role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN')
+                and #authentication.principal.username != event.creator.username and creatorBlocked == false}"
+        th:action="@{/block_user(username=${event.creator.username})}" 
+        method="post" onsubmit="return confirm('Are you sure you want to block this user?');">
+        <!-- Hidden field to capture current URL for redirecting back -->
+        <input type="hidden" id="returnBlockUrl" name="returnBlockUrl"/>
+        <button type="submit" class="btn border border-danger rounded-pill text-danger">
+            Block User
+        </button>
+    </form>
+    <!-- Unblock the user -->
+    <form th:if="${#authentication.principal != null 
+                and (role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN')
+                and #authentication.principal.username != event.creator.username and creatorBlocked == true}"
+        th:action="@{/unblock_user(username=${event.creator.username})}" 
+        method="post" onsubmit="return confirm('Are you sure you want to unblock this user?');">
+        <!-- Hidden field to capture current URL for redirecting back -->
+        <input type="hidden" id="returnBlockUrl" name="returnBlockUrl"/>
+        <button type="submit" class="btn border border-primary rounded-pill text-danger">
+            Unblock User
+        </button>
+    </form>
+</div>

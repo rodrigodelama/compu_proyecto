@@ -87,7 +87,7 @@
         <div class="container-fluid py-5 mb-5 hero-header">
             <div class="container py-3">
                 <div class="row g-3 align-items-center">
-                    <h2 class="mb-1 display-3 text-primary">User Data Dashboard</h2>
+                    <h2 class="mb-1 display-3 text-primary" th:text="'Hey, ' + ${username}">User Profile</h2>
                 </div>
             </div>
         </div>
@@ -102,71 +102,112 @@
                         <div class="card rounded">
                             <div class="card-body">
                                 <!-- Title at the top -->
-                                <h3 class="text-center fw-bold mb-4" th:text="'Estadísticas de ' + ${username}"></h3>
+                                <h3 class="text-center fw-bold mb-4">Here are your stats:</h3>
 
-                                <!-- Section for user details -->
                                 <div class="row">
-                                    <div class="col-12 col-md-6 mb-3">
-                                        <h5 class="fw-bold">Current Role</h5>
-                                        <p class="rounded text-center p-2 bg-light" th:text="${userRole}"></p>
-                                    </div>
+                                    <!-- Email -->
                                     <div class="col-12 col-md-6 mb-3">
                                         <h5 class="fw-bold">Registered email</h5>
                                         <p class="rounded text-center p-2 bg-light" th:text="${email}"></p>
                                     </div>
+
                                 </div>
 
-                                <!-- Section for blocked users -->
+                                <!-- Section for events -->
                                 <div class="row">
                                     <div class="col-12 col-md-6 mb-3">
-                                        <h5 class="fw-bold">Blocked users</h5>
-                                        <p class="rounded text-center p-2 bg-light" th:text="${blockedUserCount}"></p>
+                                        <h5 class="fw-bold">Favorited Events</h5>
+                                        <p class="rounded text-center p-2 bg-light" th:text="${favoriteEventCount}"></p>
                                     </div>
                                     <div class="col-12 col-md-6 mb-3">
-                                        <h5 class="fw-bold">Users that have blocked them</h5>
-                                        <p class="rounded text-center p-2 bg-light" th:text="${usersBlockingUserCount}"></p>
+                                        <h5 class="fw-bold">Created Events</h5>
+                                        <p class="rounded text-center p-2 bg-light" th:text="${eventCount}"></p>
                                     </div>
                                 </div>
 
                                 <!-- Section for recommendations -->
                                 <div class="row">
                                     <div class="col-12 col-md-6 mb-3">
-                                        <h5 class="fw-bold">Recieved recommendations</h5>
+                                        <h5 class="fw-bold">Revieced Recommendations</h5>
                                         <p class="rounded text-center p-2 bg-light" th:text="${recommendationToUserCount}"></p>
                                     </div>
                                     <div class="col-12 col-md-6 mb-3">
-                                        <h5 class="fw-bold">Sent recommendations</h5>
+                                        <h5 class="fw-bold">Sent Recommendations</h5>
                                         <p class="rounded text-center p-2 bg-light" th:text="${recommendationFromUserCount}"></p>
                                     </div>
                                 </div>
 
-                                <!-- Section for events -->
+                                <!-- Section for blocked users -->
                                 <div class="row">
+                                    <!-- Section for blocked users -->
                                     <div class="col-12 col-md-6 mb-3">
-                                        <h5 class="fw-bold">Favorite events</h5>
-                                        <p class="rounded text-center p-2 bg-light" th:text="${favoriteEventCount}"></p>
-                                    </div>
-                                    <div class="col-12 col-md-6 mb-3">
-                                        <h5 class="fw-bold">Created events</h5>
-                                        <p class="rounded text-center p-2 bg-light" th:text="${eventCount}"></p>
+                                        <h5 class="fw-bold">Blocked Users</h5>
+                                        <p class="rounded text-center p-2 bg-light" th:text="${blockedUserCount}"></p>
                                     </div>
                                 </div>
 
-                                <!-- Role Modification Section -->
-                                <div class="row mt-4" th:if = "${username != 'admin'}">  <!-- Only show if the user is admin -->
-                                    <div class="col-12 col-md-6 mx-auto">
-                                        <h5 class="fw-bold">Change their "Role"</h5>
-                                        <form   th:action="@{/data_dashboard(username=${username})}"
-                                                method="post"
-                                                onsubmit="return confirm('Are you sure you want to change this users role?');">
-                                            <select name="newRole" class="form-select mb-3">
-                                                <option th:selected="${currentRole == 'USER'}" value="USER">User</option>
-                                                <option th:selected="${currentRole == 'ORGANIZER'}" value="ORGANIZER">Organizer</option>
-                                                <option th:selected="${currentRole == 'ADMIN'}" value="ADMIN">Administrator</option>
+                                <!-- Show blocked user list -->
+                                <div class="row">
+                                    <h5 class="fw-bold">Unblock users below</h5>
+                                    <!-- <div class="col-12">
+                                        <h5 class="fw-bold">Blocked Users</h5>
+                                        <div class="rounded p-2 bg-light">
+                                            <ul>
+                                                <li th:each="blockedUser : ${blockedUsers}">
+                                                    <span th:text="${blockedUser.username}"></span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div> -->
+
+                                    <!-- unblock user form -->
+                                    <!-- <form   th:action="@{/block_user(username=${recommendation.recommender.username})}"
+                                            method="post"
+                                            onsubmit="return confirm('Are you sure you want to block this user?');">
+                                        <input type="hidden" id="returnBlockUrl" name="returnBlockUrl"/>
+                                        <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
+                                            <i class="fa fa-ban me-2 text-primary"></i> Unblock User
+                                        </button>
+                                    </form> -->
+
+                                    <!-- <form th:action="@{/unblock_user}" method="post" onsubmit="return confirm('Are you sure you want to unblock this user?');">
+                                        <input type="hidden" id="returnBlockUrl" name="returnBlockUrl" />
+                                        <input type="hidden" id="usernameToUnblock" name="usernameToUnblock" th:value="${username}" />
+                                        <div class="d-flex justify-content-center align-items-center mb-4">
+                                            Bootstrap styled dropdown
+                                            <select name="blockedUser" id="blockedUser" class="form-select me-4" onchange="updateUsernameToUnblock(this)">
+                                                <option disabled selected>Select Blocked User</option>
+                                                <option th:each="blockedUser : ${blockedUsers}" th:value="${blockedUser.username}" th:text="${blockedUser.username}">
+                                                </option>
                                             </select>
-                                            <button type="submit" class="btn btn-primary text-white">Confirm change</button>
-                                        </form>
-                                    </div>
+                                            Button to unblock the selected user
+                                            <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 text-primary ms-4">
+                                                <i class="fa fa-ban me-2 text-primary"></i> Unblock User
+                                            </button>
+                                        </div>
+                                    </form> -->
+
+                                    <form th:action="@{/unblock_user}" method="post" onsubmit="return confirm('Are you sure you want to unblock this user?');">
+                                        <input type="hidden" id="returnBlockUrl" name="returnBlockUrl" />
+                                        <input type="hidden" id="usernameToUnblock" name="usernameToUnblock" th:value="${username}" />
+                                        <div class="d-flex justify-content-center align-items-center mb-2">
+                                            <!-- Bootstrap styled dropdown -->
+                                            <div class="flex-grow-1 me-2">
+                                                <!-- <select name="blockedUser" id="blockedUser" class="form-select"> -->
+                                                <select name="blockedUser" id="blockedUser" class="form-select me-4" onchange="updateUsernameToUnblock(this)">
+                                                    <option disabled selected>Select Blocked User</option>
+                                                    <option th:each="blockedUser : ${blockedUsers}" th:value="${blockedUser.username}" th:text="${blockedUser.username}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <!-- Button to unblock the selected user -->
+                                            <div class="flex-grow-1">
+                                                <button type="submit" class="btn border border-secondary rounded-pill px-1 py-2 text-primary w-100">
+                                                    <i class="fa fa-lock-open me-2 text-success"></i> Unblock User
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -230,6 +271,13 @@
                     field.value = currentUrl; // Set the current URL for each field
                 });
             });
+        </script>
+
+        <!-- Added to update the variable user to unblock as a different choice is selected in the drop down menu -->
+        <script>
+            function updateUsernameToUnblock(select) {
+                document.getElementById("usernameToUnblock").value = select.value;
+            }
         </script>
     </body>
 </html>

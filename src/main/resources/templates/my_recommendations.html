@@ -69,23 +69,13 @@
                             <a sec:authorize="isAnonymous()" th:href="@{/signup}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa text-primary"></i>Sign Up</a>
                             
                             <!-- User icon and signout button ONLY SHOWN if logged in -->
-                            <!-- <a sec:authorize="isAuthenticated()" th:href="@{/user/{username}(username=${ username.findByUsername(principal.getName()) })}" class="my-auto">
+                            <a sec:authorize="isAuthenticated()" th:href="@{/user}" class="my-auto">
                                 <i class="fas fa-user fa-2x"></i>
-                            </a> -->
+                            </a>
                             <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" >
+                                <input type="hidden" id="returnLogOutUrl" name="returnLogOutUrl">
                                 <input type="submit" value="Sign Out" class="btn border border-secondary rounded-pill px-3 text-primary"/>
                             </form>
-                            
-                            <!-- OLD USER BUTTON -->
-                            <!-- <form th:action="@{/user}" method="post" >
-                                <input type="submit" class="fas fa-user fa-2x"/>
-                            </form> -->
-                            <!-- user name below user icon if logged in ??????????? -->
-                            <!--
-                            <div th:text="${#authentication.principal.username}">
-                                User name here
-                            </div>
-                            -->
                         </div>
                     </div>
                 </nav>
@@ -103,13 +93,13 @@
         </div>
         <!-- Hero End -->
 
-        <!-- Recommended Events display Start-->
+        <!-- My Recommended Events Start-->
         <div sec:authorize="isAuthenticated()" class="container-fluid fruite py-5">
             <div class="container py-5">
                 <div class="tab-class text-center">
                     <div class="row g-4">
                         <div class="col-lg-12 text-start">
-                            <h1>Your recommendations to your friends:</h1>
+                            <h1>Your recommendations to your friends</h1>
                         </div>
                     </div>
                     <!-- Here we need to use the thymeleaf elements to show the events dynamically -->
@@ -118,32 +108,71 @@
                         <div class="row g-4">
                             <div class="col-lg-12">
                                 <div class="row g-4">
-                                    <div class="col-md-6 col-lg-4 col-xl-3" th:each="event : ${events}">
-                                        <div class="rounded position-relative fruite-item">
+                                    <div th:if="${noRecommendations == true}" class="col-lg-12 align-items-center">
+                                        <h3 class="text-center">It's awefully quiet here... See our latest events on the main page!</h3>
+                                        <a class="btn border-secondary rounded-pill py-3 px-5" href="/">Click here to go home</a>
+                                    </div>
+                                    <!-- AUTOGENERATE WITH THYMELEAF -->
+                                    <!-- Display the paginated list of events -->
+                                    <div class="col-md-6 col-lg-4 col-xl-3" th:each="recommendation : ${recommendations}">
+                                        <!-- Link to event details -->
+                                        <a th:href="@{/event/{id}(id=${recommendation.event.id})}" class="rounded position-relative fruite-item">
+                                            <!-- Display event image -->
                                             <div class="fruite-img">
-                                                <!-- Aquí puedes utilizar una imagen del evento si tienes una propiedad correspondiente en el modelo -->
-                                                <img th:src="@{/public/img/single-item.jpg}" class="img-fluid w-100 rounded-top" alt="">
+                                                <img th:src="@{/public/img/single-item.jpg}" class="img-fluid w-100 rounded-top" alt="Event Image">
                                             </div>
+                                            <!--SHIT DONT WORK 
+                                                <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">
+                                                Recommended to: 
+                                                <span th:text="${recommendation.recommendTo.username}"></span>
+                                            </div> -->
+                                            <!-- Event information -->
                                             <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-                                                <!-- Utiliza las propiedades del evento para mostrar la información -->
-                                                <h4 th:text="${event.name}">Title</h4>
-                                                <p th:text="${#temporals.format(event.date, 'yyyy-MM-dd HH:mm')}">Date</p>
-                                                <!-- Asegúrate de ajustar el formato de la fecha según tus necesidades -->
-                                                <div class="d-flex justify-content-between flex-lg-wrap">
-                                                    <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to favourites</a>
+                                                <h4 th:text="${recommendation.event.name}">Event Name</h4>
+                                                <p th:text="${recommendation.event.description}">Short Description</p>
+                                                <!-- Favorites management with a POST requests -->
+                                                <div class="center">
+                                                    <!-- Form for adding to favorites with hidden field for returnUrl -->
+                                                    <form th:action="@{/add_to_favorites(eventId=${recommendation.event.id})}" method="post" th:if="${#vars['isFavorite' + recommendation.event.id] == false}">
+                                                        <!-- Hidden field to capture current URL -->
+                                                        <input type="hidden" id="returnUrl-[[${recommendation.event.id}]]" name="returnUrl">
+                                                        <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
+                                                        <i class="fa fa-heart me-2 text-primary"></i> Add to Favorites
+                                                        </button>
+                                                    </form>
+                                                    <!-- Form for removing from favorites with hidden field for returnUrl -->
+                                                    <form th:action="@{/remove_from_favorites(eventId=${recommendation.event.id})}" method="post" th:if="${#vars['isFavorite' + recommendation.event.id] == true}">
+                                                        <!-- Hidden field to capture current URL -->
+                                                        <input type="hidden" id="returnUrl-[[${recommendation.event.id}]]" name="returnUrl">
+                                                        <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
+                                                        <i class="fa fa-heartbeat me-2 text-primary"></i> Remove from Favorites
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                                <div>
+                                                    <p class="text-black">Recommended to: <a th:text="${recommendation.recommendTo.username}">RecommendTo</a></p>
+                                                    <!-- Form for removing recommendation -->
+                                                    <form   th:action="@{/remove_recommendation(recommendationId=${recommendation.id})}"
+                                                            method="post"
+                                                            onsubmit="return confirm('Are you sure you want to remove this recommendation?');">
+                                                        <input type="hidden" id="returnRemoveUrl" name="returnRemoveUrl"/>
+                                                        <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
+                                                            <i class="fa fa-trash me-2 text-primary"></i> Remove Recommendation
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </a>
                                     </div>
-                                    
+                                    <!-- END AUTOGENERATED BLOCK -->
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>      
+                </div>
             </div>
         </div>
-        <!-- Recommended Events display End-->
+        <!-- My Recommended Events End-->
 
         <!-- Footer & Copyright Start -->
         <div class="container-fluid copyright bg-dark py-4">
@@ -172,7 +201,7 @@
         <!-- Footer & Copyright End -->
 
         <!-- Back to Top -->
-        <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
+        <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up" style="color: white;"></i></a>   
 
         <!-- JavaScript Libraries -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>

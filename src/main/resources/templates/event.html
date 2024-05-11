@@ -140,45 +140,19 @@
                                     <p th:text="${event.creator.username}">Creator Placeholder</p>
                                 </div>
 
-                                <!-- Block User -->
-                                <!-- TODO: improve so that if already blocked we can unblock (only possible because all items arew shown) -->
-                                <!--        because blocks are only effective for recommendations, not for the general timeline -->
-
-                                <div class="col-4 text-end">
-                                    <!-- Ensure user is logged in, not the event creator, and has permission to block -->
-                                    <!-- Block -->
-                                    <form th:if="${#authentication.principal != null 
-                                                and (role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN')
-                                                and #authentication.principal.username != event.creator.username and creatorBlocked == false}"
-                                        th:action="@{/block_user(username=${event.creator.username})}" 
-                                        method="post">
-                                        <!-- Hidden field to capture current URL for redirecting back -->
-                                        <input type="hidden" id="returnBlockUrl" name="returnBlockUrl"/>
-                                        <button type="submit" class="btn border border-danger rounded-pill text-danger">
-                                            Block User
-                                        </button>
-                                    </form>
-                                    <!-- Unblock the user -->
-                                    <form th:if="${#authentication.principal != null 
-                                                and (role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN')
-                                                and #authentication.principal.username != event.creator.username and creatorBlocked == true}"
-                                        th:action="@{/unblock_user(username=${event.creator.username})}" 
-                                        method="post">
-                                        <!-- Hidden field to capture current URL for redirecting back -->
-                                        <input type="hidden" id="returnBlockUrl" name="returnBlockUrl"/>
-                                        <button type="submit" class="btn border border-primary rounded-pill text-danger">
-                                            Unblock User
-                                        </button>
-                                    </form>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-4">
+                                    <h4>Date & Time</h4>
+                                    <p th:text="${event.date}">Date Placeholder</p>
+                                </div>
+                                <div class="col-4">
+                                    <!-- <h4>Time</h4>
+                                    <p th:text="${event.time}">Time Placeholder</p> -->
+                                    <h4>Location</h4>
+                                    <p th:text="${event.location}">Location Placeholder</p>
                                 </div>
                             </div>
-
-                            <h4>Date</h4>
-                            <p th:text="${event.date}">Date Placeholder</p>
-
-                            <h4>Location</h4>
-                            <p th:text="${event.location}">Location Placeholder</p>
-        <!-- <title th:text="'MusicFinder - ' + ${event.name}">MusicFinder - Event Placeholder</title> -->
 
                             <!-- Estimated Duration -->
                             <h4>Estimated Duration</h4>
@@ -191,7 +165,7 @@
                             <!-- Recommend to a friend -->
                             <!-- Only if authenticated -->
                             <div th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}">
-                                <h4>Recommend to a friend</h4>
+                                <h4>Recommend to a friend!</h4>
                                 <form th:action="@{/recommend_event(eventId=${event.id})}" method="post">
                                     <div class="position-relative mx-auto">
                                         <input class="form-control border border-secondary w-75 py-2 px-4 rounded-pill" 
@@ -201,7 +175,7 @@
                                         <input type="hidden" id="returnRecUrl" name="returnRecUrl"/>
                                         <button type="submit" 
                                                 class="btn btn-primary border border-secondary py-2 px-4 position-absolute rounded-pill text-white h-100" 
-                                                style="top: 0; right: 25%;">Recommend!
+                                                style="top: 0; right: 25%;">Send!
                                         </button>
                                     </div>
                                 </form>
@@ -240,7 +214,7 @@
         <!-- Footer & Copyright End -->
 
         <!-- Back to Top -->
-        <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
+        <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up" style="color: white;"></i></a>   
 
         <!-- JavaScript Libraries -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
@@ -268,6 +242,21 @@
                 });
             });
         </script>
-    </body>
 
+
+        <!-- JavaScript code to trigger the popup for event already recommended-->
+        <script th:inline="javascript">
+            $(document).ready(function() {
+                // Check if the URL contains the query parameter indicating the error
+                var urlParams = new URLSearchParams(window.location.search);
+                var errorParam = urlParams.get('event_already_recommended_to_user');
+                
+                // If the error parameter is present, show the popup
+                if (errorParam !== null) {
+                    alert('You have already recommended this event to the user.');
+                    // You can use other methods to display the popup, such as modal dialogs
+                }
+            });
+        </script>
+    </body>
 </html>

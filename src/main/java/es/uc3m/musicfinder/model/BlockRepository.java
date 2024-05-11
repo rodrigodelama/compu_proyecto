@@ -29,4 +29,12 @@ public interface BlockRepository extends CrudRepository<Block, Integer> {
     @Query("SELECT COUNT(b) FROM Block b WHERE b.blocked = :user")
     int countUsersBlockingUser(@Param("user") User user);
 
+    // Retrieves all users blocking a given user
+    // @Query("SELECT b.blocker FROM Block b WHERE b.blocked = :user")
+    // List<User> findUsersBlockingUser(@Param("user") User user);
+    
+    // Retrieves all users blocked by a given user
+    @Query("SELECT b.blocked FROM Block b WHERE b.blocker = :user")
+    List<User> findBlockedUsers(@Param("user") User user);
+
 }

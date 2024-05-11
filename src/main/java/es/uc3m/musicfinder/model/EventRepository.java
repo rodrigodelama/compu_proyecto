@@ -13,7 +13,6 @@ public interface EventRepository extends CrudRepository<Event, Integer> {
     // Return number of events (rows)
     long count();
 
-
     // TODO: maybe remove
     List<Event> findAll();
 
@@ -28,6 +27,10 @@ public interface EventRepository extends CrudRepository<Event, Integer> {
     //eventos creados pore l usuario 
     @Query("SELECT COUNT(e) FROM Event e WHERE e.creator = :user")
     int countEventsCreatedByUser(@Param("user") User user);
+
+    // Remove event by id
+    // had to include @Transactional in PostMapping for it to work
+    void deleteById(int eventId);
 
     // @Query("SELECT COUNT(e) FROM Event e JOIN e.favoriteEvents f WHERE f.id = :userId")
     // int countFavoritedEventsByUser(@Param("userId") Integer userId);

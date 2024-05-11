@@ -69,23 +69,13 @@
                             <a sec:authorize="isAnonymous()" th:href="@{/signup}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa text-primary"></i>Sign Up</a>
                             
                             <!-- User icon and signout button ONLY SHOWN if logged in -->
-                            <!-- <a sec:authorize="isAuthenticated()" th:href="@{/user/{username}(username=${ username.findByUsername(principal.getName()) })}" class="my-auto">
+                            <a sec:authorize="isAuthenticated()" th:href="@{/user}" class="my-auto">
                                 <i class="fas fa-user fa-2x"></i>
-                            </a> -->
+                            </a>
                             <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" >
+                                <input type="hidden" id="returnLogOutUrl" name="returnLogOutUrl">
                                 <input type="submit" value="Sign Out" class="btn border border-secondary rounded-pill px-3 text-primary"/>
                             </form>
-                            
-                            <!-- OLD USER BUTTON -->
-                            <!-- <form th:action="@{/user}" method="post" >
-                                <input type="submit" class="fas fa-user fa-2x"/>
-                            </form> -->
-                            <!-- user name below user icon if logged in ??????????? -->
-                            <!--
-                            <div th:text="${#authentication.principal.username}">
-                                User name here
-                            </div>
-                            -->
                         </div>
                     </div>
                 </nav>
@@ -142,7 +132,7 @@
         <!-- Footer & Copyright End -->
 
         <!-- Back to Top -->
-        <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
+        <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up" style="color: white;"></i></a>   
 
         <!-- JavaScript Libraries -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>

@@ -1,5 +1,7 @@
 package es.uc3m.musicfinder.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,10 @@ public class BlockService {
     public int countUsersBlockingUser(User user) {
         Integer count = BlockRepository.countUsersBlockingUser(user);
         return (count == null) ? 0 : count;
+    }
+
+    public List<User> getBlockedUsers(User user) {
+        return BlockRepository.findBlockedUsers(user);
     }
 
 }

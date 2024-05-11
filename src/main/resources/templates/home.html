@@ -63,29 +63,42 @@
                             <a th:if="${role == 'ADMIN'}" th:href="@{/admin_panel}" class="nav-item nav-link">Admin Panel</a>
                         </div>
                         <div class="d-flex m-3 me-0">
-                            <!-- sign in and sign up buttons here if not logged in -->
-                            <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa text-primary"></i>Log In</a>
-                            <a sec:authorize="isAnonymous()" th:href="@{/signup}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa text-primary"></i>Sign Up</a>
+                            <!-- Sign in and Sign up buttons if not logged in -->
+                            <!-- <div sec:authorize="isAnonymous()"> -->
+                                <!-- <div class="col-lg-4"> -->
+                                    <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa text-primary"></i>Log In</a>
+                                <!-- </div>
+                                <div class="col-lg-4"> -->
+                                    <a sec:authorize="isAnonymous()" th:href="@{/signup}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa text-primary"></i>Sign Up</a>
+                                <!-- </div> -->
+                            <!-- </div> -->
                             
-                            <!-- User icon and signout button ONLY SHOWN if logged in -->
-                            <!-- <a sec:authorize="isAuthenticated()" th:href="@{/user/{username}(username=${ username.findByUsername(principal.getName()) })}" class="my-auto">
-                                <i class="fas fa-user fa-2x"></i>
-                            </a> -->
-                            <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" >
-                                <input type="hidden" id="returnLogOutUrl" name="returnLogOutUrl">
-                                <input type="submit" value="Sign Out" class="btn border border-secondary rounded-pill px-3 text-primary"/>
-                            </form>
+                            <!-- User icon and Signout button ONLY SHOWN if logged in -->
+                            <!-- <div sec:authorize="isAuthenticated()" > -->
+                                <!-- <div class="col-lg-4"> -->
+                                    <!-- <form th:action="@{/user(username=${usename})}" method="post" > -->
+                                    <!-- <form th:href="@{/user}" method="post" > -->
+                                        <!-- <form   th:action="@{/block_user(username=${recommendation.recommender.username})} -->
+                                        <!-- <input type="submit" class="fas fa-user fa-2x"/>
+                                    </form> -->
+                                    <!-- <a sec:authorize="isAuthenticated()" th:href="@{/user/}" class="fas fa-user fa-2x"> -->
+                                    <a sec:authorize="isAuthenticated()" th:href="@{/user}" class="my-auto">
+                                        <i class="fas fa-user fa-2x"></i>
+                                    </a>
+                                    
+                                <!-- </div>
+                                <div class="col-lg-4"> -->
+                                    <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" >
+                                        <input type="hidden" id="returnLogOutUrl" name="returnLogOutUrl">
+                                        <input type="submit" value="Sign Out" class="btn border border-secondary rounded-pill px-3 text-primary"/>
+                                    </form>
+                                <!-- </div> -->
+                                <!-- user name below user icon if logged in ??????????? -->
+                                <!-- <div th:text="${#authentication.principal.username}">
+                                    User name here
+                                </div> -->
+                            <!-- </div> -->
                             
-                            <!-- OLD USER BUTTON -->
-                            <!-- <form th:action="@{/user}" method="post" >
-                                <input type="submit" class="fas fa-user fa-2x"/>
-                            </form> -->
-                            <!-- user name below user icon if logged in ??????????? -->
-                            <!--
-                            <div th:text="${#authentication.principal.username}">
-                                User name here
-                            </div>
-                            -->
                         </div>
                     </div>
                 </nav>
@@ -130,6 +143,10 @@
                                             <div class="fruite-img">
                                                 <img th:src="@{/public/img/single-item.jpg}" class="img-fluid w-100 rounded-top" alt="Event Image">
                                             </div>
+                                            <div    class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                                                    style="top: 10px; left: 10px;">
+                                                    Recommended by: <a th:text="${recommendation.recommender.username}">Recommender</a>
+                                            </div>
                                             <!-- Event information -->
                                             <div class="p-4 border border-secondary border-top-0 rounded-bottom">
                                                 <h4 th:text="${recommendation.event.name}">Event Name</h4>
@@ -153,6 +170,21 @@
                                                         </button>
                                                     </form>
                                                 </div>
+                                                <div>
+                                                    <!-- TODO: DELETE THIS BELOW IN LATER COMMIT -->
+                                                    <!-- TODO: maybe add link to user?? pointless tbh -->
+                                                    <!-- <p class="text-secondary">Recommended by: <a th:href="@{/user/{username}(username=${recommendation.recommender.id})}" th:text="${recommendation.recommender.username}">Recommender</a></p> -->
+                                                    <p class="text-black">Recommended by: <a th:text="${recommendation.recommender.username}">Recommender</a></p>
+                                                    <!-- Form for Blocking users -->
+                                                    <form   th:action="@{/block_user(username=${recommendation.recommender.username})}"
+                                                            method="post"
+                                                            onsubmit="return confirm('Are you sure you want to block this user?');">
+                                                        <input type="hidden" id="returnBlockUrl" name="returnBlockUrl"/>
+                                                        <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
+                                                            <i class="fa fa-ban me-2 text-primary"></i> Block User
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </a>
                                     </div>
@@ -161,11 +193,10 @@
                             </div>
                         </div>
                     </div>
-                </div>      
+                </div>
             </div>
         </div>
         <!-- Recommended Events display End-->
-
 
         <!-- Events display Start-->
         <div class="container-fluid fruite py-5">
@@ -175,36 +206,7 @@
                         <div class="col-lg-4 text-start">
                             <h1>Find the latest events</h1>
                         </div>
-                        <!-- <div class="col-lg-8 text-end">
-                            <ul class="nav nav-pills d-inline-flex text-center mb-5">
-                                <li class="nav-item">
-                                    <a class="d-flex m-2 py-2 bg-light rounded-pill active" data-bs-toggle="pill" href="#tab-1">
-                                        <span class="text-dark" style="width: 90px;">All</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="d-flex py-2 m-2 bg-light rounded-pill" data-bs-toggle="pill" href="#tab-2">
-                                        <span class="text-dark" style="width: 90px;">Pop</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="d-flex m-2 py-2 bg-light rounded-pill" data-bs-toggle="pill" href="#tab-3">
-                                        <span class="text-dark" style="width: 90px;">Rock</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="d-flex m-2 py-2 bg-light rounded-pill" data-bs-toggle="pill" href="#tab-4">
-                                        <span class="text-dark" style="width: 90px;">Latin</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="d-flex m-2 py-2 bg-light rounded-pill" data-bs-toggle="pill" href="#tab-5">
-                                        <span class="text-dark" style="width: 90px;">EDM</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div> -->
+                    </div>
                     <div class="tab-content">
                         <div id="tab-1" class="tab-pane fade show p-0 active">
                             <div class="row g-4">
@@ -301,7 +303,7 @@
         <!-- Footer & Copyright End -->
 
         <!-- Back to Top -->
-        <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
+        <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up" style="color: white;"></i></a>   
 
         <!-- JavaScript Libraries -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>

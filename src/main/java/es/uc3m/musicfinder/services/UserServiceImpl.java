@@ -130,6 +130,7 @@ public class UserServiceImpl implements UserService {
         // Save the new recommendation
         recommendationRepository.save(recommendation);
     }
+
     @Override
     public List<Recommendation> getRecommendationsForUser(User recommendTo) {
         // return recommendationRepository.findByRecommendTo(recommendTo); // Get all recommendations for a user

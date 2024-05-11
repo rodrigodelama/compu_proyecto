@@ -46,13 +46,13 @@ public interface RecommendationRepository extends CrudRepository<Recommendation,
 
     // Home view - only the N most recent
     // get only the first n recommendations for a user ordered by timestamp from newest to oldest
-    // @Query("SELECT new Recommendation(e.name, e.date) FROM Recommendation r JOIN r.event e WHERE r.recommendTo = :recommendTo AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :recommendTo) ORDER BY r.timestamp DESC")
+    // @Query("SELECT r FROM Recommendation r JOIN r.event e WHERE r.recommendTo = :recommendTo AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :recommendTo) ORDER BY r.timestamp DESC")
     List<Recommendation> findTopNByRecommendTo(User recommendTo, Pageable pageable);
 
 
     // My Recommendations view
     // get all recommendations made by a user ordered by timestamp from newest to oldest
-    // @Query("SELECT new Recommendation(e.name, e.date) FROM Recommendation r JOIN r.event e WHERE r.recommendTo = :recommendTo AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :recommendTo) ORDER BY r.timestamp DESC")
+    // @Query("SELECT r FROM Recommendation r JOIN r.event e WHERE r.recommendTo = :recommendTo AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :recommendTo) ORDER BY r.timestamp DESC")
     List<Recommendation> findByRecommenderOrderByTimestampDesc(@Param("user") User recommender);
     
     //recomendaciones que le han realizado 

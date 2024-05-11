@@ -70,23 +70,13 @@
                             <a sec:authorize="isAnonymous()" th:href="@{/signup}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa text-primary"></i>Sign Up</a>
                             
                             <!-- User icon and signout button ONLY SHOWN if logged in -->
-                            <!-- <a sec:authorize="isAuthenticated()" th:href="@{/user/{username}(username=${ username.findByUsername(principal.getName()) })}" class="my-auto">
+                            <a sec:authorize="isAuthenticated()" th:href="@{/user}" class="my-auto">
                                 <i class="fas fa-user fa-2x"></i>
-                            </a> -->
+                            </a>
                             <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" >
+                                <input type="hidden" id="returnLogOutUrl" name="returnLogOutUrl">
                                 <input type="submit" value="Sign Out" class="btn border border-secondary rounded-pill px-3 text-primary"/>
                             </form>
-                            
-                            <!-- OLD USER BUTTON -->
-                            <!-- <form th:action="@{/user}" method="post" >
-                                <input type="submit" class="fas fa-user fa-2x"/>
-                            </form> -->
-                            <!-- user name below user icon if logged in ??????????? -->
-                            <!--
-                            <div th:text="${#authentication.principal.username}">
-                                User name here
-                            </div>
-                            -->
                         </div>
                     </div>
                 </nav>
@@ -119,6 +109,10 @@
                         <div class="row g-4">
                             <div class="col-lg-12">
                                 <div class="row g-4">
+                                    <div th:if="${noFavoriteEvents == true}" class="col-lg-12 align-items-center">
+                                        <h3 class="text-center">To add an event to favorites check our latest events on the main page!</h3>
+                                        <a class="btn border-secondary rounded-pill py-3 px-5" href="/">Click here to go home</a>
+                                    </div>
                                     <!-- AUTOGENERATE WITH THYMELEAF -->
                                     <!-- Loop through the list of favorite events -->
                                     <div class="col-md-6 col-lg-4 col-xl-3" th:each="event : ${favoriteEvents}">
@@ -181,7 +175,7 @@
         <!-- Footer & Copyright End -->
 
         <!-- Back to Top -->
-        <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
+        <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up" style="color: white;"></i></a>   
 
         <!-- JavaScript Libraries -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
