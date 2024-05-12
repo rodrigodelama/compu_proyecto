@@ -11,20 +11,15 @@ public interface UserService {
 
     void register(User user);
 
-    // Blocks
-    boolean blocked(User user, User blocked);
-    void block(User user, User blocked) throws UserServiceException;
-    void unblock(User user, User blocked) throws UserServiceException;
-
-    // Follows SAME AS FAVORITES
-    // boolean follows(User follower, User followed); 
-    // void follow(User follower, User followed) throws UserServiceException;
-    // void unfollow(User follower, User followed) throws UserServiceException;
-
     // Favorites
     boolean favoritedEvent(User user, Event event);
     void favoriteEvent(User user, Event event) throws UserServiceException;
     void unfavoriteEvent(User user, Event event) throws UserServiceException;
+
+    // Blocks
+    boolean blocked(User user, User blocked);
+    void block(User user, User blocked) throws UserServiceException;
+    void unblock(User user, User blocked) throws UserServiceException;
 
     // Recommendations
     void recommend(User recommender, User recommendTo, Event event) throws UserServiceException;

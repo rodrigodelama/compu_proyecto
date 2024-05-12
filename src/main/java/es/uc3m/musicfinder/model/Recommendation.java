@@ -39,7 +39,6 @@ public class Recommendation {
     private User recommendTo;
 
     // The recommended event
-    // @Column(nullable = false) // This errors out
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;

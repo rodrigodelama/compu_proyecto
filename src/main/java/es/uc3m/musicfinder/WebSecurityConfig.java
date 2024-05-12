@@ -31,8 +31,10 @@ public class WebSecurityConfig {
             //autorization rules
             .authorizeHttpRequests((authorize) -> authorize
             .requestMatchers("/**", "/index", "/login", "/signup", "/public/**", "/static/**", "/images/**", "/error", "/event/**").permitAll()
-            .requestMatchers("/user/**", "/admin_panel", "/data_dashboard").hasRole("ADMIN")
-            .requestMatchers("/create_event").hasRole("ORGANIZER") // añadir para organizador solo el de create event ? 
+            // .requestMatchers("/user/**").hasRole("USER")
+            .requestMatchers("/user/**", "/admin_panel/**", "/data_dashboard/**").hasRole("ADMIN")
+            // Rompe nuestro código
+            // .requestMatchers("/user/**", "/create_event/**").hasRole("ORGANIZER") // añadir para organizador solo el de create event ? 
                 .anyRequest().authenticated()
             )
             //login page, especifies the loging page, all requests are permitted to acces it
@@ -49,7 +51,7 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    //handeling user authentication and spring application
+    //handling user authentication and spring application
     @Bean
     UserDetailsService userDetailsService() {
         return new UserDetailsServiceImpl();

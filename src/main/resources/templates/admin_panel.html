@@ -55,22 +55,13 @@
                     </button>
                     <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                         <div class="navbar-nav mx-auto">
-                            <!--
-                                my_favorite_events (the ones the user has marked as favorite) (ANY USER)
-                                recommended (recieved from other users) (ANY USER)
-                                my_recommendations (the ones the user has recommended to others) (ANY USER)
-                                create_event page (only shown if organizer) (ORGANIZER)
-                                my_events page (the ones the user has created) (ORGANIZER & USERs that have created events)
-                                data dashboard (only shown if admin) (ADMIN)
-                            -->
-        <!-- Menu navigation links ONLY SHOWN if logged in, and of your type -->
+                            <!-- Menu navigation links ONLY SHOWN if logged in, and of your Role -->
                             <a th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/my_favorite_events}" class="nav-item nav-link">My Favorites</a>
                             <a th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/recommended}" class="nav-item nav-link">Recommended</a>
                             <a th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/my_recommendations}" class="nav-item nav-link">My Recommendations</a>
                             <a th:if="${role == 'ORGANIZER' or createdEvent == true}" th:href="@{/my_events}" class="nav-item nav-link">My Events</a> 
                             <a th:if="${role == 'ORGANIZER'}" th:href="@{/create_event}" class="nav-item nav-link">Create Event</a>
                             <a th:if="${role == 'ADMIN'}" th:href="@{/admin_panel}" class="nav-item nav-link">Admin Panel</a>
-                            
                         </div>
                         <div class="d-flex m-3 me-0">
                             <!-- sign in and sign up buttons here if not logged in -->
@@ -116,7 +107,7 @@
                                                     type="text" 
                                                     name="username" 
                                                     placeholder="Username"
-                                                    required> <!-- Make the field required -->
+                                                    required>
                                                 <button type="submit" 
                                                     class="btn btn-primary border-2 border-secondary py-3 px-4 position-absolute rounded-pill text-white h-100" 
                                                     style="top: 0; right: 25%;">Buscar</button>
@@ -148,10 +139,11 @@
                         <span class="text-light"><a href="#"><i class="fas fa-copyright text-light me-2"></i>MusicFinder</a>, All right reserved.</span>
                     </div>
                     <div class="col-md-6 my-auto text-center text-md-end text-white">
+                        Based on <a class="border-bottom" href="https://themewagon.github.io/fruitables/">Fruitables</a>
                         <!--/*** This template is free as long as you keep the below author’s credit link/attribution link/backlink. ***/-->
                         <!--/*** If you'd like to use the template without the below author’s credit link/attribution link/backlink, ***/-->
                         <!--/*** you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". ***/-->
-                        Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a> Distributed By <a class="border-bottom" href="https://themewagon.com">ThemeWagon</a>
+                        , Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>, Distributed By <a class="border-bottom" href="https://themewagon.com">ThemeWagon</a>
                     </div>
                 </div>
             </div>

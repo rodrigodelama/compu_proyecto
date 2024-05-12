@@ -16,6 +16,7 @@ public class EventService {
         return (count == null) ? 0 : count;
     }
 
+    // Deprecated - We just count the size of the list of events favorited by the user
     // public int countFavoritedEventsByUser(User user) {
     //     Integer count = eventRepository.countFavoritedEventsByUser(user);
     //     return (count == null) ? 0 : count;

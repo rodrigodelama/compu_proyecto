@@ -3,7 +3,6 @@
     <head>
         <meta charset="utf-8">
         <title>MusicFinder - Recommended</title>
-        <!-- <title th:text="'MusicFinder - ' + ${user.name} + '\'events'">MusicFinder - Event Placeholder</title> -->
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
@@ -122,10 +121,6 @@
                                             <div class="fruite-img">
                                                 <img th:src="@{/public/img/single-item.jpg}" class="img-fluid w-100 rounded-top" alt="Event Image">
                                             </div>
-                                            <!-- <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">
-                                                Recommended by: 
-                                                <span th:text="${recommendation.recommender.username}"></span>
-                                            </div> -->
                                             <!-- Event information -->
                                             <div class="p-4 border border-secondary border-top-0 rounded-bottom">
                                                 <h4 th:text="${recommendation.event.name}">Event Name</h4>
@@ -190,10 +185,11 @@
                         <span class="text-light"><a href="#"><i class="fas fa-copyright text-light me-2"></i>MusicFinder</a>, All right reserved.</span>
                     </div>
                     <div class="col-md-6 my-auto text-center text-md-end text-white">
+                        Based on <a class="border-bottom" href="https://themewagon.github.io/fruitables/">Fruitables</a>
                         <!--/*** This template is free as long as you keep the below author’s credit link/attribution link/backlink. ***/-->
                         <!--/*** If you'd like to use the template without the below author’s credit link/attribution link/backlink, ***/-->
                         <!--/*** you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". ***/-->
-                        Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a> Distributed By <a class="border-bottom" href="https://themewagon.com">ThemeWagon</a>
+                        , Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>, Distributed By <a class="border-bottom" href="https://themewagon.com">ThemeWagon</a>
                     </div>
                 </div>
             </div>

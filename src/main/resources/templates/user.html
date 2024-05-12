@@ -2,8 +2,8 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
     <head>
         <meta charset="utf-8">
-        <title th:text="'MusicFinder - ' + ${username} + 'Statistics'">MusicFinder - Event Placeholder</title>
-        <!-- <title>MusicFinder - Admin Panel</title> -->
+        <title th:text="'MusicFinder - ' + ${username} + ' User Page'">MusicFinder - User Page</title>
+
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
@@ -110,7 +110,6 @@
                                         <h5 class="fw-bold">Registered email</h5>
                                         <p class="rounded text-center p-2 bg-light" th:text="${email}"></p>
                                     </div>
-
                                 </div>
 
                                 <!-- Section for events -->
@@ -149,44 +148,6 @@
                                 <!-- Show blocked user list -->
                                 <div class="row">
                                     <h5 class="fw-bold">Unblock users below</h5>
-                                    <!-- <div class="col-12">
-                                        <h5 class="fw-bold">Blocked Users</h5>
-                                        <div class="rounded p-2 bg-light">
-                                            <ul>
-                                                <li th:each="blockedUser : ${blockedUsers}">
-                                                    <span th:text="${blockedUser.username}"></span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div> -->
-
-                                    <!-- unblock user form -->
-                                    <!-- <form   th:action="@{/block_user(username=${recommendation.recommender.username})}"
-                                            method="post"
-                                            onsubmit="return confirm('Are you sure you want to block this user?');">
-                                        <input type="hidden" id="returnBlockUrl" name="returnBlockUrl"/>
-                                        <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
-                                            <i class="fa fa-ban me-2 text-primary"></i> Unblock User
-                                        </button>
-                                    </form> -->
-
-                                    <!-- <form th:action="@{/unblock_user}" method="post" onsubmit="return confirm('Are you sure you want to unblock this user?');">
-                                        <input type="hidden" id="returnBlockUrl" name="returnBlockUrl" />
-                                        <input type="hidden" id="usernameToUnblock" name="usernameToUnblock" th:value="${username}" />
-                                        <div class="d-flex justify-content-center align-items-center mb-4">
-                                            Bootstrap styled dropdown
-                                            <select name="blockedUser" id="blockedUser" class="form-select me-4" onchange="updateUsernameToUnblock(this)">
-                                                <option disabled selected>Select Blocked User</option>
-                                                <option th:each="blockedUser : ${blockedUsers}" th:value="${blockedUser.username}" th:text="${blockedUser.username}">
-                                                </option>
-                                            </select>
-                                            Button to unblock the selected user
-                                            <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 text-primary ms-4">
-                                                <i class="fa fa-ban me-2 text-primary"></i> Unblock User
-                                            </button>
-                                        </div>
-                                    </form> -->
-
                                     <form th:action="@{/unblock_user}" method="post" onsubmit="return confirm('Are you sure you want to unblock this user?');">
                                         <input type="hidden" id="returnBlockUrl" name="returnBlockUrl" />
                                         <input type="hidden" id="usernameToUnblock" name="usernameToUnblock" th:value="${username}" />
@@ -233,10 +194,11 @@
                         <span class="text-light"><a href="#"><i class="fas fa-copyright text-light me-2"></i>MusicFinder</a>, All right reserved.</span>
                     </div>
                     <div class="col-md-6 my-auto text-center text-md-end text-white">
+                        Based on <a class="border-bottom" href="https://themewagon.github.io/fruitables/">Fruitables</a>
                         <!--/*** This template is free as long as you keep the below author’s credit link/attribution link/backlink. ***/-->
                         <!--/*** If you'd like to use the template without the below author’s credit link/attribution link/backlink, ***/-->
                         <!--/*** you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". ***/-->
-                        Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a> Distributed By <a class="border-bottom" href="https://themewagon.com">ThemeWagon</a>
+                        , Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>, Distributed By <a class="border-bottom" href="https://themewagon.com">ThemeWagon</a>
                     </div>
                 </div>
             </div>

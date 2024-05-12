@@ -14,24 +14,9 @@ public interface RecommendationRepository extends CrudRepository<Recommendation,
     boolean existsByRecommenderAndRecommendToAndEvent(User recommender, User recommendTo, Event event);
 
     // Recommendations view
-    // get all recommendations for a user ordered by timestamp from newest to oldest
     List<Recommendation> findByRecommendTo(User recommendTo);
-    // TODO: Query custom para no enviar las recomendaciones de usuarios bloqueados
-//     @Query( "SELECT r " +
-//             "FROM Recommendation r " +
-//             "WHERE r.recommendTo = ?1 " +
-//             "AND r.recommender " + 
-//             "NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = ?1)") // To get all recommendations for a user
-//     List<Recommendation> findByRecommendToNotBlockedByTimestampDesc(User recommendTo);
 
-    //busca todas las recomendaciones dirigidas a un usuario específico, excluyendo los recomendadores que hayan sido bloqueados por ese usuario. 
-    //para mostrar en la pagina todas las recomendaciones
-    // @Query("SELECT r FROM Recommendation r WHERE r.recommendTo = :user AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :user) ORDER BY r.timestamp DESC")
-    // List<Recommendation> findRecommendationsExcludingBlockedUsers(@Param("user") User user);
-
-    // @Query("SELECT new Recommendation(r.title, r.description) FROM Recommendation r WHERE r.recommendTo = :user AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :user) ORDER BY r.timestamp DESC")
-    // List<Recommendation> findRecommendationsExcludingBlockedUsers(@Param("user") User user);
-
+    //Buscar recomendaciones de amigos excluyendo a los usuarios bloqueados
     @Query("SELECT r FROM Recommendation r WHERE r.recommendTo = :user AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :user) ORDER BY r.timestamp DESC")
     List<Recommendation> findRecommendationsExcludingBlockedUsers(@Param("user") User user);
 
@@ -39,22 +24,15 @@ public interface RecommendationRepository extends CrudRepository<Recommendation,
     @Query("SELECT r FROM Recommendation r WHERE r.recommendTo = :user AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :user) ORDER BY r.timestamp DESC")
     List<Recommendation> findTopNRecommendationsExcludingBlockedUsers(@Param("user") User user, Pageable pageable);
 
-
-    //para las nuevas recomendaciones, las mas recientes
-    // @Query("SELECT COUNT(r) FROM Recommendation r WHERE r.timestamp > :date AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :user) AND r.recommendTo = :user")
-    // int countNewRecommendationsExcludingBlockedUsers(@Param("date") Date date, @Param("user") User user);
-
     // Home view - only the N most recent
-    // get only the first n recommendations for a user ordered by timestamp from newest to oldest
-    // @Query("SELECT r FROM Recommendation r JOIN r.event e WHERE r.recommendTo = :recommendTo AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :recommendTo) ORDER BY r.timestamp DESC")
     List<Recommendation> findTopNByRecommendTo(User recommendTo, Pageable pageable);
 
 
     // My Recommendations view
-    // get all recommendations made by a user ordered by timestamp from newest to oldest
-    // @Query("SELECT r FROM Recommendation r JOIN r.event e WHERE r.recommendTo = :recommendTo AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :recommendTo) ORDER BY r.timestamp DESC")
     List<Recommendation> findByRecommenderOrderByTimestampDesc(@Param("user") User recommender);
-    
+
+
+    //USER Page
     //recomendaciones que le han realizado 
     @Query("SELECT COUNT(r) FROM Recommendation r WHERE r.recommendTo = :user AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :user) ORDER BY r.timestamp DESC")
     int countRecommendationsFromFriendsExcludingBlokedUsers(@Param("user") User user);
@@ -63,5 +41,14 @@ public interface RecommendationRepository extends CrudRepository<Recommendation,
     @Query("SELECT COUNT(r) FROM Recommendation r WHERE r.recommender = :user AND r.recommender NOT IN (SELECT b.blocked FROM Block b WHERE b.blocker = :user) ORDER BY r.timestamp DESC")
     int countRecommendationsToFriendsExcludingBlokedUsers(@Param("user") User user);
 
+
+    //ADMIN PANEL
+    //recomendaciones que le han realizado 
+    @Query("SELECT COUNT(r) FROM Recommendation r WHERE r.recommendTo = :user ORDER BY r.timestamp DESC")
+    int countRecommendationsFromFriends(@Param("user") User user);
+
+    //num recomendaciones realizadas a amigos
+    @Query("SELECT COUNT(r) FROM Recommendation r WHERE r.recommender = :user ORDER BY r.timestamp DESC")
+    int countRecommendationsToFriends(@Param("user") User user);
 
 }

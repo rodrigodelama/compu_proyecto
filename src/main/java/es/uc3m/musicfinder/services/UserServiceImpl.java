@@ -31,6 +31,8 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    // UNUSED BELOW --------------------------------------------------------------------------------------------------
+
     // Backend repositories
     @Autowired
     private UserRepository userRepository;
@@ -41,53 +43,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private BlockRepository blockRepository;
 
-    // Follow and unfollow users:
-
-    /*
-     * devuelve true si el usuario seguido está contenido en la lista de usuarios que sigue el usuario seguidor.
-     * false en caso contrario.
-     */
-    // @Override
-    // public boolean follows(User follower, User followed) { // para ver si un usuario sigue a otro.
-    //     /*
-    //      * devuelve true si el usuario seguido está contenido en la lista de usuarios 
-    //      * que sigue el usuario seguidor
-    //      *-----------------------------------
-    //      * false en caso contrario. 
-    //      */
-    //     if(follower.getFollowing().contains(followed)) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-    // @Override
-    // public void follow(User follower, User followed) throws UserServiceException {
-    //     //follower: el que quiere ser seguidor
-    //     //followed: el que quiere ser seguido
-    //     //verifica primero que el usuario seguidor no esté intentando seguirse a sí mismo
-    //     //verifica que el usuario seguidor no esté siguiendo ya al usuario seguido
-    //     if((!follows(follower, followed)) && (!follower.equals(followed))) {
-    //         follower.getFollowing().add(followed);
-    //         userRepository.save(follower);
-    //     } else {
-    //         throw new UserServiceException("El usuario no se puede seguir a sí mismo");
-    //     }
-    // }
-    // @Override
-    // public void unfollow(User follower, User followed) throws UserServiceException {
-    //     //verifica que el usuario seguidor esté siguiendo al usuario seguido.
-    //     if(!follows(follower, followed)) {
-    //         throw new UserServiceException("El seguidor no está siguiendo al usuario seguido");
-    //     } else {
-    //         follower.getFollowing().remove(followed);
-    //         userRepository.save(follower);
-    //     }
-    // }
-
-
     // Marcar y desmarcar eventos como favoritos:
-
     @Override
     public boolean favoritedEvent(User user, Event event) {
         return user.getFavoriteEvents().contains(event);
@@ -111,7 +67,6 @@ public class UserServiceImpl implements UserService {
 
 
     // Recomendar eventos a usuarios:
-
     @Override
     public void recommend(User recommender, User recommendTo, Event event) throws UserServiceException {
         if (recommender.equals(recommendTo)) {
@@ -139,7 +94,6 @@ public class UserServiceImpl implements UserService {
 
 
     // Bloquear y desbloquear usuarios:
-
     @Override
     public boolean blocked(User blocker, User blocked) {
         return blockRepository.existsByBlockerAndBlocked(blocker, blocked); // Check if a block exists

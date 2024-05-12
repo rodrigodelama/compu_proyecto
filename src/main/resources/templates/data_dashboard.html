@@ -2,8 +2,7 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
     <head>
         <meta charset="utf-8">
-        <title th:text="'MusicFinder - ' + ${username} + 'Statistics'">MusicFinder - Event Placeholder</title>
-        <!-- <title>MusicFinder - Admin Panel</title> -->
+        <title th:text="'MusicFinder - ' + ${username} + ' User Statistics'">MusicFinder - User Statistics</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
@@ -153,7 +152,7 @@
                                 </div>
 
                                 <!-- Role Modification Section -->
-                                <div class="row mt-4" th:if = "${username != 'admin'}">  <!-- Only show if the user is admin -->
+                                <div class="row mt-4" th:if = "${username != 'admin'}">  <!-- Only show if the user is NOT admin -->
                                     <div class="col-12 col-md-6 mx-auto">
                                         <h5 class="fw-bold">Change their "Role"</h5>
                                         <form   th:action="@{/data_dashboard(username=${username})}"
@@ -192,10 +191,11 @@
                         <span class="text-light"><a href="#"><i class="fas fa-copyright text-light me-2"></i>MusicFinder</a>, All right reserved.</span>
                     </div>
                     <div class="col-md-6 my-auto text-center text-md-end text-white">
+                        Based on <a class="border-bottom" href="https://themewagon.github.io/fruitables/">Fruitables</a>
                         <!--/*** This template is free as long as you keep the below author’s credit link/attribution link/backlink. ***/-->
                         <!--/*** If you'd like to use the template without the below author’s credit link/attribution link/backlink, ***/-->
                         <!--/*** you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". ***/-->
-                        Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a> Distributed By <a class="border-bottom" href="https://themewagon.com">ThemeWagon</a>
+                        , Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>, Distributed By <a class="border-bottom" href="https://themewagon.com">ThemeWagon</a>
                     </div>
                 </div>
             </div>

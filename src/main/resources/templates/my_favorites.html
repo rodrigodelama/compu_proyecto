@@ -3,7 +3,6 @@
     <head>
         <meta charset="utf-8">
         <title>MusicFinder - My Favorites</title>
-        <!-- <title th:text="'MusicFinder - ' + ${user.name} + '\'events'">MusicFinder - Event Placeholder</title> -->
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
@@ -56,7 +55,6 @@
                     </button>
                     <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                         <div class="navbar-nav mx-auto">
-
                             <a th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/my_favorite_events}" class="nav-item nav-link">My Favorites</a>
                             <a th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/recommended}" class="nav-item nav-link">Recommended</a>
                             <a th:if="${role == 'USER' or role == 'ORGANIZER' or role == 'ADMIN'}" th:href="@{/my_recommendations}" class="nav-item nav-link">My Recommendations</a>
@@ -103,8 +101,6 @@
                             <h1>Your Favorites:</h1>
                         </div>
                     </div>
-                    <!-- Here we need to use the thymeleaf elements to show the events dynamically -->
-                    <!-- first show recommendations, then show all events in general -->
                     <div class="tab-content">
                         <div class="row g-4">
                             <div class="col-lg-12">
@@ -164,10 +160,11 @@
                         <span class="text-light"><a href="#"><i class="fas fa-copyright text-light me-2"></i>MusicFinder</a>, All right reserved.</span>
                     </div>
                     <div class="col-md-6 my-auto text-center text-md-end text-white">
+                        Based on <a class="border-bottom" href="https://themewagon.github.io/fruitables/">Fruitables</a>
                         <!--/*** This template is free as long as you keep the below author’s credit link/attribution link/backlink. ***/-->
                         <!--/*** If you'd like to use the template without the below author’s credit link/attribution link/backlink, ***/-->
                         <!--/*** you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". ***/-->
-                        Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a> Distributed By <a class="border-bottom" href="https://themewagon.com">ThemeWagon</a>
+                        , Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>, Distributed By <a class="border-bottom" href="https://themewagon.com">ThemeWagon</a>
                     </div>
                 </div>
             </div>
